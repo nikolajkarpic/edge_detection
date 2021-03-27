@@ -4,23 +4,10 @@ import math
 
 im = cv2.imread("Lenna_(test_image).png")
 
-blur_kernel = np.array([[ 1/273,  4/273,  7/273,  4/273,  1/273],
-                        [ 4/273,  16/273,  26/273, 16/273,  4/273],
-                        [ 7/273,  26/273,  41/273,  26/273, 7/273],
-                        [ 4/273,  16/273,  26/273, 16/273,  4/273],
-                        [ 1/273,  4/273,  7/273,  4/273,  1/273]])
-blur_kernel_small = np.array([[ 1/16,  2/16,  1/16],
-                            [ 2/16,  4/16,  2/16],
-                            [ 1/16,  2/16,  1/16]])
-
-laplacian_kernel_diag = np.array([[-1, -1, -1,],[-1, 8, -1],[-1, -1, -1]])
-laplacian_kernel = np.array([[0, -1, 0],[-1, 8, -1],[0, -1, 0]])
-laplacian_kernel_big = np.array([[0, 1,1,2,2,2,1,1,0],[1,2,4,5,5,5,4,2,1],[1,4,5,3,0,3,5,4,1],[2,5,3,-12,-24,-12,3,5,2],[2,5,0,-24,-40,-24,0,5,2],[2,5,3,-12,-24,-12,3,5,2],[1,4,5,3,0,3,5,4,1],[1,2,4,5,5,5,4,2,1],[0, 1,1,2,2,2,1,1,0]])
-
 
 def rgb2gray(rgb): # prima sliku i radi grayscale nad njom
-    for x in range(len(rgb)):
-        for y in range(len(rgb)):
+    for x in range(rgb.shape[0]):
+        for y in range(rgb.shape[1]):
             for i in range(3):
                 rgb[x][y][i] = (0.2989*rgb[x][y][0] + 0.5870*rgb[x][y][1] + 0.1140*rgb[x][y][2])#formula za rgb to gray gde se upisuje ista vrednost u sva tri kanala slike [red green blueS]
     return rgb
@@ -48,7 +35,7 @@ def convolution(image, kernel, string): # image je slika koja nad kojom se radi 
     return image_conv #vraca matricu niza boja tj matricu(dimenzija slike) [RED GREEN BLUE] vrednosti
 
 
-def LoG(kernel_x,kernel_y,sigma): #prima dimenzije matrice i sigma koji se koristi u formuli( ne znam tacno sta radi to sigma)
+def LoG(kernel_x, kernel_y, sigma): #prima dimenzije matrice i sigma koji se koristi u formuli( ne znam tacno sta radi to sigma)
     kernel = np.ones([kernel_x,kernel_y])#pravi matricu jedinica zadatih dimenzija
     for x in range(kernel_x):
         for y in range(kernel_y):
@@ -72,7 +59,7 @@ cv2.imshow('grayscale', gray) #prikaz slike koristi se open cv biblioteka
 blur_im = convolution(gray, gaus_ker, 'blur') #konvolucija grayscale slike i gausian kernela da bi se dobila blurovana slika
 #print(blur_im)
 #blur_im = rgb2gray(blur_im)
-cv2.imshow('blur', blur_im) #prikaz slike koristi se open cv biblioteka
+#cv2.imshow('blur', blur_im) #prikaz slike koristi se open cv biblioteka
 # #edge = cv2.Laplacian(gray, -1)
 edge = convolution(gray, lap_ker, 'edge') #konvolucija blurovane slike i laplacian kernela da bi se dobila slika ivica
 # #edge = cv.2(edge)
