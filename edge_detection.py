@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 im = cv2.imread("Lenna_(test_image).png")
-
+range_inc = lambda start, end: range(start, end+1)# pokupio sa necijeg gita... Treba utvrditi sta tacno radi
 
 def rgb2gray(rgb): # prima sliku i radi grayscale nad njom
     for x in range(rgb.shape[0]):
@@ -50,6 +50,33 @@ def gaus(kernel_x, kernel_y, sigma):#prima dimenzije matrice i sigma koji se kor
     return kernel
 
 
+def z_c_test(l_o_g_image): # radi zero crossing... Treba da ispisem moj kod za ovo... Bez range_inc 
+	z_c_image = np.zeros(l_o_g_image.shape)
+
+	# Check the sign (negative or positive) of all the pixels around each pixel
+	for i in range(1,l_o_g_image.shape[0]-1):
+		for j in range(1,l_o_g_image.shape[1]-1):
+			neg_count = 0
+			pos_count = 0
+			for a in range_inc(-1, 1):
+				for b in range_inc(-1,1):
+					if(a != 0 and b != 0):
+						if(l_o_g_image[i+a,j+b][0] < 0):
+							neg_count += 1
+						elif(l_o_g_image[i+a,j+b][0] > 0):
+							pos_count += 1
+
+			# If all the signs around the pixel are the same and they're not all zero, then it's not a zero crossing and not an edge. 
+			# Otherwise, copy it to the edge map.
+			z_c = ( (neg_count > 0) and (pos_count > 0) )
+			if(z_c):
+				z_c_image[i,j] = 1
+
+	return z_c_image
+
+
+
+
 lap_ker = LoG(10,10,2.7) #pravim matricu za lapacian
 gaus_ker = gaus(10,10,2.7) #pravim matricu za gausian filter
 # #print(lap_ker)
@@ -61,9 +88,13 @@ blur_im = convolution(gray, gaus_ker, 'blur') #konvolucija grayscale slike i gau
 #blur_im = rgb2gray(blur_im)
 #cv2.imshow('blur', blur_im) #prikaz slike koristi se open cv biblioteka
 # #edge = cv2.Laplacian(gray, -1)
-edge = convolution(gray, lap_ker, 'edge') #konvolucija blurovane slike i laplacian kernela da bi se dobila slika ivica
+log_edge = convolution(gray, lap_ker, 'edge') #konvolucija blurovane slike i laplacian kernela da bi se dobila slika ivica
 # #edge = cv.2(edge)
+
+edge = z_c_test(log_edge)
+
 cv2.imshow('edge', edge) #prikaz slike koristi se open cv biblioteka
 cv2.waitKey(0) #ceka da se klikne taste 0 ili da se pogase svi otvoreni prozori
 cv2.destroyAllWindows #ako je pritisnut taster 0 zatvara sve prozore i zavrsava skriptu
+cv2.imwrite('C:\FTN\8_osmi_semestar\system_level_design\projekat\lena_edge.bmp', edge) #ovo ignorisati, z_c_test vraca matricu nula ili jednica, a izgleda da to ne moze bas lepo da se sacuva
 
