@@ -18,7 +18,8 @@ struct pixel
 };
 
 typedef std::vector < std::vector < pixel > > image2D;// vector of vector of pixels, represents an image
-typedef std::vector< pixel > image1D; //vector of pixels, represents an row of pixels
-
+typedef std::vector < pixel > image1D; //vector of pixels, represents an row of pixels
+typedef std::vector < int > matrix1D;
+typedef std::vector < matrix1D > matrix2D;
 
 #endif // COMMON_H_INCLUDED
