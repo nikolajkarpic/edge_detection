@@ -19,6 +19,8 @@ int main() {
 
     cout << temp[1][1].blue << endl;
 
+    showImage(path, temp);
+
     //cout << temp.at(2).blue << endl;
 
     //imshow("Image", img); 
