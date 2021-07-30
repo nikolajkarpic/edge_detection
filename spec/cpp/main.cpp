@@ -37,11 +37,19 @@ int main() {
 
     temp = grayScale(temp);
 
-    kernel2D LoGKernel = createKernelLoG(3, 1);
+    kernel2D LoGKernel = createKernelLoG(10, 2.7);
     kernel2D kernelGauss = createKernelGauss(10, 2.7);
 
-    image2D edge = convolution2D(LOGk1, temp);
+    kernel2D  LoG2 = createKernelLoGDescrete(9, 1.4);
+
+    image2D edge = convolution2D(LoG2, temp);
     //edge = convolution2D(LoGKernel, temp);
+
+    for (int i = 0; i < LoGKernel.size(); i++) {
+        for (int j = 0; j < LoGKernel[0].size(); j++) {
+            cout << LoG2[i][j] << endl;
+        }
+    }
 
     //cout << temp[1][1].blue << endl;
 
@@ -54,7 +62,7 @@ int main() {
 
     //imshow("Image", img); 
     //imshow("ImageGray", imgGray);
-    //waitKey(0);
+    waitKey(0);
 
     return 0;
 }

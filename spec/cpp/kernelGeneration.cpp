@@ -22,6 +22,8 @@ kernel2D createKernelLoG(int size, float sigma)
 	return kernelLoG; //returns kernel
 }
 
+
+
 kernel2D createKernelGauss(int size, float sigma)
 {
 	kernel2D kernelGauss;
@@ -40,4 +42,36 @@ kernel2D createKernelGauss(int size, float sigma)
 	
 	return kernelGauss;
 }
+
+kernel2D createKernelLoGDescrete(int size, float sigma)
+{
+	kernel2D returnKernel;
+	kernel1D temp;
+	float kernelValue;
+
+	for (int i = 0; i < size + 1; i++) {
+		returnKernel.push_back(temp);
+		for (int j = 0; j < size + 1; j++) {
+			kernelValue = calculateLoGValue((i - (size - 1) / 2), (j - (size - 1) / 2), sigma);
+			returnKernel[i].push_back(kernelValue);
+		}
+	}
+	return returnKernel;
+}
+
+float calculateLoGValue(int x, int y, float sigma)
+{
+	float kernelValue = -(1 / (sigma * sigma * sigma * sigma * PI_KG)) * (1 - (x * x + y * y) / (2 * sigma * sigma)) * (exp(-(x * x + y * y) / (2 * sigma * sigma)));
+	kernelValue = roundLoGValue(kernelValue, sigma);
+
+	return kernelValue;
+}
+
+float roundLoGValue(float x, float sigma) {
+
+	float val = x * (-40 / -(1 / (sigma * sigma * sigma * sigma * PI_KG)) * (1 - (0 * 0 + 0 * 0) / (2 * sigma * sigma)));
+
+	return val;
+}
+
 
