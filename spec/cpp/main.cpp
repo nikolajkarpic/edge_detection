@@ -11,58 +11,32 @@ using namespace std;
 
 
 
-int main() { 
+int main(int argc, char* argv[]) { 
     
+    if (argc < 2){
+        cout<< "Program wasn't called properly.\n To run it path to the target image must be passed as an argument.\n Example: ./output /home/user/g3-2021/data/Lenna.png" << endl;
+        return 0;
+    }
+
     
-    vector<vector<float>> LOGk = { {0,1,1,2,2,2,1,1,0},
-                                    {1,2,4,5,5,5,3,2,1},
-                                    {1,4,5,3,0,3,5,4,1},
-                                    {2,5,3,-12,-24,-12,3,5,2},
-                                    {2,5,0,-24,-40,-24,0,5,2},
-                                    {2,5,3,-12,-24,-12,3,5,2},
-                                    {1,4,5,3,0,3,5,4,1},
-                                    {1,2,4,5,5,5,3,2,1},
-                                    {0,1,1,2,2,2,1,1,0}};
+    string path = argv[1];
 
-    vector<vector<float>> LOGk1 = { {-1,-1,-1},
-                                    {-1,8,-1},
-                                    {-1,-1,-1} };
-
-    string path = "C:\\FTN\\8_osmi_semestar\\Edge_detection\\Edge_detection_cpp\\data\\Lenna.png";
+    string path1 = "/home/donnico/g3-2021/data/Lenna.png";
     image2D temp;
 
 
 
-    temp = loadImage(path);
+    temp = loadImage(path); //loading an image
 
-    temp = grayScale(temp);
-
-    kernel2D LoGKernel = createKernelLoG(10, 2.7);
-    kernel2D kernelGauss = createKernelGauss(10, 2.7);
-
-    kernel2D  LoG2 = createKernelLoGDescrete(9, 1.4);
-
-    image2D edge = convolution2D(LoG2, temp);
-    //edge = convolution2D(LoGKernel, temp);
-
-    for (int i = 0; i < LoGKernel.size(); i++) {
-        for (int j = 0; j < LoGKernel[0].size(); j++) {
-            cout << LoG2[i][j] << endl;
-        }
-    }
-
-    //cout << temp[1][1].blue << endl;
-
-    edge = zeroCrossingTest(edge);
-    showImage(path, edge);
+    temp = grayScale(temp); //grayscaling an image
 
 
+    kernel2D  LoG = createKernelLoGDescrete(9, 1.4); // genererating LoG kernel
 
-    //cout << temp.at(2).blue << endl;
+    image2D edge = convolution2D(LoG, temp); // convolving grayscaled image with LoG kernel
 
-    //imshow("Image", img); 
-    //imshow("ImageGray", imgGray);
-    waitKey(0);
+    edge = zeroCrossingTest(edge); // doing zerocrossing test
+    showImage(path, edge); //shows image
 
     return 0;
 }

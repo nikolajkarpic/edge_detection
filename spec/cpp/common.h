@@ -8,7 +8,7 @@
 #include <vector>
 
 
-// stcurt that holds red green blue values of a pixel.
+//struct that holds red green blue values of a pixel.
 //opencv uses blue green red convetion (BGR)
 struct pixel
 {

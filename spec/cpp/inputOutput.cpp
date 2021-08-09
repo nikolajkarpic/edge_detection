@@ -1,8 +1,7 @@
 #include"inputOutput.h"
-#include<string>
+#include <string>
 
-image2D loadImage(string path)
-{
+image2D loadImage(string path){
 	Mat img = imread(path);
     int width = img.cols; //gets width of an image
     int height = img.rows;  //gets height of an image
@@ -29,7 +28,7 @@ void showImage(string path, image2D source) {
     int width = source[0].size();
     int height = source.size();
     string newPath = path.replace(path.find("."), 4, "Edge.png");
-    //string newPath = "C:\\FTN\\8_osmi_semestar\\Edge_detection\\Edge_detection_cpp\\data\\LennaEdge.png"; //temporary fix, needs to save at any path... Add through arguments.
+    //temporary fix, needs to save at any path... Add through arguments.
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             img.ptr<Vec3b>(i)[j].val[0] = (uchar)source[i][j].blue;
@@ -37,7 +36,6 @@ void showImage(string path, image2D source) {
             img.ptr<Vec3b>(i)[j].val[2] = (uchar)source[i][j].red;
         }
     }
-    //cout << "lol" << endl;
     imwrite(newPath, img);
     imshow("image", img);
     waitKey(0);
