@@ -31,11 +31,7 @@ int main(int argc, char* argv[]) {
     temp = grayScale(temp); //grayscaling an image
 
 
-<<<<<<< HEAD
-    kernel2D  LoG = createKernelLoGDescrete(9, 1.4); // genererating LoG kernel
-=======
     kernel2D  LoG = createKernelLoGDescrete(KERNEL_SIZE, 1.4); // genererating LoG kernel
->>>>>>> b51a75d (Added padding to the input images)
 
     image2D edge = convolution2D(LoG, temp); // convolving grayscaled image with LoG kernel
 

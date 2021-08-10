@@ -1,13 +1,10 @@
 #include"inputOutput.h"
 #include <string>
 
-<<<<<<< HEAD
-=======
 using namespace cv;
 using namespace std;
 
 
->>>>>>> b51a75d (Added padding to the input images)
 image2D loadImage(string path){
 	Mat img = imread(path);
     Mat paddedImage;
