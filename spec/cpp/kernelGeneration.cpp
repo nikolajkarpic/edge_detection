@@ -1,5 +1,8 @@
 #include "kernelGeneration.h"
 
+using namespace cv;
+using namespace std;
+
 kernel2D createKernelLoG(int size, float sigma)
 {
 	kernel2D kernelLoG;

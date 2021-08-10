@@ -1,10 +1,21 @@
 #include"inputOutput.h"
 #include <string>
 
+<<<<<<< HEAD
+=======
+using namespace cv;
+using namespace std;
+
+
+>>>>>>> b51a75d (Added padding to the input images)
 image2D loadImage(string path){
 	Mat img = imread(path);
-    int width = img.cols; //gets width of an image
-    int height = img.rows;  //gets height of an image
+    Mat paddedImage;
+
+    copyMakeBorder(img, paddedImage, 6, 5, 5, 6, BORDER_REPLICATE, (0, 0, 0)); //added zero padding to the bottom and left edge
+
+    int width = paddedImage.cols; //gets width of an image
+    int height = paddedImage.rows;  //gets height of an image
     
     
     pixel temp; //temp var
@@ -14,9 +25,9 @@ image2D loadImage(string path){
     for (int i = 0; i < height; i++) { //loops through the image
         image.push_back(pixelArrayTemp);
         for (int j = 0; j < width; j++) {
-            temp.blue = (int)img.at<Vec3b>(i, j).val[0]; // this copys value of blue 
-            temp.green = (int)img.at<Vec3b>(i, j).val[1]; // this copys value of green
-            temp.red = (int)img.at<Vec3b>(i, j).val[2]; // this copys value of red 
+            temp.blue = (int)paddedImage.at<Vec3b>(i, j).val[0]; // this copys value of blue 
+            temp.green = (int)paddedImage.at<Vec3b>(i, j).val[1]; // this copys value of green
+            temp.red = (int)paddedImage.at<Vec3b>(i, j).val[2]; // this copys value of red 
             image[i].push_back(temp); //adds a pixel in jth positon to ith row
         }
     }

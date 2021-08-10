@@ -3,13 +3,11 @@
 
 #include "common.h"
 
-using namespace cv;
-using namespace std;
 
 
-image2D loadImage(string path);
+image2D loadImage(std::string path);
 
-void showImage(string path, image2D source);
+void showImage(std::string path, image2D source);
 
 
 

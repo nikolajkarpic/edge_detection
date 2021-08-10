@@ -1,5 +1,12 @@
 #include "imageProccesing.h"
 
+<<<<<<< HEAD
+=======
+using namespace cv;
+using namespace std;
+
+
+>>>>>>> b51a75d (Added padding to the input images)
 image2D convolution2D(kernel2D kernel, image2D source)
 {
 	int imageWidth = source[0].size();
