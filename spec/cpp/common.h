@@ -7,6 +7,7 @@
 #include <iostream> 
 #include <vector>
 
+#define KERNEL_SIZE 9
 
 //struct that holds red green blue values of a pixel.
 //opencv uses blue green red convetion (BGR)

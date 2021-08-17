@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -std=c++11 `pkg-config --cflags --libs opencv`
+CFLAGS = -std=c++11 `pkg-config --cflags --libs opencv4`
 .DEFAULT_GOAL := output
 
 .PHONY: help clean

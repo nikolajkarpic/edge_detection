@@ -7,12 +7,10 @@
 #define GREEN_VALUE 0.5870
 #define BLUE_VALUE 0.1140
 
-
-using namespace cv;
-using namespace std;
-
 image2D grayScale(image2D source);
+
 image2D convolution2D(kernel2D kernel, image2D source);
+
 image2D zeroCrossingTest(image2D source);
 
 
