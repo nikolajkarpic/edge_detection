@@ -8,12 +8,12 @@
 #define BLUE_VALUE 0.1140
 
 image2D grayScale(image2D source);
-SCimage2D SCgrayScale(SCimage2D source);
+SCimage2D SCgrayScale(SCimage2D source, int BIT_WIDTH_PASS);
 
 image2D convolution2D(kernel2D kernel, image2D source);
-SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source);
+SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PASS);
 
 image2D zeroCrossingTest(image2D source);
 SCimage2D SCzeroCrossingTest(SCimage2D source);
 
-#endif IMAGEPROCCESING_H_INCLUDED
+#endif //IMAGEPROCCESING_H_INCLUDED

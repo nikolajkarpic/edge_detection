@@ -48,7 +48,7 @@ image2D convolution2D(kernel2D kernel, image2D source)
 	return imageResult;
 }
 
-SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source)
+SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PASS)
 {
 	int imageWidth = source[0].size();
 	int imageHeight = source.size();
@@ -59,11 +59,11 @@ SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source)
 	SCpixel tempPixel;
 	SCimage1D tempPixelArray;
 	SCimage2D imageResult;
-	SC_float_type sum(BIT_WIDTH, BIT_FLOAT_POINT);
+	SC_float_type sum(BIT_WIDTH_PASS, BIT_FLOAT_POINT);
 	sum = 0;
-	SC_float_type sumMax(BIT_WIDTH, BIT_FLOAT_POINT);
+	SC_float_type sumMax(BIT_WIDTH_PASS, BIT_FLOAT_POINT);
 	sumMax = 0;
-	SC_float_type sumMin(BIT_WIDTH, BIT_FLOAT_POINT);
+	SC_float_type sumMin(BIT_WIDTH_PASS, BIT_FLOAT_POINT);
 	sumMin = 0;
 
 	for (int i = 0; i < imageHeight - kernelHeight + 1; i++) {
@@ -125,14 +125,14 @@ image2D grayScale(image2D source)
 	return tempImage; //returns the grayscale image
 }
 
-SCimage2D SCgrayScale(SCimage2D source)
+SCimage2D SCgrayScale(SCimage2D source, int BIT_WIDTH_PASS)
 {
 	int width = source[0].size(); //gets widht of an image for loops
 	int height = source.size();		//gets height of an image for loops
 	
 	
 	// temporary values 
-	SC_float_type grayValue;
+	SC_float_type grayValue(BIT_WIDTH_PASS, 17);
 	SCimage2D tempImage;
 	SCimage1D tempPixelArray;
 	SCpixel tempPixel;

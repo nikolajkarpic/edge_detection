@@ -76,7 +76,7 @@ void showImage(string path, image2D source) {
     destroyWindow("image");
 }
 
-void SCshowImage(string path, SCimage2D source) {
+void SCshowImage(string path, string pathToSave, SCimage2D source) {
     Mat img = imread(path);
     int width_img = img.rows;
     int height_img = img.cols;
@@ -94,8 +94,8 @@ void SCshowImage(string path, SCimage2D source) {
         }
     }
     
-    imwrite(newPath, img);
-    imshow("image", img);
-    waitKey(0);
-    destroyWindow("image");
+    imwrite(pathToSave, img);
+    //imshow("image", img);
+    //waitKey(0);
+    //destroyWindow("image");
 }

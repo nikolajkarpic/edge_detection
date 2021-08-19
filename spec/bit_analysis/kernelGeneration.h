@@ -21,11 +21,11 @@ float calculateLoGValue(int x, int y, float sigma);
 
 float roundLoGValue(float x, float sigma);
 
-SCkernel2D SCcreateKernelLoGDescrete(SC_int_small_type size, SC_float_type sigma);
+SCkernel2D SCcreateKernelLoGDescrete(SC_int_small_type size, SC_float_type sigma, int BIT_WIDTH_PASS);
 
-SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_float_type sigma);
+SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_float_type sigma, int BIT_WIDTH_PASS);
 
-SC_float_type SCroundLoGValue(SC_float_type x, SC_float_type sigma);
+SC_float_type SCroundLoGValue(SC_float_type x, SC_float_type sigma, int BIT_WIDTH_PASS);
 
 
-#endif KERNELGENERATION_H_INCLUDED
+#endif //KERNELGENERATION_H_INCLUDED

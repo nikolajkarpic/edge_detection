@@ -10,7 +10,7 @@
 #include <vector>
 
 #define KERNEL_SIZE 9
-#define BIT_WIDTH 18
+#define BIT_WIDTH 27
 #define BIT_FLOAT_POINT 17
 
 

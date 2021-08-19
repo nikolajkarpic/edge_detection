@@ -10,7 +10,7 @@ SCimage2D SCloadImage(std::string path);
 
 void showImage(std::string path, image2D source);
 
-void SCshowImage(std::string path, SCimage2D source);
+void SCshowImage(std::string path, std::string pathToSave, SCimage2D source);
 
 
-#endif INPUTOUTPUT_H_INCLUDED
+#endif //INPUTOUTPUT_H_INCLUDED

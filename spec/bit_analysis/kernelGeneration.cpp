@@ -80,29 +80,29 @@ float roundLoGValue(float x, float sigma) {
 }
 
 
-SCkernel2D SCcreateKernelLoGDescrete(SC_int_small_type size, SC_float_type sigma)
+SCkernel2D SCcreateKernelLoGDescrete(SC_int_small_type size, SC_float_type sigma, int BIT_WIDTH_PASS)
 {
 	//kernel2D returnKernelTemp;
 	SCkernel2D returnKernel;
 	//kernel1D tempTemp;
 	SCkernel1D temp;
-	SC_float_type kernelValue(BIT_WIDTH,BIT_FLOAT_POINT);
+	SC_float_type kernelValue(BIT_WIDTH_PASS,BIT_FLOAT_POINT);
 
 	for (int i = 0; i < size + 1; i++) {
 		returnKernel.push_back(temp);
 		for (int j = 0; j < size + 1; j++) {
 			kernelValue = calculateLoGValue((i - (size - 1) / 2), (j - (size - 1) / 2), sigma);
 			//kernelValue = (int)(kernelValue * 1000.0) /1000.0;
-			cout << kernelValue << endl;
+			//cout << kernelValue << endl;
 			returnKernel[i].push_back(kernelValue);
 		}
 	}
 	return returnKernel;
 }
 
-SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_float_type sigma)
+SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_float_type sigma, int BIT_WIDTH_PASS)
 {
-	SC_float_type kernelValue(BIT_WIDTH,BIT_FLOAT_POINT);
+	SC_float_type kernelValue(BIT_WIDTH_PASS,BIT_FLOAT_POINT);
 	kernelValue = -(1 / (sigma * sigma * sigma * sigma * PI_KG)) * (1 - (x * x + y * y) / (2 * sigma * sigma)) * (exp(-(x * x + y * y) / (2 * sigma * sigma)));
 	kernelValue = roundLoGValue(kernelValue, sigma);
 	//kernelValue = (int)(kernelValue * 1000.0) / 1000.0;
@@ -110,9 +110,9 @@ SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_f
 	return kernelValue;
 }
 
-SC_float_type SCroundLoGValue(SC_float_type x, SC_float_type sigma) {
+SC_float_type SCroundLoGValue(SC_float_type x, SC_float_type sigma, int BIT_WIDTH_PASS) {
 
-	SC_float_type val(BIT_WIDTH, BIT_FLOAT_POINT);
+	SC_float_type val(BIT_WIDTH_PASS, BIT_FLOAT_POINT);
 	val = x * (-40 / -(1 / (sigma * sigma * sigma * sigma * PI_KG)) * (1 - (0 * 0 + 0 * 0) / (2 * sigma * sigma)));
 	//cout << "Rounded value: "<< val << endl;
 	//val = (int)(val * 1000.0) / 1000.0;
