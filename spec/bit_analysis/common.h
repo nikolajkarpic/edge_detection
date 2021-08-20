@@ -8,6 +8,7 @@
 #include <opencv2/imgproc.hpp> 
 #include <iostream> 
 #include <vector>
+#include <fstream>
 
 #define KERNEL_SIZE 9
 #define BIT_WIDTH 27

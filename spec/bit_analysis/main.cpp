@@ -34,7 +34,27 @@ int sc_main(int argc, char* argv[]) {
     string numToStringOuter;
     int i = 18;
     int f = 1;
+
+    int counter = 0;//num of wrong bits
+    float Image_size = 0;//full img sise
+    float fault = 0;//precentile error
+
+    
+    //creating a file for storing info about the num of different pixels
+    fstream results_txt;
+    results_txt.open("results.txt",ios::out);
+
     while (f < 7){
+
+        //making a perfect image
+        temp = loadImage(pathPass);
+        temp = grayScale(temp);
+        temp = convolution2D(LoG, temp);
+        temp = zeroCrossingTest(temp);
+        
+        showImage(pathPass,temp);
+        Image_size = temp[0].size() * temp.size();
+
         while(i < 27) {
             SC_float_type SCsigma(i, BIT_FLOAT_POINT);
             SCsigma = 1.4;
@@ -46,6 +66,11 @@ int sc_main(int argc, char* argv[]) {
             SCArray2D = SCgrayScale(SCArray2D, i);
             SCArray2D = SCconvolution2D(SCkernel2Dtemp, SCArray2D, i);
             SCArray2D = SCzeroCrossingTest(SCArray2D);
+
+            //calculating the deviation in percentiles and writting in file
+            counter = comparePixels(temp, SCArray2D);
+            fault = ( (counter * 1.0) / Image_size) * 100;
+            results_txt<<"image: "<< f <<"    num of bits: "<< i <<"   deviation: "<< fault <<'%'<<endl;
             
             pathTemp = pathPass;
             numToStringIner = to_string(f) +"_"+ to_string(i) + "bit_" + "Edge.png";
@@ -55,13 +80,17 @@ int sc_main(int argc, char* argv[]) {
             SCshowImage(pathPass, pathTemp, SCArray2D);
             i = i + 2; 
 
+            
         }
-        
+        results_txt<<endl;
+
         pathPass = pathPass.replace(pathPass.find(to_string(f)), 5, to_string(f+1)+".png");
         cout<<pathPass<<endl;
         f ++;
         i = 18;
+
     }
+    results_txt.close();
     
     return 0;
 }

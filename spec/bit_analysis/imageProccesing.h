@@ -16,4 +16,6 @@ SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PAS
 image2D zeroCrossingTest(image2D source);
 SCimage2D SCzeroCrossingTest(SCimage2D source);
 
+int comparePixels(image2D temp, SCimage2D SCtemp);
+
 #endif //IMAGEPROCCESING_H_INCLUDED
