@@ -22,4 +22,4 @@ float calculateLoGValue(int x, int y, float sigma);
 
 float roundLoGValue(float x, float sigma);
 
-#endif KERNELGENERATION_H_INCLUDED
+#endif //KERNELGENERATION_H_INCLUDED

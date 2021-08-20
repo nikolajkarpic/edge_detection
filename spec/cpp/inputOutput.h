@@ -12,4 +12,4 @@ void showImage(std::string path, image2D source);
 
 
 
-#endif INPUTOUTPUT_H_INCLUDED
+#endif //INPUTOUTPUT_H_INCLUDED
