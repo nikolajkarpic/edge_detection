@@ -71,9 +71,9 @@ void showImage(string path, image2D source) {
         }
     }
     imwrite(newPath, img);
-    imshow("image", img);
-    waitKey(0);
-    destroyWindow("image");
+    //imshow("image", img);
+    //waitKey(0);
+    //destroyWindow("image");
 }
 
 void SCshowImage(string path, string pathToSave, SCimage2D source) {

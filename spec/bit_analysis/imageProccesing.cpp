@@ -43,8 +43,8 @@ image2D convolution2D(kernel2D kernel, image2D source)
 			imageResult[i].push_back(tempPixel);
 		}
 	}
-	cout << "max je : "<< sumMax <<endl;
-	cout << "min je : "<< sumMin<< endl;
+	//cout << "max je : "<< sumMax <<endl;
+	//cout << "min je : "<< sumMin<< endl;
 	return imageResult;
 }
 
@@ -91,8 +91,8 @@ SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PAS
 			imageResult[i].push_back(tempPixel);
 		}
 	}
-	cout << "max je : "<< sumMax <<endl;
-	cout << "min je : "<< sumMin<< endl;
+	//cout << "max je : "<< sumMax <<endl;
+	//cout << "min je : "<< sumMin<< endl;
 	return imageResult;
 }
 
@@ -245,18 +245,4 @@ SCimage2D SCzeroCrossingTest(SCimage2D source)
 }
 
 
-//returns the nuber of different pixels
-int comparePixels(image2D temp, SCimage2D SCtemp){
-	int counter = 0;
 
-	int Width = temp[0].size();
-	int Height = temp.size();
-
-	for (int i = 0; i < Height; i++) {
-		for (int j = 0; j < Width; j++) {
-			if(temp[i][j].blue != SCtemp[i][j].blue)
-				counter++;
-		}
-	}
-	return counter;
-}

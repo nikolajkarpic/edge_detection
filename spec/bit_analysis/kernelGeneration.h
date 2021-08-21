@@ -28,4 +28,5 @@ SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_f
 SC_float_type SCroundLoGValue(SC_float_type x, SC_float_type sigma, int BIT_WIDTH_PASS);
 
 
+
 #endif //KERNELGENERATION_H_INCLUDED
