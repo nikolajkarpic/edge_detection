@@ -38,15 +38,6 @@ def convolution(image, kernel, string): # the function takes in three arguments.
 
 
 
-# def LoG(kernel_x, kernel_y, sigma): # fucntion takes in X and Y dimesions of a desired matrix, while sigma is a parameter for the formula of Laplacian
-#     kernel = np.ones([kernel_x, kernel_y]) # this makes an initial matrix of desired dimesions filled with ones
-#     for x in range(kernel_x): #these loops iterate through the matrix
-#         for y in range(kernel_y):
-#             kernel[x][y] = -(1/(sigma**4*np.pi))*(x**2 + y**2 - 2*sigma**2) * (math.e)**(-(x**2+y**2)/(2*sigma**2))  # Laplacian formula, it takes the second derivative of the image
-#             #kernel[x][y] =    
-#     return kernel
-
-
 def gaus(kernel_x, kernel_y, sigma): # fucntion takes in X and Y dimesions of a desired matrix, while sigma is a parameter for the formula of Gassuian
     kernel = np.ones([kernel_x, kernel_y]) # this makes an initial matrix of desired dimesions filled with ones
     for x in range(kernel_x): #these loops iterate through the matrix
@@ -80,14 +71,16 @@ def z_c_test(l_o_g_image, string):  # the function takes in an image and a strin
                     z_c_image[i, j] = 1
                 if (string == "image"):# this makes the image of edges, where pixels take the value of 255(BLACK) in each chanel [RED GREEN BLUE]
                     for k in range(3): #iterates thgouh each chanel
-                        z_c_image[i, j][k] = 255
-
+                        z_c_image[i-1, j-1][k] = 0
+            else:
+                for k in range(3): #iterates thgouh each chanel
+                        z_c_image[i-1, j-1][k] = 255
     return z_c_image
 
 ## Added for debbuging...ignore
 def LoG(sigma, x, y):
-    laplace = -1/(np.pi*sigma**4)*(1-(x**2+y**2)/(2*sigma**2))*np.exp(-(x**2+y**2)/(2*sigma**2)) #Laplacian of gaussian function for kernel 
-    laplace = laplace * (-40/(-1/(np.pi*sigma**4)*(1-(0**2+0**2)/(2*sigma**2)))) #normalizing value 
+    laplace = -(1 / (np.pi * sigma**4)) * (1 - (x**2+y**2) / (2*sigma**2)) * np.exp(-(x**2 + y**2) / (2*sigma**2)) #Laplacian of gaussian function for kernel 
+    laplace = laplace * (-40 / (-1 / (np.pi * sigma**4) * (1 - (0**2 + 0**2) / (2*sigma**2)))) #normalizing value 
     return laplace
 
 def LoG_discrete(sigma, n):
@@ -98,40 +91,79 @@ def LoG_discrete(sigma, n):
     return kernel
 
 
-def run():
-    if len(sys.argv) != 3:
+
+def compare(imPy, imC, stringCoutner):
+    counter = 0
+    val1 = 0
+    val2 = 0
+    imsize = imC.shape[0]*imC.shape[1]
+    for i in range(imC.shape[0]):
+        for j in range(imC.shape[1]):
+            if(imPy[i][j][0] != imC[i][j][0]):
+                counter = counter + 1
+    faultcounter = (counter/ imsize)*100.0
+    
+    faultString = "Image:" + str(stringCoutner)+ "   Deviation: " +str(faultcounter)
+    
+    print(faultcounter)
+
+    return faultString
+
+
+def loopThrough():
+    if len(sys.argv) != 2:
         print("Script wasn't run properly. \n The script takes two argumets, the path to the image and path to the output image with name.\n Example : py .\edge_detection.py C:\FTN\8_osmi_semestar\g3-2021\data\Lenna.png C:\FTN\8_osmi_semestar\g3-2021\data\Lenna_edge.bmp")
         exit()
     else:
         in_path =  sys.argv[1]
-        out_path = sys.argv[2]
+        #out_path = sys.argv[2]
+    c_in_path = in_path.replace("input1.png", "input1Edge.png")
+    out_path = in_path.replace("input1.png", "input1pyEdge.png")
+    faultStringArray = []
+    for i in range(1,7):
+        stringEnd = "input" + str(i+1) +".png"
+        stringEndOut = "input" + str(i+1) + "pyEdge.png"
+        stringEndCppIn = "input" + str(i+1) + "Edge.png"
+        print(in_path)
+        print(out_path)
+        print(c_in_path)
+        imC = cv2.imread(c_in_path)
+        
+        run(in_path, out_path)
+        edge = cv2.imread(out_path)
+        faultString = compare(edge, imC, i)
+        faultStringArray.append(faultString)
+        in_path = in_path.replace("input" + str(i) +".png", stringEnd)
+        out_path = out_path.replace("input" + str(i) + "pyEdge.png", stringEndOut)
+        c_in_path = c_in_path.replace("input" + str(i) + "Edge.png", stringEndCppIn)
+    with open('CppPythonDeviation.txt', 'w') as f:
+        for item in faultStringArray:
+            f.write("%s\n" % item)
 
-
-    im = cv2.imread(in_path)
+def run(in_path, out_path):
+    imLoad = cv2.imread(in_path)
+    im = cv2.copyMakeBorder(imLoad,  6, 5, 5, 6, cv2.BORDER_REPLICATE)
     print ("Image loaded")
-    #cv2.imshow('rgb', im)  # shows the image in a window
     sigma = 1.4 
     lap_ker = LoG_discrete(sigma, 9)  # makes Laplacian matrix
-    gaus_ker = gaus(10, 10, 2.7)  # makes Gaussian matrix
     print ("Matrices done")
     gray = rgb2gray(im)  # Grayscales the image
     print ("Grayscale done")
-    #cv2.imshow('grayscale', gray)  # shows the image in a window
-    #blur_im = convolution(gray, gaus_ker, 'blur') #convolution of grayscale image and Gaussian kernel to get blured image
-    print ("Blur done")
-    #cv2.imshow('blur', blur_im) #shows the image in a window
     log_edge = convolution(gray, lap_ker, 'edge') # Convolution of grayscale image and the Laplacian kernel to get the second derivative
     print ("Convolution with Laplacian matrix done")
     edge = z_c_test(log_edge, "image") #Does zero crossing check 
     print ("Zero crossing chech done")
-    cv2.imshow('edge', edge)  # shows the image in a window
+    #cv2.imshow('edge', edge)  # shows the image in a window
+    #faultStringArray = []
+    
 
-    print("Press 0 to end script")
-    cv2.waitKey(0)    # Waits for 0 or for all the windows to be closed
-    cv2.destroyAllWindows  # Destroys all image windows
+
+    #print("Press 0 to end script")
+    #cv2.waitKey(0)    # Waits for 0 or for all the windows to be closed
+    #cv2.destroyAllWindows  # Destroys all image windows
     cv2.imwrite(out_path, edge)
     print("Saved image to the folder")
 
-run()
-
+#run()
+loopThrough()
 print ("end")
