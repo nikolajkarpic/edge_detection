@@ -12,13 +12,13 @@ output: main.o imageProccesing.o inputOutput.o kernelGeneration.o
 main.o: main.cpp common.h imageProccesing.h kernelGeneration.h inputOutput.h
 	@$(CC) -c main.cpp $(CFLAGS)
 	@echo "Recompiling main.cpp\n"
-imageProccesing.o: imageProccesing.cpp imageProccesing.h
+imageProccesing.o: imageProccesing.cpp imageProccesing.h common.h
 	@$(CC) -c imageProccesing.cpp $(CFLAGS)
 	@echo "Recompiling imageProccesing.cpp\n"
-inputOutput.o: inputOutput.cpp inputOutput.h
+inputOutput.o: inputOutput.cpp inputOutput.h common.h
 	@$(CC) -c inputOutput.cpp $(CFLAGS)
 	@echo "Recompiling inputOutput.cpp\n"
-kernelGeneration.o: kernelGeneration.cpp kernelGeneration.h
+kernelGeneration.o: kernelGeneration.cpp kernelGeneration.h common.h
 	@$(CC) -c kernelGeneration.cpp $(CFLAGS)
 	@echo "Recompiling kernelGeneration.cpp\n"
 run: 
