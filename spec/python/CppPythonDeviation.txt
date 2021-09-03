@@ -1,0 +1,6 @@
+Image:1   Deviation: 5.78626010286554
+Image:2   Deviation: 4.8797607421875
+Image:3   Deviation: 2.3213883254451204
+Image:4   Deviation: 8.609669357939254
+Image:5   Deviation: 2.7127873155157722
+Image:6   Deviation: 5.6418762261458895
