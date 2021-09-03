@@ -15,7 +15,7 @@ image2D convolution2D(kernel2D kernel, image2D source)
 	pixel tempPixel;
 	image1D tempPixelArray;
 	image2D imageResult;
-	float sum = 0;
+	long double sum = 0.0;
 
 	for (int i = 0; i < imageHeight - kernelHeight + 1; i++) {
 		imageResult.push_back(tempPixelArray);
@@ -28,9 +28,10 @@ image2D convolution2D(kernel2D kernel, image2D source)
 				}
 				//cout << sum << endl;
 			}
-			tempPixel.blue = (int)sum;
-			tempPixel.red = (int)sum;
-			tempPixel.green = (int)sum;
+			//tempPixel.blue = (int)sum;
+			//tempPixel.red = (int)sum;
+			//tempPixel.green = (int)sum;
+			tempPixel.convResult = sum;
 			imageResult[i].push_back(tempPixel);
 		}
 	}
@@ -45,7 +46,7 @@ image2D grayScale(image2D source)
 	
 	
 	// temporary values 
-	float grayValue;
+	long double grayValue;
 	image2D tempImage;
 	image1D tempPixelArray;
 	pixel tempPixel;
@@ -88,9 +89,9 @@ image2D zeroCrossingTest(image2D source)
 			for (int k = -1; k < 2; k++) {
 				for (int l = -1; l < 2; l++) {
 					if (k != 0 && l != 0) {
-						if (source[i + k][j + l].blue < 0) {
+						if (source[i + k][j + l].convResult < 0) {
 							negCouter++;
-						}else if(source[i + k][j + l].blue > 0) {
+						}else if(source[i + k][j + l].convResult > 0) {
 							posCoutner++;
 						}
 					}

@@ -24,8 +24,6 @@ int main(int argc, char* argv[]) {
     string path1 = "/home/donnico/g3-2021/data/Lenna.png";
     image2D temp;
 
-
-
     temp = loadImage(path); //loading an image
 
     temp = grayScale(temp); //grayscaling an image

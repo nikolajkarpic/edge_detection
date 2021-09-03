@@ -9,7 +9,7 @@ image2D loadImage(string path){
 	Mat img = imread(path);
     Mat paddedImage;
 
-    copyMakeBorder(img, paddedImage, 6, 5, 5, 6, BORDER_REPLICATE, (0, 0, 0)); //added zero padding to the bottom and left edge
+    copyMakeBorder(img, paddedImage, 5, 5, 5, 5, BORDER_REPLICATE, (0, 0, 0)); //added zero padding to the bottom and left edge
 
     int width = paddedImage.cols; //gets width of an image
     int height = paddedImage.rows;  //gets height of an image

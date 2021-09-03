@@ -9,17 +9,17 @@
 
 
 
-typedef std::vector< std::vector <float> > kernel2D;
-typedef std::vector <float> kernel1D;
+typedef std::vector< std::vector <long double> > kernel2D;
+typedef std::vector <long double> kernel1D;
 
-kernel2D createKernelLoG(int size, float sigma);
+kernel2D createKernelLoG(int size, long double sigma);
 
-kernel2D createKernelGauss(int size, float sigma);
+kernel2D createKernelGauss(int size, long double sigma);
 
-kernel2D createKernelLoGDescrete(int size, float sigma);
+kernel2D createKernelLoGDescrete(int size, long double sigma);
 
-float calculateLoGValue(int x, int y, float sigma);
+long double calculateLoGValue(long double x, long double y, long double sigma);
 
-float roundLoGValue(float x, float sigma);
+long double roundLoGValue(long double x, long double sigma);
 
 #endif //KERNELGENERATION_H_INCLUDED

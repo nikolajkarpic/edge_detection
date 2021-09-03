@@ -6,6 +6,7 @@
 #include <opencv2/imgproc.hpp> 
 #include <iostream> 
 #include <vector>
+#include <fstream>
 
 #define KERNEL_SIZE 9
 
@@ -16,6 +17,7 @@ struct pixel
     int blue;
     int green;
     int red;
+    long double convResult;
 };
 
 typedef std::vector < std::vector < pixel > > image2D;// vector of vector of pixels, represents an image
