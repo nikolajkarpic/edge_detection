@@ -3,7 +3,7 @@
 
 
 
-#define PI_KG 3.14
+#define PI_KG 3.14159265358979323846
 #include"common.h"
 #include<cmath>
 

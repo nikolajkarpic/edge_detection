@@ -39,6 +39,17 @@ int sc_main(int argc, char* argv[]) {
     int i = 18;
     int f = 1;
 
+
+    fstream kernel_txt;
+    kernel_txt.open("kernel.txt",ios::out);
+
+    for (int p = 0; p < LoG[0].size(); p++){
+        for (int y = 0; y < LoG[0].size(); y++){
+            kernel_txt << "["<<p<<"]"<<" ["<<y<<"]"<<LoG[p][y]<<endl;
+        }
+    }
+
+
     int counter = 0;//num of wrong bits
     float Image_size = 0;//full img sise
     float fault = 0;//precentile error
@@ -51,6 +62,7 @@ int sc_main(int argc, char* argv[]) {
         //making a perfect image
         cout<<pathPass<<endl;
         temp = loadImage(pathPass);
+        //cout<< temp.size() <<endl<< temp[0].size()<<endl;
         temp = grayScale(temp);
         temp = convolution2D(LoG, temp);
         temp = zeroCrossingTest(temp);

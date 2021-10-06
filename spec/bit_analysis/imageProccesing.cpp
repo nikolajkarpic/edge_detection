@@ -35,6 +35,7 @@ image2D convolution2D(kernel2D kernel, image2D source)
 						sumMin = sum;
 					}
 				}
+				//cout << sum << endl;
 			}
 			tempPixel.blue = (int)sum;
 			tempPixel.red = (int)sum;
@@ -42,6 +43,9 @@ image2D convolution2D(kernel2D kernel, image2D source)
 			imageResult[i].push_back(tempPixel);
 		}
 	}
+	//cout<< imageResult.size() <<endl<< imageResult[0].size()<<endl;
+	//cout << "max je : "<< sumMax <<endl;
+	//cout << "min je : "<< sumMin<< endl;
 	return imageResult;
 }
 
@@ -70,6 +74,8 @@ SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PAS
 			for (int k = 0; k < kernelHeight; k++) {
 				for (int l = 0; l < kernelWidth; l++) {
 					sum = sum + (kernel[k][l] * source[i + k][j + l].red);
+					//sum = (int)(sum *100.0) / 100.0;
+					//cout << sum <<endl;
 					if (sum > sumMax){
 						sumMax = sum;
 					}
@@ -77,6 +83,7 @@ SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PAS
 						sumMin = sum;
 					}
 				}
+				//cout << sum << endl;
 			}
 			tempPixel.d = sum;
 			tempPixel.blue = (int)sum.to_float();
@@ -85,7 +92,8 @@ SCimage2D SCconvolution2D(SCkernel2D kernel, SCimage2D source, int BIT_WIDTH_PAS
 			imageResult[i].push_back(tempPixel);
 		}
 	}
-
+	//cout << "max je : "<< sumMax <<endl;
+	//cout << "min je : "<< sumMin<< endl;
 	return imageResult;
 }
 

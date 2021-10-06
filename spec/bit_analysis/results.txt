@@ -1,0 +1,2 @@
+image: 1    num of bits: 18     pixel deviation:     13.3954%
+image: 1    num of bits: 21     pixel deviation:     7.98942%
