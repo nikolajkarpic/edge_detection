@@ -1,0 +1,23 @@
+Treba odraditi:
+
+    Napraviti u notion projekat i tamo staviti sve beleske ovako preko txt je ruzno
+SW:
+1)  Prvo opet treba pogledati callgrind i videti koliki je odnos vremena konvolucije i ostalih fja
+2)  Zatim utvrditi sta ide u SW a sta u HW (za sada je ideja ucitavanje slike, padding i greyscale da se odradi u SW a samo 2Dconv da ide u IP)
+3)  treba poslati mejl profi i videti da l u SW mogu da se ubace neke biblioteke (OpenCV), 
+    ako ne onda moramo preko one skripte slika_U_Txt.py (nju treba jos doraditi da ispise u nekom formatu koji mi mozemo ucitati u C)
+
+//po potrebi dodavati sta sve treba da se odradi
+
+HW:
+1)  Treba odraditi vremensku analizu koliko treba za 3 mnozaca i sabirace vremena pa utvrditi frekvenciju.
+2)  Za HW sam mislio da imamo 3 mnozaca koji idu na sabirac, 
+    koji kasnije kada se odardi konv za taj blok od 9 piksela ordadi jedan if i svede vrednosti na (1 0 -1) jer zeroCrossing proverava samo znak.
+3)  Ustanoviti sirine magirtrala. 
+
+
+
+/***************************************************************************************************************************************************/
+                                                                        (da li nam treba neki cash? mozda za kermel za conv2D)
+mem(DRAM) -> piksel(3x8 bita) -> cpu (padding + grejskale?)(8 bita) -> IP(konvolucija [mnozac + sabirac (32 bita tj onih 26/7 bita) -> if (2 bita vrednost)]) ->
+-> mem(DRAM) 
