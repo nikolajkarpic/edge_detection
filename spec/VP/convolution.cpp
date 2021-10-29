@@ -83,7 +83,7 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 
 void conv::convolution()
 {
-	SC_float_type sum(10, 32)=0, sumMax=0, sumMin=0;  
+	SC_float_type sum(10, 32)=0;  
 	int padding = (KERNEL_SIZE - 1) / 2;
 
 	for (int i = padding; i < rows - padding; i++)
