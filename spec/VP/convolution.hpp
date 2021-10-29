@@ -1,5 +1,5 @@
-#ifndef HARDWARE_HPP_INCLUDED
-#define HARDWARE_HPP_INCLUDED
+#ifndef CONVOLUTION_HPP_INCLUDED
+#define CONVOLUTION_HPP_INCLUDED
 
 #include "common.hpp"
 #include <tlm>
@@ -31,4 +31,4 @@ protected:
 };
 
 
-#endif // HARDWARE_HPP_INCLUDED
+#endif  //CONVOLUTION_HPP_INCLUDED

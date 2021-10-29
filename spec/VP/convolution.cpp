@@ -9,6 +9,8 @@ using namespace sc_dt;
 using namespace std;
 using namespace tlm;
 
+vector< vector <SC_float_type> > conv_result;
+
 SC_HAS_PROCESS(conv);
 conv::conv(sc_module_name name):
 	sc_module(name),
@@ -20,6 +22,8 @@ conv::conv(sc_module_name name):
 
 }
 
+
+
 void conv::b_transport(pl_t& pl, sc_time& offset)
 {
 
@@ -27,16 +31,10 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 	uint64         addr = pl.get_address();
 	unsigned char *data = pl.get_data_ptr();
 	
-	vector<SC_float_type> kernel_vector; //kernel_vector za smestanje niza vrednosti kernela
 	SCkernel2D kernel;  //2D kernel vrednosti
 
-	vector <SC_pixel_value_type> img_vector; //niz vrednosti piksela 0-255
-	vector <vector <SC_pixel_value_type>> img //2D vrednosti piksela VRV TREBA U COMMON typedef
-
-	SC_int_big_type rows=0, columns=0; //broj redova i kolona
-	vector <SC_int_big_type> img_size; //vektor za smestanje img_size iz memorije tako da je prvi element broj redova a drugi kolona
-
-	int n=0; //brojac za inkrementovanje indeksa kernel i img vektora
+	SCimg2D img;
+	
 
 	switch(cmd)
 	{
@@ -44,38 +42,17 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 		{
 			switch(addr)
 			{
-				case IMG_SIZE:
-
-					img_size = *((vector<SC_float_type>*)data);
-					rows = img_size[0];
-					columns = img_size[1];			
-
+				case CONV_KERNEL:
+					kernel = *((SCkernel2d*)data);
+					pl . set_response_status ( TLM_OK_RESPONSE )
 					break;
 
-				case CONV_KERNEL_ARRAY:
-
-					kernel_vector = *((vector<SC_float_type>*)data);
-
-					for(int i = 0; i < KERNEL_SIZE; i++)
-				    		for(int j = 0; j < KERNEL_SIZE; j++)
-							kernel[i][j]=kernel_vector[n++];
-					n = 0;
-
-					break;
-
-				case IMG_ARRAY:
-
-					img_vector = *((vector<SC_float_type>*)data);
-					
-					for(int i = 0; i < columns+2; i++)
-				    		for(int j = 0; j < lines+2; j++)
-							img[i][j]=img_vector[n++];
-					n = 0;	
-					
+				case CONV_IMG:
+					img = *((SCimg2D*)data);
+					pl . set_response_status ( TLM_OK_RESPONSE )
 					break;
 
 				default:
-
 					pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
 					break;			
 
@@ -106,8 +83,7 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 
 void conv::convolution()
 {
-	vector<SC_float_type> conv_result; // vektor koji sadrzi rezultat konvolucije
-	SC_float_type sum(10, 32);  
+	SC_float_type sum(10, 32)=0, sumMax=0, sumMin=0;  
 	int padding = (KERNEL_SIZE - 1) / 2;
 
 	for (int i = padding; i < rows - padding; i++)
@@ -121,16 +97,16 @@ void conv::convolution()
 				{
 
 				sum = sum + (img[i-padding+k][j-padding+l]*kernel[k][l]);
-			
+
 				}
 			}
-			
-			//da li treba proveriti da li je rezultat veci od 255 ili manji od 0, s obzirom da se dobijaju realni brojevi
-			conv_result.push_back(sum);
-			
+			if(sum > 255)	
+				sum=255;
+			if(sum < 0)
+				sum=0;
+			conv_result[i].push_back(sum);
 		}
 	}
-
 
 }
 
