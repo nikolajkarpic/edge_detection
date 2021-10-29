@@ -14,7 +14,7 @@ rows = im.shape[1]
 
 with open("demo.txt" , "w") as text_file:
 
-    print(str(cols) + " " + str(rows), file=  text_file)
+    print(str(cols) + "\n" + str(rows), file=  text_file)
     for x in im:
 
 
