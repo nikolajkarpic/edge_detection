@@ -18,6 +18,8 @@ typedef sc_dt :: sc_uint <8> SC_pixel_value_type; // 0 255
 typedef sc_dt :: sc_int <2> SC_conv_out_t; // -1 0 1
 typedef std::vector < std::vector< SC_pixel_value_type > > SCimg2D 
 
+
+// types for calculating kernel
 typedef std::vector < SC_float_type > SCkernel1D;
 typedef std::vector < std::vector < SC_float_type> > SCkernel2D;
 
