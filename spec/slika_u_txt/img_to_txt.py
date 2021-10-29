@@ -1,24 +1,24 @@
+from os import lseek
 import numpy as np
-from cv2 import cv2
+import cv2
+import sys
 
 
 
-im = cv2.imread("C:\FTN\8_osmi_semestar\Edge_detection\Edge_detection_cpp\data\Lenna.png")
-fl = open('demo.txt', 'w')
-shape = im.shape
-print(shape)
-(rows, cols, temp) = im.shape
-red = 0
-green = 0
-blue = 0
-f = []
-for i in range(rows):
-    for j in range(cols): 
-        k = im[i, j]
-        [red, green, blue] = k
-        f.append(red)
-        f.append(green)
-        f.append(blue)
-print(f, file = fl)        
-fl.close()        
+im = cv2.imread(str(sys.argv[1]))
+im = cv2.copyMakeBorder(im,  5, 5, 5, 5, cv2.BORDER_REPLICATE)
+im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 
+cols = im.shape[0]
+rows = im.shape[1]
+
+with open("demo.txt" , "w") as text_file:
+
+    print(str(cols) + " " + str(rows), file=  text_file)
+    for x in im:
+
+
+        for pixel in x:
+            print(pixel, file = text_file, end = ' ')
+    
+    print("\n", file = text_file, end = '')
