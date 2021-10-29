@@ -1,5 +1,6 @@
 #include "convolution.hpp"
 #include "common.hpp"
+
 #include <tlm>
 #include <tlm_utils/simple_target_socket.h>
 #include <vector>
@@ -13,12 +14,12 @@ vector< vector <SC_float_type> > conv_result;
 
 SC_HAS_PROCESS(conv);
 conv::conv(sc_module_name name):
-	sc_module(name),
-	ic_tsoc("ic_tsoc"),
-	conv_isoc("conv_tsoc")
+	sc_module(name)
+	//ic_tsoc("ic_tsoc"),
+	//conv_isoc("conv_tsoc")
 {
 
-	ic_tsoc.register_b_transport(this, &conv::b_transport);
+	//ic_tsoc.register_b_transport(this, &conv::b_transport);
 
 }
 
@@ -43,13 +44,13 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 			switch(addr)
 			{
 				case CONV_KERNEL:
-					kernel = *((SCkernel2d*)data);
-					pl . set_response_status ( TLM_OK_RESPONSE )
+					kernel = *((SCkernel2D*)data);
+					pl.set_response_status ( TLM_OK_RESPONSE );
 					break;
 
 				case CONV_IMG:
 					img = *((SCimg2D*)data);
-					pl . set_response_status ( TLM_OK_RESPONSE )
+					pl.set_response_status ( TLM_OK_RESPONSE );
 					break;
 
 				default:
@@ -83,7 +84,12 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 
 void conv::convolution()
 {
-	SC_float_type sum(10, 32)=0;  
+	SC_float_type sum(10, 32);
+	int rows = 1;
+	int columns = 1;
+	int img[20][20];
+	int kernel[3][3];
+	//sum = 0;  
 	int padding = (KERNEL_SIZE - 1) / 2;
 
 	for (int i = padding; i < rows - padding; i++)

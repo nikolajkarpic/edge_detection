@@ -10,6 +10,8 @@ class cpu : public sc_core::sc_module
 
         cpu(sc_core::sc_module_name);
 
+        tlm_utils::simple_initiator_socket<cpu> int_isoc;
+        
     protected:
         int rows;
         int col;
@@ -20,7 +22,7 @@ class cpu : public sc_core::sc_module
         void process();
 
         void scanFromFileImSize(int *rows,int *cols);
-        void scanFromFileImage (*image);
+        void scanFromFileImage (SCimg2D *image);
 
         void writeImageToFile();
 
