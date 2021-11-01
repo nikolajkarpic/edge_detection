@@ -16,8 +16,15 @@ typedef sc_dt :: sc_fix_fast SC_float_type;
 //typedef sc_dt :: sc_uint <4> SC_int_small_type; 
 typedef sc_dt :: sc_uint <8> SC_pixel_value_type; // 0 255
 typedef sc_dt :: sc_int <2> SC_conv_out_t; // -1 0 1
+
+
+//types for making kernel 
+typedef std::vector < SC_pixel_value_type > SCimg1D;
 typedef std::vector < std::vector< SC_pixel_value_type > > SCimg2D;
 
+//types for loading image
+typedef std::vector < int > matrix1D;
+typedef std::vector < matrix1D > matrix2D;
 
 // types for calculating kernel
 typedef std::vector < SC_float_type > SCkernel1D;
