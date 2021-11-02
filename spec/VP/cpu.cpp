@@ -20,8 +20,6 @@ void cpu::scanFromFile(){
     int i = 0;
     int j = 0;
     int x;
-    //SC_pixel_value_type pixelValue;
-    
         while(inFile >> x){
             if (i == 0){
                 rows = x;

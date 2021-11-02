@@ -16,8 +16,6 @@
 #define SIGMA 1.4
 
 typedef sc_dt :: sc_fix_fast SC_float_type;
-//typedef sc_dt :: sc_uint <11> SC_int_big_type;
-//typedef sc_dt :: sc_uint <4> SC_int_small_type; 
 typedef sc_dt :: sc_uint <8> SC_pixel_value_type; // 0 255
 typedef sc_dt :: sc_int <2> SC_conv_out_t; // -1 0 1
 

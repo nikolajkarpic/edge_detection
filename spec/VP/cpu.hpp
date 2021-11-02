@@ -30,10 +30,7 @@ class cpu : public sc_core::sc_module
         void createKernelLoGDescrete();
 
 
-        // same size of height and widht them:
-        // int imgSize;
         void process();
-        // Input output:
         void scanFromFile(); // loads image from a text file into inputArray, and loads cols and rows.
         void writeImageToFile();
 
