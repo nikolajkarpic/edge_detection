@@ -7,9 +7,13 @@
 #include <vector>
 #include <fstream>
 
+
+#define PI_KG 3.14159265358979323846
 #define KERNEL_SIZE 9
 #define BIT_WIDTH_CONV_OUT 32 //27 conv out // SC_float_type sum(10, 32)
 #define BIT_WIDTH_KERNEL 16 // 17 kernel // SC_float_type kernel_val(7, 16)
+#define BIT_WIDTH_KERNEL_POINT 7
+#define SIGMA 1.4
 
 typedef sc_dt :: sc_fix_fast SC_float_type;
 //typedef sc_dt :: sc_uint <11> SC_int_big_type;
@@ -29,6 +33,8 @@ typedef std::vector < matrix1D > matrix2D;
 // types for calculating kernel
 typedef std::vector < SC_float_type > SCkernel1D;
 typedef std::vector < std::vector < SC_float_type> > SCkernel2D;
+typedef std::vector< std::vector <float> > kernel2D;
+typedef std::vector <float> kernel1D;
 
 
 #endif // COMMON_H_INCLUDED

@@ -3,6 +3,7 @@
 using namespace sc_core;
 using namespace sc_dt;
 using namespace std;
+
 SC_HAS_PROCESS(cpu);
 cpu::cpu(sc_module_name name):
 	sc_module(name)
@@ -15,7 +16,6 @@ cpu::cpu(sc_module_name name):
 void cpu::scanFromFile(){
     ifstream inFile;
     inFile.open("/home/donnico/edge_detection/data/input2.png");
-    FILE *fp;
     matrix1D inputArrayTmp;
     int i = 0;
     int j = 0;
@@ -41,52 +41,61 @@ void cpu::scanFromFile(){
             }
             j++;
         }
-        if (i <2){
+        if (i < 2){
             i++;
         }
 
-             if (i <2){
+             if (i < 2){
             i++;
             }
         
     }
 
     inFile.close();
-    cout <<"Loaded image from file."<< endl;
+    cout << "Loaded image from file." << endl;
 }
 
-void createKernel(){
 
-
-}
-
-SCkernel2D SCcreateKernelLoGDescrete(SC_int_small_type size, SC_float_type sigma, int BIT_WIDTH_PASS)
+void cpu::createKernelLoGDescrete()
 {
-	SCkernel2D returnKernel;
-	SCkernel1D temp;
-	SC_float_type kernelValue(BIT_WIDTH_PASS,BIT_FLOAT_POINT);
+	SCkernel1D tempKernel;
+    SC_float_type (BIT_WIDTH_KERNEL,BIT_WIDTH_KERNEL_POINT);
+	float kernelValue;
 
-	for (int i = 0; i < size; i++) {
-		returnKernel.push_back(temp);
-		for (int j = 0; j < size; j++) {
-			kernelValue = SCcalculateLoGValue((i - (size - 1) / 2), (j - (size - 1) / 2), sigma);
-			returnKernel[i].push_back(kernelValue);
+	for (int i = 0; i < KERNEL_SIZE; i++) {
+		kernel.push_back(tempKernel);
+		for (int j = 0; j < KERNEL_SIZE; j++) {
+			kernelValue = calculateLoGValue((i - (KERNEL_SIZE - 1) / 2), (j - (KERNEL_SIZE - 1) / 2));
+
+			kernel[i].push_back(kernelValue);
 		}
 	}
-	return returnKernel;
+    cout << "Kernel generated." << endl;
 }
 
-SC_float_type SCcalculateLoGValue(SC_int_small_type x, SC_int_small_type y, SC_float_type sigma, int BIT_WIDTH_PASS)
+float cpu::calculateLoGValue(int x, int y)
 {
-	SC_float_type kernelValue(BIT_WIDTH_PASS,BIT_FLOAT_POINT);
-	kernelValue = -(1 / (sigma * sigma * sigma * sigma * PI_KG)) * (1 - (x * x + y * y) / (2 * sigma * sigma)) * (exp(-(x * x + y * y) / (2 * sigma * sigma)));
-	kernelValue = SCroundLoGValue(kernelValue, sigma);
+	float kernelValue = -(1 / (SIGMA * SIGMA * SIGMA * SIGMA * PI_KG)) * (1 - (x * x + y * y) / (2 * SIGMA * SIGMA)) * (exp(-(x * x + y * y) / (2 * SIGMA * SIGMA)));
+	kernelValue = roundLoGValue(kernelValue);
 	return kernelValue;
 }
 
-SC_float_type SCroundLoGValue(SC_float_type x, SC_float_type sigma, int BIT_WIDTH_PASS) {
+float cpu::roundLoGValue(float x) {
 
-	SC_float_type val(BIT_WIDTH_PASS, BIT_FLOAT_POINT);
-	val = x * (-40 / -(1 / (sigma * sigma * sigma * sigma * PI_KG)) * (1 - (0 * 0 + 0 * 0) / (2 * sigma * sigma)));
+	float val = x * (-40 / -(1 / (SIGMA * SIGMA * SIGMA * SIGMA * PI_KG)) * (1 - (0 * 0 + 0 * 0) / (2 * SIGMA * SIGMA)));
 	return val;
+}
+
+void cpu::writeImageToFile(){
+
+    ofstream outFile;
+    outFile.open("/home/donnico/edge_detection/data/input2TXT.txt");
+    for (int l = 0; l < outputArray.size(); l ++){    
+        for (int k = 0; k < outputArray[0].size(); k++){
+            outFile << outputArray[l][k] << " ";
+        }
+        outFile << endl;
+    }
+    outFile.close();
+    cout << "Image written to txt file.";
 }

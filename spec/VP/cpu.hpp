@@ -12,24 +12,29 @@ class cpu : public sc_core::sc_module
 
         cpu(sc_core::sc_module_name);
 
-        tlm_utils::simple_initiator_socket<cpu> int_isoc;
-        tlm_utils::simple_initiator_socket<cpu> mem_isoc;
-        tlm_utils::simple_target_socket<conv> conv_tsoc;
+        tlm_utils::simple_initiator_socket<cpu> ic_isoc; //initiator socket for interconnect
+        tlm_utils::simple_initiator_socket<cpu> mem_isoc;//initiator socket for memory
+        tlm_utils::simple_target_socket<conv> conv_tsoc; // target socket for convolution
         
     protected:
         int rows;
         int cols;
 
+        matrix2D outputArray;
         matrix2D inputArray;
         SCkernel2D kernel;
         
+        //Kernel generation:
+        float calculateLoGValue(int x, int y);
+        float roundLoGValue(float x);
+        void createKernelLoGDescrete();
+
+
         // same size of height and widht them:
         // int imgSize;
         void process();
-
-        void scanFromFile();
-        //void scanFromFileImage (SCimg2D *image);
-        void createKernel();
+        // Input output:
+        void scanFromFile(); // loads image from a text file into inputArray, and loads cols and rows.
         void writeImageToFile();
 
 };
