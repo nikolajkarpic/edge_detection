@@ -5,6 +5,7 @@
 #include "cpu.hpp"
 #include "vp_address.hpp"
 #include "convolution.hpp"
+#include "memory.hpp"
 
 
 class vp:
@@ -16,8 +17,8 @@ public:
 protected:
     cpu pb;
     conv ip;
-    
-     
+    memory bram;
+         
 };
 
 #endif //_VP_HPP_

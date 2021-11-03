@@ -2,7 +2,7 @@
 
 int sc_main(int argc, char* argv[]) { 
 
-    vp uut("kurac");
+    vp uut("VirPlat");
 
     sc_start(2, sc_core::SC_SEC);
 

@@ -10,13 +10,14 @@ cpu::cpu(sc_module_name name):
 {
 
     SC_THREAD(CPU_process); // Is it thread tho?
-    SC_REPORT_INFO("CPU", "Platform is constructed");
+    SC_REPORT_INFO("CPU", "Platform is constructed.");
 }
 
 void cpu::scanFromFile(){
     ifstream inFile;
     inFile.open("/home/donnico/FTN/edge_detection/spec/VP/VPtest.txt");
-    matrix1D inputArrayTmp;
+    SCimg1D inputArrayTmp;
+    SC_pixel_value_type tempPixelValue;
     int i = 0;
     int j = 0;
     int x;
@@ -32,7 +33,8 @@ void cpu::scanFromFile(){
 
 
             if (i > 1){
-                inputArrayTmp.push_back(x);
+                tempPixelValue = x;
+                inputArrayTmp.push_back(tempPixelValue);
                 if (j == (cols - 1)){ // In file it will say number of rows and colums starting at 1 but cpp starts coutning from 0
                     j = 0;
                     inputArray.push_back(inputArrayTmp);
@@ -109,7 +111,7 @@ float cpu::roundLoGValue(float x) {
 
 void cpu::writeImageToFile(){
     //TESTING PUROPES INGMORE
-    outputArray = inputArray;
+    //outputArray = inputArray;
     //END TESTING
     ofstream outFile;
     outFile.open("/home/donnico/FTN/edge_detection/spec/VP/outFile.txt");
@@ -186,10 +188,11 @@ void cpu::CPU_process(){
 	pl.set_data_ptr((unsigned char*)&kernel);
 	pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
 
+    mem_isoc->b_transport(pl, loct); //testing purposes, it needs to send to interconnect not directly to memory
+	qk.set_and_sync(loct);
+	loct += sc_time(5, SC_NS);
 	SC_REPORT_INFO("CPU", "Kernel sent to memory.");
-	//int_isoc->b_transport(pl, loct);
-	//qk.set_and_sync(loct);
-	//loct += sc_time(5, SC_NS);
+	
 
     scanFromFile();
 
@@ -199,14 +202,15 @@ void cpu::CPU_process(){
 	pl.set_data_ptr((unsigned char*)&inputArray);
 	pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
 
+    mem_isoc->b_transport(pl, loct); //testing purposes, it needs to send to interconnect not directly to memory
+	qk.set_and_sync(loct);
+	loct += sc_time(5, SC_NS);
 	SC_REPORT_INFO("CPU", "Image sent to memory.");
-	//int_isoc->b_transport(pl, loct);
-	//qk.set_and_sync(loct);
-	//loct += sc_time(5, SC_NS);
+	
 
     //zeroCrossingTest(); // ZC can be tested after convolution is made. Untill then it stays commented.
 
-    writeImageToFile();
+    //writeImageToFile();
 
     //cout<< "IT WORKS" <<endl;
 

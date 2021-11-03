@@ -4,6 +4,7 @@
 #include "common.hpp"
 #include "convolution.hpp"
 #include "cpu.hpp"
+#include "vp_address.hpp"
 
 #include <systemc>
 #include <tlm>
@@ -15,7 +16,7 @@ class memory :
 {
 	public:
 		memory(sc_core::sc_module_name);
-		//tlm_utils::simple_target_socket<memory> cpu_tsoc;
+		tlm_utils::simple_target_socket<memory> cpu_tsoc;
 		//tlm_utils::simple_target_socket<memory> conv_tsoc;
 
 		
@@ -23,6 +24,7 @@ class memory :
 	protected:
 
         SCkernel2D kernel;
+		SCimg2D inputImage;
 		typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t; 
 		void b_transport (pl_t&, sc_core::sc_time&);
 		unsigned int transport_dbg(pl_t&);
