@@ -180,13 +180,41 @@ void cpu::CPU_process(){
 
     createKernelLoGDescrete();
 
+    pl.set_address(VP_ADDR_MEMORY_KERNEL);
+	pl.set_command(TLM_WRITE_COMMAND);	
+	pl.set_data_length(kernel.size());
+	pl.set_data_ptr((unsigned char*)&kernel);
+	pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
+
+	SC_REPORT_INFO("CPU", "Kernel sent to memory.");
+	//int_isoc->b_transport(pl, loct);
+	//qk.set_and_sync(loct);
+	//loct += sc_time(5, SC_NS);
+
     scanFromFile();
+
+    pl.set_address(VP_ADDR_MEMORY_IMAGE);
+	pl.set_command(TLM_WRITE_COMMAND);	
+	pl.set_data_length(inputArray.size());
+	pl.set_data_ptr((unsigned char*)&inputArray);
+	pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
+
+	SC_REPORT_INFO("CPU", "Image sent to memory.");
+	//int_isoc->b_transport(pl, loct);
+	//qk.set_and_sync(loct);
+	//loct += sc_time(5, SC_NS);
 
     //zeroCrossingTest(); // ZC can be tested after convolution is made. Untill then it stays commented.
 
     writeImageToFile();
 
-    cout<< "IT WORKS" <<endl;
+    //cout<< "IT WORKS" <<endl;
 
 
 }
+
+
+//void cpu::b_transport_conv(){
+//  This should be used for loading result of convolution, implement after conv is done.
+
+//}
