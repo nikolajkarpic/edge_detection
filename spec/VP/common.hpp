@@ -30,6 +30,11 @@ typedef std::vector < std::vector< SC_pixel_value_type > > SCimg2D;
 typedef std::vector < int > matrix1D;
 typedef std::vector < matrix1D > matrix2D;
 
+//types for conv output:
+typedef std::vector < SC_conv_out_t > convOut1D;
+typedef std::vector < convOut1D > convOut2D;
+
+
 // types for calculating kernel
 typedef std::vector < SC_float_type > SCkernel1D;
 typedef std::vector < std::vector < SC_float_type> > SCkernel2D;
