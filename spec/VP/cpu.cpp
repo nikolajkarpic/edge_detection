@@ -48,7 +48,7 @@ void cpu::scanFromFile(){
 
     inFile.close();
 
-        //TESTING PURPOSES INGORE
+    //TESTING PURPOSES INGORE
 
     // for (int u = 0; u < inputArray.size(); u ++){    
     //     for (int f = 0; f < inputArray[0].size(); f++){
