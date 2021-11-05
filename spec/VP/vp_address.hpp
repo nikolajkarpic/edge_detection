@@ -2,18 +2,19 @@
 #define _VP_ADDRESS_H_
 
 #include "common.hpp"
+#include "memory.hpp"
+#include "convolution.hpp"
 
-const sc_dt::uint64 VP_ADDR_CPU = 0x43C00000;
-const sc_dt::uint64 VP_ADDR_CONVOLUTION = 0x43D00000;
-const sc_dt::uint64 CONV_KERNEL = 0x43D00001; // debugging purposes please ignore, put where its actually neeeded
-const sc_dt::uint64 CONV_IMG = 0x43D00002; // look above^
+const sc_dt::uint64 VP_ADDR_CPU = 0x43C00000; //cpu addr
+const sc_dt::uint64 VP_ADDR_CONVOLUTION = 0x43D00000; //conv addr 
+const sc_dt::uint64 VP_ADDR_CONVOLUTION_IMAGE = VP_ADDR_CONVOLUTION + CONV_IMG; //address for img 
+const sc_dt::uint64 VP_ADDR_CONVOLUTION_KERNEL  = VP_ADDR_CONVOLUTION + CONV_KERNEL; //address for kernel
 
 //Memory addresses:
-const sc_dt::uint64 VP_ADDR_MEMORY = 0x43E00000;
-const sc_dt::uint64 VP_ADDR_MEMORY_KERNEL = 0x43E00001;
-const sc_dt::uint64 VP_ADDR_MEMORY_IMAGE = 0x43E00002;
-const sc_dt::uint64 VP_ADDR_MEMORY_IMAGE_RESULT = 0x43E00003;// As of now not sure if needed.
-//const sc_dt::uint64 VP_ADDR_CPU = 0x43F00000; //does interconnect need one?
+const sc_dt::uint64 VP_ADDR_MEMORY = 0x43E00000; //memory addr
+const sc_dt::uint64 VP_ADDR_MEMORY_IMAGE = VP_ADDR_MEMORY + MEMORY_IMG; //address for img in memory
+const sc_dt::uint64 VP_ADDR_MEMORY_KERNEL = VP_ADDR_MEMORY + MEMORY_KERNEL; //address for kernel in memory 
+const sc_dt::uint64 VP_ADDR_MEMORY_CONV_RESULT = VP_ADDR_MEMORY + MEMORY_CONV_RESULT; //address for conv_result in memory
 
 
 #endif //_VP_ADDRESS_H_

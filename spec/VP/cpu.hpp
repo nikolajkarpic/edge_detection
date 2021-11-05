@@ -2,8 +2,7 @@
 #define CPU_HPP_INCLUDED
 
 #include "common.hpp"
-#include "convolution.hpp"
-#include "memory.hpp"
+#include "vp_address.hpp"
 #include <tlm_utils/simple_initiator_socket.h>
 #include <tlm_utils/simple_target_socket.h>
 #include <tlm_utils/tlm_quantumkeeper.h>

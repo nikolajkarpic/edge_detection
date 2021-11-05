@@ -8,22 +8,28 @@
 using namespace sc_core;
 using namespace sc_dt;
 using namespace std;
-using namespace tlm;
+using namespace tlm;	
 
-vector< vector <SC_float_type> > conv_result;
+//gloabal variables:
+
+SCimg2D img; //for loading the image
+SCkernel2D kernel; //for loading the kernel
+std::vector<std::vector<SC_float_type>>  conv_result; //for sending the result
+
+tlm_generic_payload pl; //generic payload
+sc_time conv_time; //time
+
 
 SC_HAS_PROCESS(conv);
 conv::conv(sc_module_name name):
-	sc_module(name)
-	//ic_tsoc("ic_tsoc"),
-	//conv_isoc("conv_tsoc")
+	sc_module(name),
+	ic_tsoc("ic_tsoc"),
+	conv_isoc("conv_tsoc")
 {
 
-	//ic_tsoc.register_b_transport(this, &conv::b_transport);
+	ic_tsoc.register_b_transport(this, &conv::b_transport);
 
 }
-
-
 
 void conv::b_transport(pl_t& pl, sc_time& offset)
 {
@@ -32,10 +38,6 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 	uint64         addr = pl.get_address();
 	unsigned char *data = pl.get_data_ptr();
 	
-	SCkernel2D kernel;  //2D kernel vrednosti
-
-	SCimg2D img;
-	
 
 	switch(cmd)
 	{
@@ -43,6 +45,7 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 		{
 			switch(addr)
 			{
+
 				case CONV_KERNEL:
 					kernel = *((SCkernel2D*)data);
 					pl.set_response_status ( TLM_OK_RESPONSE );
@@ -65,9 +68,6 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 		{
 
 
-
-
-
 			break;
 
 		}
@@ -76,8 +76,6 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 			SC_REPORT_ERROR("CORE", "TLM bad command");
 	
 	}
-
-
 
 }
 
@@ -113,6 +111,18 @@ void conv::convolution()
 			conv_result[i].push_back(sum);
 		}
 	}
+
+	conv_time+=sc_time(5, SC_NS); //for now this takes 5 ns, quantumkeeper still not implemented
+
+	pl.set_address(0x00000002);
+        pl.set_command(TLM_WRITE_COMMAND);
+        pl.set_data_length(conv_result.size());
+        pl.set_data_ptr((unsigned char*)&conv_result);
+        pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
+
+	conv_isoc->b_transport(pl, conv_time); //sending conv_result to memory 
+
+	//place for triggering a signal that activates zero_crossing or should that be done once the memory i written?
 
 }
 

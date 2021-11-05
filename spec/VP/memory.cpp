@@ -7,11 +7,11 @@ using namespace sc_dt;
 
 memory::memory(sc_module_name name):
   sc_module(name),
-  cpu_tsoc("cpu_tsoc")
-  //conv_tsoc("conv_tsoc")
+  cpu_tsoc("cpu_tsoc"),
+  conv_tsoc("conv_tsoc")
 {
 	cpu_tsoc.register_b_transport(this, &memory::b_transport);
-	//conv_tsoc.register_b_transport(this, &memory::b_transport);
+	conv_tsoc.register_b_transport(this, &memory::b_transport);
     
     SC_REPORT_INFO("Memory", "Platform is constructed.");
 }
@@ -27,7 +27,7 @@ void memory::b_transport(pl_t& pl, sc_time& offset){
 
         case TLM_WRITE_COMMAND:{
             switch(address){
-                case VP_ADDR_MEMORY_KERNEL:
+                case MEMORY_KERNEL:
                     kernel = *((SCkernel2D*)pl.get_data_ptr());
                     //  //TESTING PURPOSES INGORE:
 
@@ -42,7 +42,7 @@ void memory::b_transport(pl_t& pl, sc_time& offset){
                     //ENDING TESTING PURPOSES
                     SC_REPORT_INFO("Memory", "Kernel recieved.");
                     break;
-                case VP_ADDR_MEMORY_IMAGE:
+                case MEMORY_IMG:
                     inputImage = *((SCimg2D*)pl.get_data_ptr());
                     //TESTING PURPOSES INGORE:
 
@@ -58,7 +58,7 @@ void memory::b_transport(pl_t& pl, sc_time& offset){
                     break;
                 
 
-                case VP_ADDR_MEMORY_IMAGE_RESULT:
+                case MEMORY_CONV_RESULT:
                     convOutput = *((convOut2D*)pl.get_data_ptr());
                     //TESTING PURPOSES INGORE:
 
@@ -79,21 +79,21 @@ void memory::b_transport(pl_t& pl, sc_time& offset){
         }
         case TLM_READ_COMMAND:
             switch(address){
-                case VP_ADDR_MEMORY_KERNEL:
+                case MEMORY_KERNEL:
 					pl.set_data_ptr((unsigned char*)&kernel);
 					pl.set_data_length(kernel.size());
 					pl.set_response_status( TLM_OK_RESPONSE );
                     SC_REPORT_INFO("Memory", "Kernel sent to convolution.");
                     break;
 
-                case VP_ADDR_MEMORY_IMAGE:
+                case MEMORY_IMG:
 					pl.set_data_ptr((unsigned char*)&inputImage);
 					pl.set_data_length(inputImage.size());
 					pl.set_response_status( TLM_OK_RESPONSE );
                     SC_REPORT_INFO("Memory", "Image sent to convolution.");
 
                     break;
-                case VP_ADDR_MEMORY_IMAGE_RESULT:
+                case MEMORY_CONV_RESULT:
                     pl.set_data_ptr((unsigned char*)&convOutput);
 					pl.set_data_length(convOutput.size());
 					pl.set_response_status( TLM_OK_RESPONSE );
