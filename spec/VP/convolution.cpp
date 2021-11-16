@@ -10,24 +10,16 @@ using namespace sc_dt;
 using namespace std;
 using namespace tlm;	
 
-//gloabal variables:
-
-SCimg2D img; //for loading the image
-SCkernel2D kernel; //for loading the kernel
-std::vector<std::vector<SC_float_type>>  conv_result; //for sending the result
-
-tlm_generic_payload pl; //generic payload
-sc_time conv_time; //time
 
 
 SC_HAS_PROCESS(conv);
 conv::conv(sc_module_name name):
 	sc_module(name),
-	ic_tsoc("ic_tsoc"),
-	conv_isoc("conv_tsoc")
+	CONV_ic_tsoc("IC_to_conv"),
+	CONV_ic_isoc("CONV_to_ic")
 {
 
-	ic_tsoc.register_b_transport(this, &conv::b_transport);
+	CONV_ic_tsoc.register_b_transport(this, &conv::b_transport);
 
 }
 
@@ -66,6 +58,12 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 		}
 		case TLM_READ_COMMAND:
 		{
+			// case proceseor trazio sliku:
+			// 	if (taj flag){
+			// 		posalje slliku
+			// 	}else{
+			// 		pl.set_response_status( TLM_COMMAND_ERROR_RESPONSE );
+			// 	}
 
 
 			break;
@@ -82,16 +80,32 @@ void conv::b_transport(pl_t& pl, sc_time& offset)
 
 void conv::convolution()
 {
+	sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
+	pl.set_address(VP_ADDR_MEMORY_IMAGE);
+    pl.set_command(TLM_READ_COMMAND);
+    pl.set_data_length(img.size());
+    pl.set_data_ptr((unsigned char*)&img);
+    pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
+	CONV_ic_isoc->b_transport(pl, offset);
+
+	pl.set_address(VP_ADDR_MEMORY_KERNEL);
+    pl.set_command(TLM_READ_COMMAND);
+    pl.set_data_length(kernel.size());
+    pl.set_data_ptr((unsigned char*)&kernel);
+    pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
+	CONV_ic_isoc->b_transport(pl, offset);
+
 	SC_float_type sum(10, 32);
-	int rows = 1;
-	int columns = 1;
-	int img[20][20];
-	int kernel[3][3];
+	SC_conv_out_t convOutValue;
+	convOut1D convResultTemp;
 	//sum = 0;  
+	int columns = img[0].size();
+	int rows = img.size();
 	int padding = (KERNEL_SIZE - 1) / 2;
 
 	for (int i = padding; i < rows - padding; i++)
 	{
+		convResult.push_back(convResultTemp);
 		for (int j = padding; j < columns - padding; j++)
 		{
 			sum = 0;
@@ -104,25 +118,27 @@ void conv::convolution()
 
 				}
 			}
-			if(sum > 255)	
-				sum=255;
+			if(sum > 0)	
+				convOutValue = 1;
 			if(sum < 0)
-				sum=0;
-			conv_result[i].push_back(sum);
+				convOutValue = -1;
+			if (sum == 0)
+				convOutValue = 0;
+			convResult[i].push_back(convOutValue);
 		}
 	}
 
 	conv_time+=sc_time(5, SC_NS); //for now this takes 5 ns, quantumkeeper still not implemented
 
-	pl.set_address(MEMORY_CONV_RESULT);
-        pl.set_command(TLM_WRITE_COMMAND);
-        pl.set_data_length(conv_result.size());
-        pl.set_data_ptr((unsigned char*)&conv_result);
-        pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
+	pl.set_address(VP_ADDR_CPU);
+    pl.set_command(TLM_WRITE_COMMAND);
+    pl.set_data_length(convResult.size());
+    pl.set_data_ptr((unsigned char*)&convResult);
+    pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
 
-	conv_isoc->b_transport(pl, conv_time); //sending conv_result to memory 
+	CONV_ic_isoc->b_transport(pl, conv_time); //sending conv_result to memory 
 
-	conv_end.notify();
+	//conv_end.notify();
 
 	//place for triggering a signal that activates zero_crossing or should that be done once the memory i written?
 

@@ -7,11 +7,11 @@ using namespace sc_dt;
 
 memory::memory(sc_module_name name):
   sc_module(name),
-  cpu_tsoc("cpu_tsoc"),
-  conv_tsoc("conv_tsoc")
+  MEM_ic_tsoc("cpu_tsoc")
+  //conv_tsoc("conv_tsoc")
 {
-	cpu_tsoc.register_b_transport(this, &memory::b_transport);
-	conv_tsoc.register_b_transport(this, &memory::b_transport);
+	//cpu_tsoc.register_b_transport(this, &memory::b_transport);
+	MEM_ic_tsoc.register_b_transport(this, &memory::b_transport);
     
     SC_REPORT_INFO("Memory", "Platform is constructed.");
 }
@@ -58,23 +58,23 @@ void memory::b_transport(pl_t& pl, sc_time& offset){
                     break;
                 
 
-                case MEMORY_CONV_RESULT:
-                    convOutput = *((convOut2D*)pl.get_data_ptr());
-                    //TESTING PURPOSES INGORE:
+                // case MEMORY_CONV_RESULT:
+                //     convOutput = *((convOut2D*)pl.get_data_ptr());
+                //     //TESTING PURPOSES INGORE:
 
-                    // for(int u = 0; u < convOutput.size(); u++){    
-                    //     for (int f = 0; f < convOutput[0].size(); f++){
-                    //         cout << convOutput[u][f] << " ";
-                    //     }
-                    //     cout << endl;
-                    // }
-                    // cout << "*********************************************************************************************************" << endl;
-                    //ENDING TESTING PURPOSES
-                    SC_REPORT_INFO("Memory", "Convolution output recieved.");
-                    break;
+                //     // for(int u = 0; u < convOutput.size(); u++){    
+                //     //     for (int f = 0; f < convOutput[0].size(); f++){
+                //     //         cout << convOutput[u][f] << " ";
+                //     //     }
+                //     //     cout << endl;
+                //     // }
+                //     // cout << "*********************************************************************************************************" << endl;
+                //     //ENDING TESTING PURPOSES
+                //     SC_REPORT_INFO("Memory", "Convolution output recieved.");
+                //     break;
                 default:
 			        pl.set_response_status( TLM_COMMAND_ERROR_RESPONSE );
-			        SC_REPORT_ERROR("MEMORY", "TLM bad command");
+			        SC_REPORT_ERROR("MEMORY", "Bad address");
             }
         }
         case TLM_READ_COMMAND:
@@ -93,13 +93,13 @@ void memory::b_transport(pl_t& pl, sc_time& offset){
                     SC_REPORT_INFO("Memory", "Image sent to convolution.");
 
                     break;
-                case MEMORY_CONV_RESULT:
-                    pl.set_data_ptr((unsigned char*)&convOutput);
-					pl.set_data_length(convOutput.size());
-					pl.set_response_status( TLM_OK_RESPONSE );
-                    SC_REPORT_INFO("Memory", "Convolution results sent to CPU.");
+                // case MEMORY_CONV_RESULT:
+                //     pl.set_data_ptr((unsigned char*)&convOutput);
+				// 	pl.set_data_length(convOutput.size());
+				// 	pl.set_response_status( TLM_OK_RESPONSE );
+                //     SC_REPORT_INFO("Memory", "Convolution results sent to CPU.");
 
-                    break;
+                //     break;
                 default:
 			        pl.set_response_status( TLM_COMMAND_ERROR_RESPONSE );
 			        SC_REPORT_ERROR("MEMORY", "TLM bad command");

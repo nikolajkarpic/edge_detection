@@ -6,10 +6,7 @@
 #include <tlm>
 #include <tlm_utils/simple_target_socket.h>
 
-using namespace sc_core;
-using namespace sc_dt;
-using namespace std;
-using namespace tlm;
+
 
 class interconnect:
         public sc_core::sc_module
@@ -18,12 +15,14 @@ public:
 
         interconnect(sc_core::sc_module_name);
 
-        tlm_utils::simple_target_socket<interconnect> cpu_tsoc;
-        tlm_utils::simple_initiator_socket<interconnect> conv_isoc;     
-	tlm_utils::simple_initiator_socket<interconnect> mem_isoc; 
+        tlm_utils::simple_target_socket<interconnect> IC_cpu_tsoc; //prima od cpu slike i kernel i prosledjuje u memoriuju
+        tlm_utils::simple_initiator_socket<interconnect> IC_cpu_isoc; // inicijator za cpu salje kada primi iz konv rezultat 
+        tlm_utils::simple_target_socket<interconnect> IC_conv_tsoc;  // primi od konvolucije rezultat
+        tlm_utils::simple_initiator_socket<interconnect> IC_conv_isoc; // od memorije salje sliku i krenl     
+	tlm_utils::simple_initiator_socket<interconnect> IC_mem_isoc; //cpu salje u memoriju sliku i kernel
 
 protected:
-
+        
         typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
         void b_transport(pl_t&, sc_core::sc_time&);
 
@@ -32,4 +31,4 @@ protected:
 
 
 #endif  //INTERCONNECT_HPP_INCLUDED
-~                                      
+                                     
