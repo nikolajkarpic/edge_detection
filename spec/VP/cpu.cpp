@@ -1,4 +1,5 @@
 #include "cpu.hpp"
+#include "convolution.hpp"
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -10,6 +11,8 @@ cpu::cpu(sc_module_name name):
 {
 
     SC_THREAD(CPU_process); // Is it thread tho?
+    SC_METHOD(zeroCrossingTest);
+    sensitive << conv_end;
     SC_REPORT_INFO("CPU", "Platform is constructed.");
 }
 

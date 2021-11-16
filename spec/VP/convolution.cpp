@@ -1,5 +1,5 @@
 #include "convolution.hpp"
-#include "common.hpp"
+#include "memory.hpp"
 
 #include <tlm>
 #include <tlm_utils/simple_target_socket.h>
@@ -114,13 +114,15 @@ void conv::convolution()
 
 	conv_time+=sc_time(5, SC_NS); //for now this takes 5 ns, quantumkeeper still not implemented
 
-	pl.set_address(0x00000002);
+	pl.set_address(MEMORY_CONV_RESULT);
         pl.set_command(TLM_WRITE_COMMAND);
         pl.set_data_length(conv_result.size());
         pl.set_data_ptr((unsigned char*)&conv_result);
         pl.set_response_status (TLM_INCOMPLETE_RESPONSE);
 
 	conv_isoc->b_transport(pl, conv_time); //sending conv_result to memory 
+
+	conv_end.notify();
 
 	//place for triggering a signal that activates zero_crossing or should that be done once the memory i written?
 

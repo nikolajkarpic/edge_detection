@@ -24,6 +24,8 @@ public:
 	tlm_utils::simple_target_socket<conv> ic_tsoc;
 	tlm_utils::simple_initiator_socket<conv> conv_isoc;		
 
+	sc_event conv_end; //event that triggers zero corssing
+
 protected:
 	
 	typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
