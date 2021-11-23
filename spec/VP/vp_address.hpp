@@ -5,8 +5,8 @@
 #include "memory.hpp"
 #include "convolution.hpp"
 
-const sc_dt::uint64 CONV_IMG = 0; //local addresses for convolution
-const sc_dt::uint64 CONV_KERNEL = 1;
+const sc_dt::uint64 CONV_IMG = 0x00000000; //local addresses for convolution
+const sc_dt::uint64 CONV_KERNEL = 0x00000001;
 
 const sc_dt::uint64 VP_ADDR_CPU = 0x43C00000; //cpu addr
 const sc_dt::uint64 VP_ADDR_CONVOLUTION = 0x43D00000; //conv addr 
@@ -15,8 +15,8 @@ const sc_dt::uint64 VP_ADDR_CONVOLUTION_KERNEL  = VP_ADDR_CONVOLUTION + CONV_KER
 
 //Memory addresses:
 
-const sc_dt::uint64 MEMORY_IMG = 0;
-const sc_dt::uint64 MEMORY_KERNEL = 1;
+const sc_dt::uint64 MEMORY_IMG = 0x00000000;
+const sc_dt::uint64 MEMORY_KERNEL = 0x00000001;
 //const sc_dt::uint64 MEMORY_CONV_RESULT = 2;
 
 const sc_dt::uint64 VP_ADDR_MEMORY = 0x43E00000; //memory addr

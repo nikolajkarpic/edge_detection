@@ -25,7 +25,7 @@ memory.o: memory.cpp memory.hpp common.hpp vp_address.hpp cpu.hpp cpu.cpp convol
 	@$(CC) -c memory.cpp 
 	@echo "Compiling memory.cpp\n"
 
-interconnect.o: common.hpp cpu.cpp cpu.hpp convolution.cpp convolution.hpp vp_address.hpp memory.hpp memory.cpp
+interconnect.o: interconnect.cpp interconnect.hpp common.hpp cpu.cpp cpu.hpp convolution.cpp convolution.hpp vp_address.hpp memory.hpp memory.cpp
 	@$(CC) -c interconnect.cpp
 	@echo "Compiling interconnect.cpp\n"
 clean:
