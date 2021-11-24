@@ -17,6 +17,7 @@ class memory :
 		//tlm_utils::simple_target_socket<memory> cpu_tsoc; // ovo ne sme dirketno
 
 		tlm_utils::simple_target_socket<memory> MEM_ic_tsoc;
+		tlm_utils::simple_target_socket<memory> MEM_conv_tsoc;
 
 		//tlm_utils::simple_target_socket<memory> MEM_conv_ic_tsoc;
 

@@ -23,7 +23,8 @@ public:
 	conv(sc_core::sc_module_name);
 
 	tlm_utils::simple_target_socket<conv> CONV_ic_tsoc;
-	tlm_utils::simple_initiator_socket<conv> CONV_ic_isoc;		
+	tlm_utils::simple_initiator_socket<conv> CONV_ic_isoc;
+	tlm_utils::simple_initiator_socket<conv> CONV_mem_isoc;		
 
 	//sc_event conv_end; //event that triggers zero corssing
 
@@ -32,6 +33,8 @@ protected:
 	sc_time loct;
 	tlm_utils::tlm_quantumkeeper qk;
 	//gloabal variables:
+	
+	unsigned char ready;
 
 	SCimg2D img; //for loading the image
 	convOut2D convResult;

@@ -231,6 +231,9 @@ void cpu::CPU_process()
     loct += sc_time(5, SC_NS);
     SC_REPORT_INFO("CPU", "Image sent to memory.");
 
+    writeReadyToConv();
+
+
     //zeroCrossingTest(); // ZC can be tested after convolution is made. Untill then it stays commented.
 
     //writeImageToFile();
@@ -252,16 +255,30 @@ void cpu::b_transport(pl_t &pl, sc_time &offset)
             {
             case VP_ADDR_CPU:
                 convOut = *((convOut2D *)pl.get_data_ptr());
+                pl.set_response_status(TLM_OK_RESPONSE);
                 SC_REPORT_INFO("CPU", "Conv result recieved.");
                 break;
             
             default:
-                SC_REPORT_INFO("CPU", "Invalid address.");
+                SC_REPORT_ERROR("CPU", "Invalid address.");
                 break;
             }
             break;
         default:
-            SC_REPORT_INFO("CPU", "Invalid TLM COMMAND.");
+            SC_REPORT_ERROR("CPU", "Invalid TLM COMMAND.");
             break;
     }
+}
+
+
+void cpu::writeReadyToConv(){
+    sc_time ofset = sc_time(5, SC_NS);
+    unsigned char ready = 1;
+    tlm_generic_payload pl;
+    pl.set_address(VP_ADDR_CONVOLUTION_READY);
+    pl.set_data_length(1);
+    pl.set_data_ptr((unsigned char *)&ready);
+    pl.set_command( tlm::TLM_WRITE_COMMAND );
+    pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
+    CPU_ic_conv_isoc->b_transport(pl, ofset);
 }

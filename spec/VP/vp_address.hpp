@@ -7,12 +7,13 @@
 
 const sc_dt::uint64 CONV_IMG = 0x00000000; //local addresses for convolution
 const sc_dt::uint64 CONV_KERNEL = 0x00000001;
+const sc_dt::uint64 CONV_READY = 0x00000002;
 
 const sc_dt::uint64 VP_ADDR_CPU = 0x43C00000; //cpu addr
 const sc_dt::uint64 VP_ADDR_CONVOLUTION = 0x43D00000; //conv addr 
 const sc_dt::uint64 VP_ADDR_CONVOLUTION_IMAGE = VP_ADDR_CONVOLUTION + CONV_IMG; //address for img 
 const sc_dt::uint64 VP_ADDR_CONVOLUTION_KERNEL  = VP_ADDR_CONVOLUTION + CONV_KERNEL; //address for kernel
-
+const sc_dt::uint64 VP_ADDR_CONVOLUTION_READY = VP_ADDR_CONVOLUTION + CONV_READY;
 //Memory addresses:
 
 const sc_dt::uint64 MEMORY_IMG = 0x00000000;

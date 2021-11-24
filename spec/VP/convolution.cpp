@@ -10,12 +10,13 @@ using namespace sc_dt;
 using namespace std;
 using namespace tlm;
 
-SC_HAS_PROCESS(conv);
+//SC_HAS_PROCESS(conv);
 conv::conv(sc_module_name name) : sc_module(name),
 								  CONV_ic_tsoc("IC_to_conv"),
-								  CONV_ic_isoc("CONV_to_ic")
+								  CONV_ic_isoc("CONV_to_ic"),
+								  CONV_mem_isoc("CONV_mem_to_conv")
 {
-	SC_THREAD(convolution);
+	//SC_THREAD(convolution);
 	CONV_ic_tsoc.register_b_transport(this, &conv::b_transport);
 	SC_REPORT_INFO("CONV", "Platform is constructed.");
 }
@@ -45,7 +46,13 @@ void conv::b_transport(pl_t &pl, sc_time &offset)
 			pl.set_response_status(TLM_OK_RESPONSE);
 			SC_REPORT_INFO("CONV", "RECIEVED IMG");
 			break;
-
+		case CONV_READY:
+			ready = *((unsigned char *)data);
+			pl.set_response_status(TLM_OK_RESPONSE);
+			SC_REPORT_INFO("CONV", "CPU DONE. BEGIN CONV.");
+			convolution();
+			SC_REPORT_INFO("CONV", "CONV DONE.");
+			break;
 		default:
 			pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
 			SC_REPORT_ERROR("CONV", "INVALID ADDRESS");
@@ -74,15 +81,24 @@ void conv::b_transport(pl_t &pl, sc_time &offset)
 void conv::convolution()
 {
 	cout << "konv proces krenuo" << endl;
-	pl.set_address(VP_ADDR_MEMORY_KERNEL);
+	while(!ready);
+
+	
+	cout<< "vidi je l prodje whille" << endl;
+
+	pl.set_address(MEMORY_KERNEL);
 	pl.set_command(TLM_READ_COMMAND);
 	pl.set_data_length(kernel.size());
 	pl.set_data_ptr((unsigned char *)&kernel);
 	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-	CONV_ic_isoc->b_transport(pl, loct);
+	CONV_mem_isoc->b_transport(pl, loct);
+
+	kernel = *((SCkernel2D *)pl.get_data_ptr());
+
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
 	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
+	cout<< kernel.size() << endl;
 	for(int u = 0; u < kernel.size(); u++){
 	    for (int f = 0; f < kernel[0].size(); f++){
 	        cout << kernel[u][f] << " ";
@@ -91,12 +107,15 @@ void conv::convolution()
 	}
 	cout<< "******************"<< endl;
 	//sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-	pl.set_address(VP_ADDR_MEMORY_IMAGE);
+	pl.set_address(MEMORY_IMG);
 	pl.set_command(TLM_READ_COMMAND);
 	pl.set_data_length(img.size());
 	pl.set_data_ptr((unsigned char *)&img);
 	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-	CONV_ic_isoc->b_transport(pl, loct);
+	CONV_mem_isoc->b_transport(pl, loct);
+
+	img = *((SCimg2D *)pl.get_data_ptr());
+
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
 	SC_REPORT_INFO("CONV", "Image loaded from memory.");
@@ -115,7 +134,7 @@ void conv::convolution()
 	int columns = img[0].size();
 	int rows = img.size();
 	int padding = (KERNEL_SIZE - 1) / 2;
-
+	cout<< "Taman pred konv" << endl;
 	for (int i = padding; i < rows - padding; i++)
 	{
 		convResult.push_back(convResultTemp);
@@ -128,6 +147,7 @@ void conv::convolution()
 				{
 
 					sum = sum + (img[i - padding + k][j - padding + l] * kernel[k][l]);
+					cout<< sum << endl;
 				}
 			}
 			if (sum > 0)
@@ -139,19 +159,27 @@ void conv::convolution()
 			convResult[i].push_back(convOutValue);
 		}
 	}
-
+	for(int u = 0; u < convResult.size(); u++){
+	    for (int f = 0; f < convResult[0].size(); f++){
+	        cout << convResult[u][f] << " ";
+	    }
+	    cout << endl;
+	}
+	cout<< "******************"<< endl;
 	//conv_time+=sc_time(5, SC_NS); //for now this takes 5 ns, quantumkeeper still not implemented
-
+	cout << "prosao konb" << endl;
 	pl.set_address(VP_ADDR_CPU);
 	pl.set_command(TLM_WRITE_COMMAND);
 	pl.set_data_length(convResult.size());
 	pl.set_data_ptr((unsigned char *)&convResult);
 	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-
-	CONV_ic_isoc->b_transport(pl, loct); //sending conv_result to memory
+	cout << "setovao sve konv" << endl;
+	//CONV_ic_isoc->b_transport(pl, loct); //sending conv_result to memory
+	cout<< "poslao konv" << endl;
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
 
+	cout<< "zavrsio konv" << endl;
 	//conv_end.notify();
 
 	//place for triggering a signal that activates zero_crossing or should that be done once the memory i written?

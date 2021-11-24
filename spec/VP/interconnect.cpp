@@ -9,6 +9,7 @@ interconnect::interconnect(sc_module_name name) : sc_module(name), offset(sc_cor
 {
 	//cpu_tsoc.register_b_transport(this, &interconnect::b_transport);
 	IC_cpu_tsoc.register_b_transport(this, &interconnect::b_transport);
+	IC_cpu_conv_tsoc.register_b_transport(this, &interconnect::b_transport);
 	IC_conv_tsoc.register_b_transport(this, &interconnect::b_transport);
 	SC_REPORT_INFO("IC", "Platform is constructed.");
 }
@@ -26,7 +27,7 @@ void interconnect::b_transport(pl_t &pl, sc_core::sc_time &offset)
 	{
 	case TLM_WRITE_COMMAND:
 	{
-		if (addr >= VP_ADDR_CONVOLUTION && addr <= VP_ADDR_CONVOLUTION_IMAGE)
+		if (addr >= VP_ADDR_CONVOLUTION && addr <= VP_ADDR_CONVOLUTION_READY)
 		{
 
 			taddr = addr & 0x000FFFFF;
