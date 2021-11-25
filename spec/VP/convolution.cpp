@@ -98,14 +98,15 @@ void conv::convolution()
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
 	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
-	cout<< kernel.size() << endl;
-	for(int u = 0; u < kernel.size(); u++){
-	    for (int f = 0; f < kernel[0].size(); f++){
-	        cout << kernel[u][f] << " ";
-	    }
-	    cout << endl;
-	}
-	cout<< "******************"<< endl;
+	//testing porposes
+	// cout<< kernel.size() << endl;
+	// for(int u = 0; u < kernel.size(); u++){
+	//     for (int f = 0; f < kernel[0].size(); f++){
+	//         cout << kernel[u][f] << " ";
+	//     }
+	//     cout << endl;
+	// }
+	// cout<< "******************"<< endl;
 	//sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
 	pl.set_address(MEMORY_IMG);
 	pl.set_command(TLM_READ_COMMAND);
@@ -119,13 +120,14 @@ void conv::convolution()
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
 	SC_REPORT_INFO("CONV", "Image loaded from memory.");
-	for(int u = 0; u < img.size(); u++){
-	    for (int f = 0; f < img[0].size(); f++){
-	        cout << img[u][f] << " ";
-	    }
-	    cout << endl;
-	}
-	cout<< "******************"<< endl;
+	//testing porposes
+	// for(int u = 0; u < img.size(); u++){
+	//     for (int f = 0; f < img[0].size(); f++){
+	//         cout << img[u][f] << " ";
+	//     }
+	//     cout << endl;
+	// }
+	// cout<< "******************"<< endl;
 
 	SC_float_type sum(10, 32);
 	SC_conv_out_t convOutValue;
