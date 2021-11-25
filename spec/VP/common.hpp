@@ -14,8 +14,8 @@
 #define BIT_WIDTH_KERNEL 16 // 17 kernel // SC_float_type kernel_val(7, 16)
 #define BIT_WIDTH_KERNEL_POINT 7
 #define SIGMA 1.4
-#define EDGE 255
-#define NO_EDGE 0
+#define EDGE 0
+#define NO_EDGE 255
 
 typedef sc_dt :: sc_fix_fast SC_float_type;
 typedef sc_dt :: sc_uint <8> SC_pixel_value_type; // 0 255

@@ -7,9 +7,11 @@ using namespace std;
 SC_HAS_PROCESS(cpu);
 cpu::cpu(sc_module_name name) : sc_module(name)
 {
+
     SC_THREAD(CPU_process); // Is it thread tho?
     //SC_METHOD(zeroCrossingTest);
     //sensitive << conv::conv_end;
+    CPU_conv_ic_tsoc.register_b_transport(this, &cpu::b_transport);
     SC_REPORT_INFO("CPU", "Platform is constructed.");
 }
 
@@ -153,16 +155,17 @@ void cpu::zeroCrossingTest()
     //TESTING PURPOSES
     //convOut = inputArray;
     //ENDING TEST
+    cout << "1" << endl;
     int sourceHeight = convOut.size();
     int sourceWidth = convOut[1].size();
 
     int negCouter;
     int posCoutner;
-    convOut1D tempMatrixRow;
-
+    matrix1D tempMatrixRow;
+    cout << "2" << endl;
     for (int i = 1; i < sourceHeight - 1; i++)
     {
-        convOut.push_back(tempMatrixRow);
+        outputArray.push_back(tempMatrixRow);
         for (int j = 1; j < sourceWidth - 1; j++)
         {
             negCouter = 0;
@@ -184,11 +187,14 @@ void cpu::zeroCrossingTest()
                     }
                 }
             }
-            outputArray[i - 1].push_back(NO_EDGE);
+            //cout << "op op " << endl;
             if (negCouter > 0 && posCoutner > 0)
             {
                 outputArray[i - 1].push_back(EDGE);
+            }else{
+            outputArray[i - 1].push_back(NO_EDGE);
             }
+            //cout<< "proslo" << endl; 
         }
     }
     SC_REPORT_INFO("CPU", "Zero crossing done.");
@@ -196,7 +202,7 @@ void cpu::zeroCrossingTest()
 
 void cpu::CPU_process()
 {
-    
+
     //sc_core::sc_time loct = sc_core::SC_ZERO_TIME;
     sc_time loct;
     tlm_generic_payload pl;
@@ -233,7 +239,6 @@ void cpu::CPU_process()
 
     writeReadyToConv();
 
-
     //zeroCrossingTest(); // ZC can be tested after convolution is made. Untill then it stays commented.
 
     //writeImageToFile();
@@ -250,35 +255,38 @@ void cpu::b_transport(pl_t &pl, sc_time &offset)
     unsigned int len = pl.get_data_length();
     switch (cmd)
     {
-        case TLM_WRITE_COMMAND:
-            switch (address)
-            {
-            case VP_ADDR_CPU:
-                convOut = *((convOut2D *)pl.get_data_ptr());
-                pl.set_response_status(TLM_OK_RESPONSE);
-                SC_REPORT_INFO("CPU", "Conv result recieved.");
-                break;
+    case TLM_WRITE_COMMAND:
+        switch (address)
+        {
+        case VP_ADDR_CPU:
+            convOut = *((convOut2D *)pl.get_data_ptr());
+            SC_REPORT_INFO("CPU", "Conv result recieved.");
+            zeroCrossingTest();
+            writeImageToFile();
+            pl.set_response_status(TLM_OK_RESPONSE);
             
-            default:
-                SC_REPORT_ERROR("CPU", "Invalid address.");
-                break;
-            }
             break;
+
         default:
-            SC_REPORT_ERROR("CPU", "Invalid TLM COMMAND.");
+            SC_REPORT_ERROR("CPU", "Invalid address.");
             break;
+        }
+        break;
+    default:
+        SC_REPORT_ERROR("CPU", "Invalid TLM COMMAND.");
+        break;
     }
 }
 
-
-void cpu::writeReadyToConv(){
+void cpu::writeReadyToConv()
+{
     sc_time ofset = sc_time(5, SC_NS);
     unsigned char ready = 1;
     tlm_generic_payload pl;
     pl.set_address(VP_ADDR_CONVOLUTION_READY);
     pl.set_data_length(1);
     pl.set_data_ptr((unsigned char *)&ready);
-    pl.set_command( tlm::TLM_WRITE_COMMAND );
-    pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
+    pl.set_command(tlm::TLM_WRITE_COMMAND);
+    pl.set_response_status(tlm::TLM_INCOMPLETE_RESPONSE);
     CPU_ic_conv_isoc->b_transport(pl, ofset);
 }

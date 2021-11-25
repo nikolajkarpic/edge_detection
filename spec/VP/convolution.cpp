@@ -129,7 +129,7 @@ void conv::convolution()
 	// }
 	// cout<< "******************"<< endl;
 
-	SC_float_type sum(10, 32);
+	SC_float_type sum(32, 17);
 	SC_conv_out_t convOutValue;
 	convOut1D convResultTemp;
 	//sum = 0;
@@ -149,7 +149,7 @@ void conv::convolution()
 				{
 
 					sum = sum + (img[i - padding + k][j - padding + l] * kernel[k][l]);
-					cout<< sum << endl;
+					
 				}
 			}
 			if (sum > 0)
@@ -158,30 +158,32 @@ void conv::convolution()
 				convOutValue = -1;
 			if (sum == 0)
 				convOutValue = 0;
-			convResult[i].push_back(convOutValue);
+
+			//cout << sum << endl;
+			convResult[i - padding].push_back(convOutValue);
 		}
 	}
-	for(int u = 0; u < convResult.size(); u++){
-	    for (int f = 0; f < convResult[0].size(); f++){
-	        cout << convResult[u][f] << " ";
-	    }
-	    cout << endl;
-	}
-	cout<< "******************"<< endl;
+	// for(int u = 0; u < convResult.size(); u++){
+	//     for (int f = 0; f < convResult[0].size(); f++){
+	//         cout << convResult[u][f] << " ";
+	//     }
+	//     cout << endl;
+	// }
+	// cout<< "******************"<< endl;
 	//conv_time+=sc_time(5, SC_NS); //for now this takes 5 ns, quantumkeeper still not implemented
-	cout << "prosao konb" << endl;
+	// cout << "prosao konb" << endl;
 	pl.set_address(VP_ADDR_CPU);
 	pl.set_command(TLM_WRITE_COMMAND);
 	pl.set_data_length(convResult.size());
 	pl.set_data_ptr((unsigned char *)&convResult);
 	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-	cout << "setovao sve konv" << endl;
-	//CONV_ic_isoc->b_transport(pl, loct); //sending conv_result to memory
-	cout<< "poslao konv" << endl;
+	// cout << "setovao sve konv" << endl;
+	CONV_ic_isoc->b_transport(pl, loct); //sending conv_result to memory
+	// cout<< "poslao konv" << endl;
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
 
-	cout<< "zavrsio konv" << endl;
+	// cout<< "zavrsio konv" << endl;
 	//conv_end.notify();
 
 	//place for triggering a signal that activates zero_crossing or should that be done once the memory i written?
