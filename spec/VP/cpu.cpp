@@ -8,9 +8,7 @@ SC_HAS_PROCESS(cpu);
 cpu::cpu(sc_module_name name) : sc_module(name)
 {
 
-    SC_THREAD(CPU_process); // Is it thread tho?
-    //SC_METHOD(zeroCrossingTest);
-    //sensitive << conv::conv_end;
+    SC_THREAD(CPU_process);
     CPU_conv_ic_tsoc.register_b_transport(this, &cpu::b_transport);
     SC_REPORT_INFO("CPU", "Platform is constructed.");
 }
@@ -136,7 +134,6 @@ void cpu::writeImageToFile()
     }
 
     //TESTING PURPOSES INGORE
-    //outFile << "Majmuneee";
     // for (int u = 0; u < outputArray.size(); u ++){
     //     for (int f = 0; f < outputArray[0].size(); f++){
     //         cout << outputArray[u][f] << " ";
@@ -187,14 +184,14 @@ void cpu::zeroCrossingTest()
                     }
                 }
             }
-            //cout << "op op " << endl;
             if (negCouter > 0 && posCoutner > 0)
             {
                 outputArray[i - 1].push_back(EDGE);
-            }else{
-            outputArray[i - 1].push_back(NO_EDGE);
             }
-            //cout<< "proslo" << endl; 
+            else
+            {
+                outputArray[i - 1].push_back(NO_EDGE);
+            }
         }
     }
     SC_REPORT_INFO("CPU", "Zero crossing done.");
@@ -203,7 +200,6 @@ void cpu::zeroCrossingTest()
 void cpu::CPU_process()
 {
 
-    //sc_core::sc_time loct = sc_core::SC_ZERO_TIME;
     sc_time loct;
     tlm_generic_payload pl;
     tlm_utils::tlm_quantumkeeper qk;
@@ -238,12 +234,6 @@ void cpu::CPU_process()
     SC_REPORT_INFO("CPU", "Image sent to memory.");
 
     writeReadyToConv();
-
-    //zeroCrossingTest(); // ZC can be tested after convolution is made. Untill then it stays commented.
-
-    //writeImageToFile();
-
-    //cout<< "IT WORKS" <<endl;
 }
 
 void cpu::b_transport(pl_t &pl, sc_time &offset)
@@ -264,7 +254,7 @@ void cpu::b_transport(pl_t &pl, sc_time &offset)
             zeroCrossingTest();
             writeImageToFile();
             pl.set_response_status(TLM_OK_RESPONSE);
-            
+
             break;
 
         default:

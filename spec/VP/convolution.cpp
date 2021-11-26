@@ -10,13 +10,11 @@ using namespace sc_dt;
 using namespace std;
 using namespace tlm;
 
-//SC_HAS_PROCESS(conv);
 conv::conv(sc_module_name name) : sc_module(name),
 								  CONV_ic_tsoc("IC_to_conv"),
 								  CONV_ic_isoc("CONV_to_ic"),
 								  CONV_mem_isoc("CONV_mem_to_conv")
 {
-	//SC_THREAD(convolution);
 	CONV_ic_tsoc.register_b_transport(this, &conv::b_transport);
 	SC_REPORT_INFO("CONV", "Platform is constructed.");
 }
@@ -62,12 +60,6 @@ void conv::b_transport(pl_t &pl, sc_time &offset)
 	}
 	case TLM_READ_COMMAND:
 	{
-		// case proceseor trazio sliku:
-		// 	if (taj flag){
-		// 		posalje slliku
-		// 	}else{
-		// 		pl.set_response_status( TLM_COMMAND_ERROR_RESPONSE );
-		// 	}
 
 		break;
 	}
@@ -80,11 +72,8 @@ void conv::b_transport(pl_t &pl, sc_time &offset)
 
 void conv::convolution()
 {
-	cout << "konv proces krenuo" << endl;
-	while(!ready);
-
-	
-	cout<< "vidi je l prodje whille" << endl;
+	while (!ready)
+		;
 
 	pl.set_address(MEMORY_KERNEL);
 	pl.set_command(TLM_READ_COMMAND);
@@ -107,7 +96,6 @@ void conv::convolution()
 	//     cout << endl;
 	// }
 	// cout<< "******************"<< endl;
-	//sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
 	pl.set_address(MEMORY_IMG);
 	pl.set_command(TLM_READ_COMMAND);
 	pl.set_data_length(img.size());
@@ -132,11 +120,9 @@ void conv::convolution()
 	SC_float_type sum(32, 17);
 	SC_conv_out_t convOutValue;
 	convOut1D convResultTemp;
-	//sum = 0;
 	int columns = img[0].size();
 	int rows = img.size();
 	int padding = (KERNEL_SIZE - 1) / 2;
-	cout<< "Taman pred konv" << endl;
 	for (int i = padding; i < rows - padding; i++)
 	{
 		convResult.push_back(convResultTemp);
@@ -149,7 +135,6 @@ void conv::convolution()
 				{
 
 					sum = sum + (img[i - padding + k][j - padding + l] * kernel[k][l]);
-					
 				}
 			}
 			if (sum > 0)
@@ -159,7 +144,6 @@ void conv::convolution()
 			if (sum == 0)
 				convOutValue = 0;
 
-			//cout << sum << endl;
 			convResult[i - padding].push_back(convOutValue);
 		}
 	}
@@ -170,21 +154,12 @@ void conv::convolution()
 	//     cout << endl;
 	// }
 	// cout<< "******************"<< endl;
-	//conv_time+=sc_time(5, SC_NS); //for now this takes 5 ns, quantumkeeper still not implemented
-	// cout << "prosao konb" << endl;
 	pl.set_address(VP_ADDR_CPU);
 	pl.set_command(TLM_WRITE_COMMAND);
 	pl.set_data_length(convResult.size());
 	pl.set_data_ptr((unsigned char *)&convResult);
 	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-	// cout << "setovao sve konv" << endl;
 	CONV_ic_isoc->b_transport(pl, loct); //sending conv_result to memory
-	// cout<< "poslao konv" << endl;
 	qk.set_and_sync(loct);
 	loct += sc_time(5, SC_NS);
-
-	// cout<< "zavrsio konv" << endl;
-	//conv_end.notify();
-
-	//place for triggering a signal that activates zero_crossing or should that be done once the memory i written?
 }

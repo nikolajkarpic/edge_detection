@@ -7,7 +7,6 @@ using namespace sc_dt;
 
 interconnect::interconnect(sc_module_name name) : sc_module(name), offset(sc_core::SC_ZERO_TIME)
 {
-	//cpu_tsoc.register_b_transport(this, &interconnect::b_transport);
 	IC_cpu_tsoc.register_b_transport(this, &interconnect::b_transport);
 	IC_cpu_conv_tsoc.register_b_transport(this, &interconnect::b_transport);
 	IC_conv_tsoc.register_b_transport(this, &interconnect::b_transport);
@@ -20,8 +19,6 @@ void interconnect::b_transport(pl_t &pl, sc_core::sc_time &offset)
 	tlm_command cmd = pl.get_command();
 	uint64 addr = pl.get_address();
 	unsigned char *data = pl.get_data_ptr();
-	//sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-	//offset += sc_time(2, SC_NS);
 
 	switch (cmd)
 	{
@@ -45,8 +42,6 @@ void interconnect::b_transport(pl_t &pl, sc_core::sc_time &offset)
 		}
 		else if (addr == VP_ADDR_CPU)
 		{
-			//taddr = addr;
-			//pl.set_address(taddr);
 			IC_cpu_isoc->b_transport(pl, offset);
 		}
 

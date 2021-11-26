@@ -13,44 +13,30 @@ using namespace sc_dt;
 using namespace std;
 using namespace tlm;
 
-
-
-class conv : 
-	public sc_core::sc_module
+class conv : public sc_core::sc_module
 {
 public:
-
 	conv(sc_core::sc_module_name);
 
 	tlm_utils::simple_target_socket<conv> CONV_ic_tsoc;
 	tlm_utils::simple_initiator_socket<conv> CONV_ic_isoc;
-	tlm_utils::simple_initiator_socket<conv> CONV_mem_isoc;		
-
-	//sc_event conv_end; //event that triggers zero corssing
+	tlm_utils::simple_initiator_socket<conv> CONV_mem_isoc;
 
 protected:
-
 	sc_time loct;
 	tlm_utils::tlm_quantumkeeper qk;
-	//gloabal variables:
-	
 	unsigned char ready;
 
 	SCimg2D img; //for loading the image
 	convOut2D convResult;
 	SCkernel2D kernel; //for loading the kernel
-	//std::vector<std::vector<SC_float_type>>  conv_result; //for sending the result
 
 	tlm_generic_payload pl; //generic payload
-	sc_time conv_time; //time
+	sc_time conv_time;		//time
 
-	
 	typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
-	void b_transport(pl_t&, sc_core::sc_time&);
+	void b_transport(pl_t &, sc_core::sc_time &);
 	void convolution();
-
-
 };
 
-
-#endif  //CONVOLUTION_HPP_INCLUDED
+#endif //CONVOLUTION_HPP_INCLUDED

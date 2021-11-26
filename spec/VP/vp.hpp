@@ -8,18 +8,18 @@
 #include "memory.hpp"
 #include "interconnect.hpp"
 
-class vp:
+class vp :
 
     sc_core::sc_module
 {
 public:
     vp(sc_core::sc_module_name);
+
 protected:
     cpu soft;
     conv hard;
     memory bram;
     interconnect ic;
-         
 };
 
 #endif //_VP_HPP_
