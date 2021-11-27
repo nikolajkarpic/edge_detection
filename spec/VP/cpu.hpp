@@ -13,9 +13,9 @@ class cpu : public sc_core::sc_module
 public:
     cpu(sc_core::sc_module_name);
 
-    tlm_utils::simple_initiator_socket<cpu> CPU_ic_mem_isoc;  //inicjator za ic salje slike i kernel u memoriju
+    tlm_utils::simple_initiator_socket<cpu> CPU_ic_mem_isoc;  //initiator for memory
     tlm_utils::simple_initiator_socket<cpu> CPU_ic_conv_isoc; //initiator socket for conv comunication
-    tlm_utils::simple_target_socket<cpu> CPU_conv_ic_tsoc;    // prima od IC iz konvolucije rezultat konvolucije
+    tlm_utils::simple_target_socket<cpu> CPU_conv_ic_tsoc;    // target for convolution
 
 protected:
     int rows;

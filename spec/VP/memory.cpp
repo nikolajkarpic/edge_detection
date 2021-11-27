@@ -7,9 +7,7 @@ using namespace sc_dt;
 
 memory::memory(sc_module_name name) : sc_module(name),
                                       MEM_ic_tsoc("cpu_tsoc")
-//conv_tsoc("conv_tsoc")
 {
-    //cpu_tsoc.register_b_transport(this, &memory::b_transport);
     MEM_ic_tsoc.register_b_transport(this, &memory::b_transport);
     MEM_conv_tsoc.register_b_transport(this, &memory::b_transport);
     SC_REPORT_INFO("Memory", "Platform is constructed.");
