@@ -86,7 +86,7 @@ void conv::convolution()
 	kernel = *((SCkernel2D *)pl.get_data_ptr());
 
 	qk.set_and_sync(loct);
-	loct += sc_time(5, SC_NS);
+	loct += sc_time(2.2, SC_NS);
 	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
 	//testing porposes
 	// cout<< kernel.size() << endl;
@@ -107,7 +107,7 @@ void conv::convolution()
 	img = *((SCimg2D *)pl.get_data_ptr());
 
 	qk.set_and_sync(loct);
-	loct += sc_time(5, SC_NS);
+	loct += sc_time(2.2, SC_NS);
 	SC_REPORT_INFO("CONV", "Image loaded from memory.");
 	//testing porposes
 	// for(int u = 0; u < img.size(); u++){
@@ -162,5 +162,5 @@ void conv::convolution()
 	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 	CONV_ic_isoc->b_transport(pl, loct); //sending conv_result to memory
 	qk.set_and_sync(loct);
-	loct += sc_time(5, SC_NS);
+	loct += sc_time(2.2, SC_NS);
 }
