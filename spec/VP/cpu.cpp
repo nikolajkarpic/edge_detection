@@ -27,12 +27,10 @@ void cpu::scanFromFile()
         if (i == 0)
         {
             rows = x;
-            cout << "ROWS:" << rows << endl;
         }
         if (i == 1)
         {
             cols = x;
-            cout << "COLS:" << cols << endl;
         }
 
         if (i > 1)
@@ -152,14 +150,12 @@ void cpu::zeroCrossingTest()
     //TESTING PURPOSES
     //convOut = inputArray;
     //ENDING TEST
-    cout << "1" << endl;
     int sourceHeight = convOut.size();
     int sourceWidth = convOut[1].size();
 
     int negCouter;
     int posCoutner;
     matrix1D tempMatrixRow;
-    cout << "2" << endl;
     for (int i = 1; i < sourceHeight - 1; i++)
     {
         outputArray.push_back(tempMatrixRow);
@@ -215,12 +211,12 @@ void cpu::CPU_process()
 
     CPU_ic_mem_isoc->b_transport(pl, loct);
     qk.set_and_sync(loct);
-    loct += sc_time(5, SC_NS);
+    loct += sc_time(2.2, SC_NS);
     SC_REPORT_INFO("CPU", "Kernel sent to memory.");
 
     scanFromFile();
     qk.set_and_sync(loct);
-    loct += sc_time(5, SC_NS);
+    loct += sc_time(2.2, SC_NS);
 
     pl.set_address(VP_ADDR_MEMORY_IMAGE);
     pl.set_command(TLM_WRITE_COMMAND);
@@ -230,7 +226,7 @@ void cpu::CPU_process()
 
     CPU_ic_mem_isoc->b_transport(pl, loct); //testing purposes, it needs to send to interconnect not directly to memory
     qk.set_and_sync(loct);
-    loct += sc_time(5, SC_NS);
+    loct += sc_time(2.2, SC_NS);
     SC_REPORT_INFO("CPU", "Image sent to memory.");
 
     writeReadyToConv();
@@ -266,11 +262,12 @@ void cpu::b_transport(pl_t &pl, sc_time &offset)
         SC_REPORT_ERROR("CPU", "Invalid TLM COMMAND.");
         break;
     }
+    offset += sc_core::sc_time(2.2, sc_core::SC_NS);
 }
 
 void cpu::writeReadyToConv()
 {
-    sc_time ofset = sc_time(5, SC_NS);
+    sc_time ofset = sc_time(2.2, SC_NS);
     unsigned char ready = 1;
     tlm_generic_payload pl;
     pl.set_address(VP_ADDR_CONVOLUTION_READY);

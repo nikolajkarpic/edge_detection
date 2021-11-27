@@ -86,7 +86,6 @@ void memory::b_transport(pl_t &pl, sc_time &offset)
             pl.set_data_ptr((unsigned char *)&kernel);
             pl.set_data_length(kernel.size());
             pl.set_response_status(TLM_OK_RESPONSE);
-            cout << "mem kernel read" << endl;
             //TESTING PORPOSES
             // for(int u = 0; u < kernel.size(); u++){
             //     for (int f = 0; f < kernel[0].size(); f++){
@@ -134,4 +133,5 @@ void memory::b_transport(pl_t &pl, sc_time &offset)
         SC_REPORT_ERROR("MEMORY", "TLM invalid command");
         break;
     }
+    offset += sc_core::sc_time(2.2, sc_core::SC_NS);
 }

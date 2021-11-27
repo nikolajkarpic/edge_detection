@@ -68,6 +68,7 @@ void conv::b_transport(pl_t &pl, sc_time &offset)
 		SC_REPORT_ERROR("CORE", "TLM bad command");
 		break;
 	}
+	offset += sc_core::sc_time(2.2, sc_core::SC_NS);
 }
 
 void conv::convolution()

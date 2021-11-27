@@ -60,5 +60,5 @@ void interconnect::b_transport(pl_t &pl, sc_core::sc_time &offset)
 		pl.set_response_status(TLM_COMMAND_ERROR_RESPONSE);
 		SC_REPORT_ERROR("CORE", "TLM bad command");
 	}
-	offset += sc_core::sc_time(10, sc_core::SC_NS);
+	offset += sc_core::sc_time(2.2, sc_core::SC_NS);
 }
