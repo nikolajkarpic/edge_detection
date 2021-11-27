@@ -8,7 +8,7 @@ from PIL import Image
 with open("outFile.txt", "r") as text_file:
 
     rows = text_file.readlines() 
-    cols = iksevi[1].split(' ')
+    cols = rows[1].split(' ')
     print('rows : ',len(rows))
     print('cols : ',len(cols))
     imgArray = numpy.empty([len(rows),len(cols)], dtype=numpy.int16)
