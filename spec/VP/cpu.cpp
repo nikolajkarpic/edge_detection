@@ -16,7 +16,7 @@ cpu::cpu(sc_module_name name) : sc_module(name)
 void cpu::scanFromFile()
 {
     ifstream inFile;
-    inFile.open("/home/donnico/FTN/edge_detection/spec/VP/VPtest.txt");
+    inFile.open("/home/donnico/FTN/edge_detection/spec/VP/demo.txt");
     SCimg1D inputArrayTmp;
     SC_pixel_value_type tempPixelValue;
     int i = 0;
