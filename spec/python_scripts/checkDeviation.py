@@ -3,6 +3,10 @@ import numpy as np
 import math
 import sys
 
+if len(sys.argv) != 3:
+        print("Script wasn't run properly. \n The script takes two argumet, paths to the images.\nExample py .\chechDeviation C:\FTN\8_osmi_semestar\g3-2021\data\input1.png C:\FTN\8_osmi_semestar\g3-2021\data\edge.png")
+        exit()
+
 img1Path =  sys.argv[1]
 img2Path =  sys.argv[2]
 

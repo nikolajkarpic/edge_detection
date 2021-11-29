@@ -1,10 +1,16 @@
 import cv2
 import numpy
 import math
+import sys
+
+if len(sys.argv) != 1:
+        print("Script wasn't run properly. \n Script takes no arguments. outFile.txt file should be placed in the same folder as the script for it to work.\n")
+        exit()
 
 
 with open("outFile.txt", "r") as text_file:
-
+    if(not text_file.readable()):
+        print("File not readable.\n")
     rows = text_file.readlines() 
     cols = rows[1].split(' ')
     print('rows : ',len(rows))

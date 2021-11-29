@@ -3,6 +3,9 @@ import numpy as np
 import cv2
 import sys
 
+if len(sys.argv) != 2:
+        print("Script wasn't run properly. \n Script takes one argument. Example py .\img_to_txt.py C:\FTN\8_osmi_semestar\g3-2021\data\input1.png\n")
+        exit()
 
 
 im = cv2.imread(str(sys.argv[1]))
