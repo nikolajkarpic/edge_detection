@@ -16,7 +16,7 @@ cpu::cpu(sc_module_name name) : sc_module(name)
 void cpu::scanFromFile()
 {
     ifstream inFile;
-    inFile.open("/home/donnico/FTN/edge_detection/spec/VP/demo.txt");
+    inFile.open("../python_scripts/demo.txt");
     SCimg1D inputArrayTmp;
     SC_pixel_value_type tempPixelValue;
     int i = 0;
@@ -121,7 +121,7 @@ void cpu::writeImageToFile()
     //outputArray = inputArray;
     //END TESTING
     ofstream outFile;
-    outFile.open("/home/donnico/FTN/edge_detection/spec/VP/outFile.txt");
+    outFile.open("../python_scripts/outFile.txt");
     for (int l = 0; l < outputArray.size(); l++)
     {
         for (int k = 0; k < outputArray[0].size(); k++)
