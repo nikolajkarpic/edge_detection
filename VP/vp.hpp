@@ -14,9 +14,9 @@ class vp :
 {
 public:
     vp(sc_core::sc_module_name);
-
-protected:
     cpu soft;
+protected:
+    
     conv hard;
     memory bram;
     interconnect ic;

@@ -3,12 +3,17 @@ import numpy
 import math
 import sys
 
-if len(sys.argv) != 1:
-        print("Script wasn't run properly. \n Script takes no arguments. outFile.txt file should be placed in the same folder as the script for it to work.\n")
-        exit()
+if len(sys.argv) == 1 and sys.argv[1].lower == "help":
+    print("Script takes two arguments, path to the .txt file and path where to save the image.\nExample py txt_to_img.py /home/user/project/VP/VPoutput.txt /home/user/project/data/VPedge.png\n")
+    exit()
+if len(sys.argv) != 3:
+    print("Script wasn't run properly. \n Script takes two arguments, path to the .txt file and path where to save the image.\nExample py txt_to_img.py /home/user/project/VP/VPoutput.txt /home/user/project/data/VPedge.png\n")
+    exit()
 
+path = sys.argv[1]
+pathOut = sys.argv[2]
 
-with open("outFile.txt", "r") as text_file:
+with open(path, "r") as text_file:
     if(not text_file.readable()):
         print("File not readable.\n")
     rows = text_file.readlines() 
@@ -33,4 +38,4 @@ with open("outFile.txt", "r") as text_file:
     cv2.imshow("img",blank_image )
     cv2.waitKey(0) 
     cv2.destroyAllWindows
-    cv2.imwrite("./outputImage.png", blank_image)
+    cv2.imwrite(pathOut, blank_image)

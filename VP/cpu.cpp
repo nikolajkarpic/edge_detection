@@ -13,10 +13,20 @@ cpu::cpu(sc_module_name name) : sc_module(name)
     SC_REPORT_INFO("CPU", "Platform is constructed.");
 }
 
+void cpu::setPathIn(char *path){
+    pathIn = path;
+    cout<< pathIn << endl;
+}
+
+void cpu::setPathOut(char *path){
+    pathOut = path;
+    cout<< pathOut << endl;
+}
+
 void cpu::scanFromFile()
 {
     ifstream inFile;
-    inFile.open("../python_scripts/demo.txt");
+    inFile.open(pathIn);
     SCimg1D inputArrayTmp;
     SC_pixel_value_type tempPixelValue;
     int i = 0;
@@ -121,7 +131,7 @@ void cpu::writeImageToFile()
     //outputArray = inputArray;
     //END TESTING
     ofstream outFile;
-    outFile.open("../python_scripts/outFile.txt");
+    outFile.open(pathOut);
     for (int l = 0; l < outputArray.size(); l++)
     {
         for (int k = 0; k < outputArray[0].size(); k++)
