@@ -21,6 +21,7 @@ public:
 
 
 protected:
+    int kernelSize = 9;
     int rows;
     int cols;
 

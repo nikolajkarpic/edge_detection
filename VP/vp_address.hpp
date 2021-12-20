@@ -18,9 +18,15 @@ const sc_dt::uint64 VP_ADDR_CONVOLUTION_READY = VP_ADDR_CONVOLUTION + CONV_READY
 
 const sc_dt::uint64 MEMORY_IMG = 0x00000000;
 const sc_dt::uint64 MEMORY_KERNEL = 0x00000001;
+const sc_dt::uint64 MEMORY_KERNEL_SIZE = 0x00000002;
+const sc_dt::uint64 MEMORY_IMAGE_ROWS = 0x00000003;
+const sc_dt::uint64 MEMORY_IMAGE_COLS = 0x00000004;
 
 const sc_dt::uint64 VP_ADDR_MEMORY = 0x43E00000;                            //memory addr
 const sc_dt::uint64 VP_ADDR_MEMORY_IMAGE = VP_ADDR_MEMORY + MEMORY_IMG;     //address for img in memory
 const sc_dt::uint64 VP_ADDR_MEMORY_KERNEL = VP_ADDR_MEMORY + MEMORY_KERNEL; //address for kernel in memory
+const sc_dt::uint64 VP_ADDR_MEMORY_KERNEL_SIZE = VP_ADDR_MEMORY + MEMORY_KERNEL_SIZE;
+const sc_dt::uint64 VP_ADDR_MEMORY_IMAGE_ROWS = VP_ADDR_MEMORY + MEMORY_IMAGE_ROWS;
+const sc_dt::uint64 VP_ADDR_MEMORY_IMAGE_COLS = VP_ADDR_MEMORY + MEMORY_IMAGE_COLS;
 
 #endif //_VP_ADDRESS_H_

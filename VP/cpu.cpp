@@ -212,6 +212,17 @@ void cpu::CPU_process()
     qk.reset();
 
     createKernelLoGDescrete();
+    
+    pl.set_address(VP_ADDR_MEMORY_KERNEL_SIZE);
+    pl.set_command(TLM_WRITE_COMMAND);
+    pl.set_data_length(4);
+    pl.set_data_ptr((unsigned char *)&kernelSize);
+    pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+    
+    CPU_ic_mem_isoc->b_transport(pl, loct);
+    qk.set_and_sync(loct);
+    loct += sc_time(2.2, SC_NS);
+    SC_REPORT_INFO("CPU", "Kernel size sent to memory.");
 
     pl.set_address(VP_ADDR_MEMORY_KERNEL);
     pl.set_command(TLM_WRITE_COMMAND);
@@ -227,6 +238,39 @@ void cpu::CPU_process()
     scanFromFile();
     qk.set_and_sync(loct);
     loct += sc_time(2.2, SC_NS);
+
+    pl.set_address(VP_ADDR_MEMORY_IMAGE);
+    pl.set_command(TLM_WRITE_COMMAND);
+    pl.set_data_length(inputArray.size());
+    pl.set_data_ptr((unsigned char *)&inputArray);
+    pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+
+    CPU_ic_mem_isoc->b_transport(pl, loct); //testing purposes, it needs to send to interconnect not directly to memory
+    qk.set_and_sync(loct);
+    loct += sc_time(2.2, SC_NS);
+    SC_REPORT_INFO("CPU", "Image sent to memory.");
+
+    pl.set_address(VP_ADDR_MEMORY_IMAGE_COLS);
+    pl.set_command(TLM_WRITE_COMMAND);
+    pl.set_data_length(1);
+    pl.set_data_ptr((unsigned char *)&cols);
+    pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+
+    CPU_ic_mem_isoc->b_transport(pl, loct); //testing purposes, it needs to send to interconnect not directly to memory
+    qk.set_and_sync(loct);
+    loct += sc_time(2.2, SC_NS);
+    SC_REPORT_INFO("CPU", "Cols sent to memory.");
+
+    pl.set_address(VP_ADDR_MEMORY_IMAGE_ROWS);
+    pl.set_command(TLM_WRITE_COMMAND);
+    pl.set_data_length(1);
+    pl.set_data_ptr((unsigned char *)&rows);
+    pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+
+    CPU_ic_mem_isoc->b_transport(pl, loct); //testing purposes, it needs to send to interconnect not directly to memory
+    qk.set_and_sync(loct);
+    loct += sc_time(2.2, SC_NS);
+    SC_REPORT_INFO("CPU", "Rows sent to memory.");
 
     pl.set_address(VP_ADDR_MEMORY_IMAGE);
     pl.set_command(TLM_WRITE_COMMAND);

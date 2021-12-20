@@ -20,6 +20,9 @@ protected:
 	SCkernel2D kernel;
 	SCimg2D inputImage;
 	convOut2D convOutput;
+	int kernelSize;
+	int rows;
+	int cols;
 	typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
 	void b_transport(pl_t &, sc_core::sc_time &);
 	unsigned int transport_dbg(pl_t &);

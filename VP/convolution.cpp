@@ -88,6 +88,46 @@ void conv::convolution()
 	qk.set_and_sync(loct);
 	loct += sc_time(2.2, SC_NS);
 	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
+
+	pl.set_address(MEMORY_KERNEL_SIZE);
+	pl.set_command(TLM_READ_COMMAND);
+	pl.set_data_length(1);
+	pl.set_data_ptr((unsigned char *)&kernelSize);
+	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+	CONV_mem_isoc->b_transport(pl, loct);
+
+	kernelSize = *((int *)pl.get_data_ptr());
+
+	qk.set_and_sync(loct);
+	loct += sc_time(2.2, SC_NS);
+	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
+	
+	pl.set_address(MEMORY_IMAGE_COLS);
+	pl.set_command(TLM_READ_COMMAND);
+	pl.set_data_length(1);
+	pl.set_data_ptr((unsigned char *)&cols);
+	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+	CONV_mem_isoc->b_transport(pl, loct);
+
+	cols = *((int *)pl.get_data_ptr());
+
+	qk.set_and_sync(loct);
+	loct += sc_time(2.2, SC_NS);
+	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
+	
+	pl.set_address(MEMORY_IMAGE_ROWS);
+	pl.set_command(TLM_READ_COMMAND);
+	pl.set_data_length(1);
+	pl.set_data_ptr((unsigned char *)&rows);
+	pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+	CONV_mem_isoc->b_transport(pl, loct);
+
+	rows = *((int *)pl.get_data_ptr());
+
+	qk.set_and_sync(loct);
+	loct += sc_time(2.2, SC_NS);
+	SC_REPORT_INFO("CONV", "Kernel loaded from memory.");
+
 	//testing porposes
 	// cout<< kernel.size() << endl;
 	// for(int u = 0; u < kernel.size(); u++){
@@ -121,18 +161,18 @@ void conv::convolution()
 	SC_float_type sum(32, 17);
 	SC_conv_out_t convOutValue;
 	convOut1D convResultTemp;
-	int columns = img[0].size();
-	int rows = img.size();
-	int padding = (KERNEL_SIZE - 1) / 2;
+	// int columns = img[0].size();
+	// int rows = img.size();
+	int padding = (kernelSize - 1) / 2;
 	for (int i = padding; i < rows - padding; i++)
 	{
 		convResult.push_back(convResultTemp);
-		for (int j = padding; j < columns - padding; j++)
+		for (int j = padding; j < cols - padding; j++)
 		{
 			sum = 0;
-			for (int k = 0; k < KERNEL_SIZE; k++)
+			for (int k = 0; k < kernelSize; k++)
 			{
-				for (int l = 0; l < KERNEL_SIZE; l++)
+				for (int l = 0; l < kernelSize; l++)
 				{
 
 					sum = sum + (img[i - padding + k][j - padding + l] * kernel[k][l]);

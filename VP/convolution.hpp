@@ -26,7 +26,9 @@ protected:
 	sc_time loct;
 	tlm_utils::tlm_quantumkeeper qk;
 	unsigned char ready;
-
+	int cols;
+	int rows;
+	int kernelSize;
 	SCimg2D img; //for loading the image
 	convOut2D convResult;
 	SCkernel2D kernel; //for loading the kernel

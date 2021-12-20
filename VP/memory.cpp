@@ -55,7 +55,48 @@ void memory::b_transport(pl_t &pl, sc_time &offset)
             //ENDING TESTING PURPOSES
             SC_REPORT_INFO("Memory", "Image recieved.");
             break;
+        case MEMORY_KERNEL_SIZE:
+            kernelSize = *((int *)pl.get_data_ptr());
+            //TESTING PURPOSES INGORE:
 
+            // for(int u = 0; u < inputImage.size(); u++){
+            //     for (int f = 0; f < inputImage[0].size(); f++){
+            //         cout << inputImage[u][f] << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << "*********************************************************************************************************" << endl;
+            //ENDING TESTING PURPOSES
+            SC_REPORT_INFO("Memory", "Image recieved.");
+            break;
+        case MEMORY_IMAGE_ROWS:
+            rows = *((int *)pl.get_data_ptr());
+            //TESTING PURPOSES INGORE:
+
+            // for(int u = 0; u < inputImage.size(); u++){
+            //     for (int f = 0; f < inputImage[0].size(); f++){
+            //         cout << inputImage[u][f] << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << "*********************************************************************************************************" << endl;
+            //ENDING TESTING PURPOSES
+            SC_REPORT_INFO("Memory", "Image recieved.");
+            break;
+        case MEMORY_IMAGE_COLS:
+            cols = *((int *)pl.get_data_ptr());
+            //TESTING PURPOSES INGORE:
+
+            // for(int u = 0; u < inputImage.size(); u++){
+            //     for (int f = 0; f < inputImage[0].size(); f++){
+            //         cout << inputImage[u][f] << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << "*********************************************************************************************************" << endl;
+            //ENDING TESTING PURPOSES
+            SC_REPORT_INFO("Memory", "Image recieved.");
+            break;
         // case MEMORY_CONV_RESULT:
         //     convOutput = *((convOut2D*)pl.get_data_ptr());
         //     //TESTING PURPOSES INGORE:
@@ -112,6 +153,54 @@ void memory::b_transport(pl_t &pl, sc_time &offset)
             //ENDING TESTING
             SC_REPORT_INFO("Memory", "Image sent to convolution.");
 
+            break;
+        case MEMORY_KERNEL_SIZE:
+            pl.set_data_ptr((unsigned char *)&kernelSize);
+            pl.set_data_length(1);
+            pl.set_response_status(TLM_OK_RESPONSE);
+            //TESTING PURPOSES
+            // cout << "mem iamge read" << endl;
+            // for(int u = 0; u < inputImage.size(); u++){
+            //     for (int f = 0; f < inputImage[0].size(); f++){
+            //         cout << inputImage[u][f] << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << "*********************************************************************************************************" << endl;
+            //ENDING TESTING
+            SC_REPORT_INFO("Memory", "KERNEL SIZE sent to convolution.");
+            break;
+        case MEMORY_IMAGE_COLS:
+            pl.set_data_ptr((unsigned char *)&cols);
+            pl.set_data_length(1);
+            pl.set_response_status(TLM_OK_RESPONSE);
+            //TESTING PURPOSES
+            // cout << "mem iamge read" << endl;
+            // for(int u = 0; u < inputImage.size(); u++){
+            //     for (int f = 0; f < inputImage[0].size(); f++){
+            //         cout << inputImage[u][f] << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << "*********************************************************************************************************" << endl;
+            //ENDING TESTING
+            SC_REPORT_INFO("Memory", "COLS sent to convolution.");
+            break;
+        case MEMORY_IMAGE_ROWS:
+            pl.set_data_ptr((unsigned char *)&rows);
+            pl.set_data_length(1);
+            pl.set_response_status(TLM_OK_RESPONSE);
+            //TESTING PURPOSES
+            // cout << "mem iamge read" << endl;
+            // for(int u = 0; u < inputImage.size(); u++){
+            //     for (int f = 0; f < inputImage[0].size(); f++){
+            //         cout << inputImage[u][f] << " ";
+            //     }
+            //     cout << endl;
+            // }
+            // cout << "*********************************************************************************************************" << endl;
+            //ENDING TESTING
+            SC_REPORT_INFO("Memory", "ROWS sent to convolution.");
             break;
         // case MEMORY_CONV_RESULT:
         //     pl.set_data_ptr((unsigned char*)&convOutput);

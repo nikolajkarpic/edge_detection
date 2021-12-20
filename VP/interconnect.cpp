@@ -32,7 +32,7 @@ void interconnect::b_transport(pl_t &pl, sc_core::sc_time &offset)
 			IC_conv_isoc->b_transport(pl, offset);
 			pl.set_address(addr);
 		}
-		else if (addr >= VP_ADDR_MEMORY && addr <= VP_ADDR_MEMORY_KERNEL)
+		else if (addr >= VP_ADDR_MEMORY && addr <= VP_ADDR_MEMORY_IMAGE_COLS)
 		{
 
 			taddr = addr & 0x000FFFFF;
