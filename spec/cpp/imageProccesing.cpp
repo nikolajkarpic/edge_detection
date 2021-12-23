@@ -113,3 +113,88 @@ image2D zeroCrossingTest(image2D source)
 }
 
 
+image2D loopUnrolledConv(kernel2D kernel, image2D source){
+
+	int imageWidth = source[0].size();
+	int imageHeight = source.size();
+
+	int kernelSize = kernel[0].size();
+	//int kernelHeight = kernel[0].size();
+	pixel tempPixel;
+
+	cout << imageHeight << endl << imageWidth << endl;
+
+	image1D temp1D(imageWidth  - kernelSize +1 , tempPixel);
+	image2D result(imageHeight - kernelSize + 1, temp1D);
+
+
+	int i = 0;
+	int j = 0;
+	int k = 0;
+	int l = 0;
+	int convOut = 0;
+	double sum = 0;
+	//cout << kernelSize - 1<< endl;
+	i = 0;
+	l1 :j = 0;
+		sum = 0.0;
+		//cout << "usao u l1" << endl;    
+	l2 :    k = 0;
+	        
+			//cout << "usao u l2" << endl;
+	l3 :        l = 0;
+				//cout << "usao u l3" << endl;
+	l4 :            sum = sum + (kernel[k][l] * source[i + k][j + l].red) + (kernel[k][l + 1] * source[i + k][j + l + 1].red) + (kernel[k][l + 2] * source[i + k][j + l + 2].red);
+	                //sum = sum + (kernel[k][l + 1] * source[i + k][j + l + 1].red);
+	                //sum = sum + (kernel[k][l + 2] * source[i + k][j + l + 2].red);
+					//cout << sum << endl;
+	                //cout << l << endl;
+					//cout << l << endl;
+	                if (l == kernelSize  - 3)
+	                {
+						//cout << "Usao u prfi if" << endl;
+	                    if(k == kernelSize - 1){
+							//cout << "usao u drugi if"<< endl;
+	                        goto l5;
+	                    }else {
+	                    	k = k + 1;
+							//cout << "k:" << k << endl;
+	                    	goto l3;
+						}
+	                }
+	                else
+	                {
+						l = l + 3;
+	                    goto l4;
+	                }
+					
+	l5 ://cout << "usao u l5" << endl;
+	 	if (sum < 0){
+	       convOut = -1; 
+	    }else if(sum > 0){
+	        convOut = 1;
+	    }else{
+	        convOut = 0;
+	    }
+		//cout << convOut << endl;
+		//cout << "i: " << i << " j: " << j << " sum: " << sum << endl;
+	    result[i][j].convResult = convOut;
+	    
+	    if (j == imageWidth - kernelSize ){
+	        if(i == imageHeight - kernelSize){
+	            goto stop;
+	        }else{
+				//cout << "i:" << i << endl;
+	        	i = i + 1;
+	        	goto l1;
+			}
+	    } else{
+			//cout << "j:" << j << endl;
+			j = j + 1;
+	        goto l2;
+	    }
+
+	stop : cout << "dosao do kraja" << endl;
+			return result;
+
+	}

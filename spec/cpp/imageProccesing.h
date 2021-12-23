@@ -13,5 +13,6 @@ image2D convolution2D(kernel2D kernel, image2D source);
 
 image2D zeroCrossingTest(image2D source);
 
+image2D loopUnrolledConv(kernel2D kernel, image2D source);
 
 #endif //IMAGEPROCCESING_H_INCLUDED
