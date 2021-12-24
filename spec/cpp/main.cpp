@@ -31,10 +31,16 @@ int main(int argc, char* argv[]) {
 
     kernel2D  LoG = createKernelLoGDescrete(KERNEL_SIZE, 1.4); // genererating LoG kernel
 
-    image2D edge = convolution2D(LoG, temp); // convolving grayscaled image with LoG kernel
+    //image2D edge = convolution2D(LoG, temp); // convolving grayscaled image with LoG kernel
+
+    image2D edge = loopUnrolledConv(LoG, temp);
+
+    cout << edge[0].size() << endl << edge.size() << endl;
 
     edge = zeroCrossingTest(edge); // doing zerocrossing test
-    showImage(path, edge); //shows image
+    //edge1 = zeroCrossingTest(edge1); // doing zerocrossing test
+    showImage(path, edge);
+    //showImage(path, edge1); //shows image
 
     return 0;
 }

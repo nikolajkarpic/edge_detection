@@ -24,7 +24,7 @@ image2D convolution2D(kernel2D kernel, image2D source)
 			for (int k = 0; k < kernelHeight; k++) {
 				for (int l = 0; l < kernelWidth; l++) {
 					sum = sum + (kernel[k][l] * source[i + k][j + l].red);
-					
+					//cout << "i: " << i << " j: " << j << " k: "<< k << " l: "<< l <<" sum: " << sum << endl;
 				}
 				//cout << sum << endl;
 			}
@@ -137,10 +137,10 @@ image2D loopUnrolledConv(kernel2D kernel, image2D source){
 	//cout << kernelSize - 1<< endl;
 	i = 0;
 	l1 :j = 0;
-		sum = 0.0;
+		
 		//cout << "usao u l1" << endl;    
 	l2 :    k = 0;
-	        
+	        sum = 0.0;
 			//cout << "usao u l2" << endl;
 	l3 :        l = 0;
 				//cout << "usao u l3" << endl;
@@ -148,13 +148,14 @@ image2D loopUnrolledConv(kernel2D kernel, image2D source){
 	                //sum = sum + (kernel[k][l + 1] * source[i + k][j + l + 1].red);
 	                //sum = sum + (kernel[k][l + 2] * source[i + k][j + l + 2].red);
 					//cout << sum << endl;
+					//cout << "i: " << i << " j: " << j << " k: "<< k << " l: "<< l <<" sum: " << sum << endl;
 	                //cout << l << endl;
-					//cout << l << endl;
-	                if (l == kernelSize  - 3)
+	                if (l == kernelSize - 3)
 	                {
 						//cout << "Usao u prfi if" << endl;
 	                    if(k == kernelSize - 1){
 							//cout << "usao u drugi if"<< endl;
+							//cout << sum << endl;
 	                        goto l5;
 	                    }else {
 	                    	k = k + 1;
@@ -197,4 +198,4 @@ image2D loopUnrolledConv(kernel2D kernel, image2D source){
 	stop : cout << "dosao do kraja" << endl;
 			return result;
 
-	}
+}
