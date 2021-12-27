@@ -136,15 +136,15 @@ image2D loopUnrolledConv(kernel2D kernel, image2D source){
 	double sum = 0;
 	//cout << kernelSize - 1<< endl;
 	i = 0;
-	l1 :j = 0;
+	reset_j :j = 0;
 		
 		//cout << "usao u l1" << endl;    
-	l2 :    k = 0;
+	reset_k :    k = 0;
 	        sum = 0.0;
 			//cout << "usao u l2" << endl;
-	l3 :        l = 0;
+	reset_l :        l = 0;
 				//cout << "usao u l3" << endl;
-	l4 :            sum = sum + (kernel[k][l] * source[i + k][j + l].red) + (kernel[k][l + 1] * source[i + k][j + l + 1].red) + (kernel[k][l + 2] * source[i + k][j + l + 2].red);
+	mac :            sum = sum + (kernel[k][l] * source[i + k][j + l].red) + (kernel[k][l + 1] * source[i + k][j + l + 1].red) + (kernel[k][l + 2] * source[i + k][j + l + 2].red);
 	                //sum = sum + (kernel[k][l + 1] * source[i + k][j + l + 1].red);
 	                //sum = sum + (kernel[k][l + 2] * source[i + k][j + l + 2].red);
 					//cout << sum << endl;
@@ -156,20 +156,20 @@ image2D loopUnrolledConv(kernel2D kernel, image2D source){
 	                    if(k == kernelSize - 1){
 							//cout << "usao u drugi if"<< endl;
 							//cout << sum << endl;
-	                        goto l5;
+	                        goto conv_out;
 	                    }else {
 	                    	k = k + 1;
 							//cout << "k:" << k << endl;
-	                    	goto l3;
+	                    	goto reset_l;
 						}
 	                }
 	                else
 	                {
 						l = l + 3;
-	                    goto l4;
+	                    goto mac;
 	                }
 					
-	l5 ://cout << "usao u l5" << endl;
+	conv_out ://cout << "usao u l5" << endl;
 	 	if (sum < 0){
 	       convOut = -1; 
 	    }else if(sum > 0){
@@ -187,12 +187,12 @@ image2D loopUnrolledConv(kernel2D kernel, image2D source){
 	        }else{
 				//cout << "i:" << i << endl;
 	        	i = i + 1;
-	        	goto l1;
+	        	goto reset_j;
 			}
 	    } else{
 			//cout << "j:" << j << endl;
 			j = j + 1;
-	        goto l2;
+	        goto reset_k;
 	    }
 
 	stop : cout << "dosao do kraja" << endl;
