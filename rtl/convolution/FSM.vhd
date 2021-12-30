@@ -30,16 +30,16 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity conv is
+entity conv_FSM is
     generic (
-        PIXEL_WIDTH : integer := 8;
-        KERNEL_WIDTH : integer := 16;
+        WIDTH_pixel : integer := 8;
+        WIDTH_kernel : integer := 16;
         KERNEL_SIZE : integer := 9;
-        KERNEL_SIZE_WIDTH : integer := 4;
+        WIDTH_kernel_size : integer := 4;
         DEFAULT_IMG_SIZE : integer := 100;
-        IMG_SIZE_WIDTH : integer := 7;
-        BRAM_IN_OUT_ADR_WITDH : integer := 14;
-        KERNEL_ADR_WIDTH : integer := 6;
+        WIDTH_img_size : integer := 7;
+        WIDTH_bram_in_out_adr : integer := 14;
+        WIDTH_kernel_adr : integer := 6;
 
         SUM_WIDTH : integer := 27
     );
@@ -51,41 +51,41 @@ entity conv is
         --image config--
         --image
         --pixel and kernel data--
-        pixel_0_val_i : in std_logic_vector (PIXEL_WIDTH - 1 downto 0);
-        pixel_1_val_i : in std_logic_vector (PIXEL_WIDTH - 1 downto 0);
-        pixel_2_val_i : in std_logic_vector (PIXEL_WIDTH - 1 downto 0);
-        kernel_0_val_i : in std_logic_vector (KERNEL_WIDTH - 1 downto 0);
-        kernel_1_val_i : in std_logic_vector (KERNEL_WIDTH - 1 downto 0);
-        kernel_2_val_i : in std_logic_vector (KERNEL_WIDTH - 1 downto 0);
+        pixel_0_val_i : in std_logic_vector (WIDTH_pixel - 1 downto 0);
+        pixel_1_val_i : in std_logic_vector (WIDTH_pixel - 1 downto 0);
+        pixel_2_val_i : in std_logic_vector (WIDTH_pixel - 1 downto 0);
+        kernel_0_val_i : in std_logic_vector (WIDTH_kernel - 1 downto 0);
+        kernel_1_val_i : in std_logic_vector (WIDTH_kernel - 1 downto 0);
+        kernel_2_val_i : in std_logic_vector (WIDTH_kernel - 1 downto 0);
 
         --pixel and kernel addres data--
-        pixel_0_adr_o : out std_logic_vector (BRAM_IN_OUT_ADR_WITDH - 1 downto 0);
-        pixel_1_adr_o : out std_logic_vector (BRAM_IN_OUT_ADR_WITDH - 1 downto 0);
-        pixel_2_adr_o : out std_logic_vector (BRAM_IN_OUT_ADR_WITDH - 1 downto 0);
-        kernel_0_adr_o : out std_logic_vector (KERNEL_ADR_WIDTH - 1 downto 0);
-        kernel_1_adr_o : out std_logic_vector (KERNEL_ADR_WIDTH - 1 downto 0);
-        kernel_2_adr_o : out std_logic_vector (KERNEL_ADR_WIDTH - 1 downto 0);
+        pixel_0_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        pixel_1_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        pixel_2_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        kernel_0_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+        kernel_1_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+        kernel_2_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
         --ip output data and addres--
         conv_o : out std_logic_vector (1 downto 0);
-        conv_out_adr_o : out std_logic_vector (BRAM_IN_OUT_ADR_WITDH - 1 downto 0);
+        conv_out_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
         --ready to write output--
         ready_o : out std_logic;
         --conv done--
         done_o : out std_logic
     );
-end conv;
+end conv_FSM;
 
-architecture Behavioral of conv is
+architecture Behavioral of conv_FSM is
 
     type state is (idle, init, reset_j, reset_k, reset_l, mac_adr_and_data, mac, conv_out);
     signal next_state, current_state : state;
-    signal pixel_0_val_reg, pixel_1_val_reg, pixel_2_val_reg : std_logic_vector (PIXEL_WIDTH - 1 downto 0);
-    signal kernel_0_val_reg, kernel_1_val_reg, kernel_2_val_reg : std_logic_vector (KERNEL_WIDTH - 1 downto 0);
+    signal pixel_0_val_reg, pixel_1_val_reg, pixel_2_val_reg : std_logic_vector (WIDTH_pixel - 1 downto 0);
+    signal kernel_0_val_reg, kernel_1_val_reg, kernel_2_val_reg : std_logic_vector (WIDTH_kernel - 1 downto 0);
 
     signal sum : std_logic_vector(SUM_WIDTH - 1 downto 0);
 
-    signal i_reg, i_next_reg, j_reg, j_next_reg : std_logic_vector(IMG_SIZE_WIDTH - 1 downto 0);
-    signal k_reg, k_next_reg, l_reg, l_next_reg : std_logic_vector(KERNEL_SIZE_WIDTH - 1 downto 0);
+    signal i_reg, i_next_reg, j_reg, j_next_reg : std_logic_vector(WIDTH_img_size - 1 downto 0);
+    signal k_reg, k_next_reg, l_reg, l_next_reg : std_logic_vector(WIDTH_kernel_size - 1 downto 0);
 begin
 
     registers : process (clk_i)
