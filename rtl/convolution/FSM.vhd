@@ -148,6 +148,7 @@ begin
         sum_en_o <= '0';
         mac_en_o <= '0';
         ready_o <= '0';
+        reset_PB_o <= '0';
         done_o <= '0';
         calculate_p_k_adr_o <= '0';
         calculate_conv_adr_o <= '0';
@@ -173,7 +174,9 @@ begin
                 next_state <= reset_k;
             when reset_k =>
                 k_next_reg <= (others => '0');
+
                 sum <= (others => '0');
+                reset_PB_o <= '1';
                 next_state <= reset_l;
             when reset_l =>
                 l_next_reg <= (others => '0');
@@ -219,8 +222,8 @@ begin
                 sum_en_o <= '1';
                 --conv_out_adr_calculation
                 --sign check
-                if (j_reg = "1100100") then
-                    if (i_reg = "1100100") then
+                if (j_reg = "1100100") then --make it no hard codded
+                    if (i_reg = "1100100") then -- same 
                         next_state <= idle;
                     else
                         --next_state <= inc_i;
