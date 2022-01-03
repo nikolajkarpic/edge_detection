@@ -38,6 +38,7 @@ entity sipo_register is
     );
     port(
         clk: in std_logic;
+        shift: in std_logic;
         sereal_input: in std_logic_vector(WIDTH-1 downto 0);
         parallel_output: out std_logic_vector(DEPTH*WIDTH-1 downto 0);
         read_en: out std_logic
@@ -51,7 +52,7 @@ architecture Behavioral of sipo_register is
 begin
     sipo_reg: process (clk) is
     begin
-        if rising_edge(clk) then
+        if rising_edge(clk) and shift = '1' then
             en_gen <= en_gen(0) & en_gen(DEPTH-1 downto 1);
             state_s <= sereal_input & state_s(DEPTH*WIDTH-1 downto WIDTH);
         end if;
