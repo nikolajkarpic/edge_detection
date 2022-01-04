@@ -33,7 +33,7 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity singe_port_bram is
     generic(
-        WIDTH_data: natural := 16;
+        WIDTH_data: natural := 64;
         WIDTH_adr: natural := 18;
         size : natural := 180625
     );

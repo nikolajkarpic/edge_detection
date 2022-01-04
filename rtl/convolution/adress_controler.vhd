@@ -33,15 +33,16 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity adress_controler is
     generic (
-        DEFAULT_IMG_SIZE : integer := 100;
-        WIDTH_img_size : integer := 7;
-        KERNEL_SIZE : integer := 9;
-        WIDTH_kernel_size : integer := 4;
-        WIDTH_pixel : natural := 8;
-        WIDTH_kernel : natural := 16;
-        WIDTH_sum : natural := 32;
-        WIDTH_bram_in_out_adr : integer := 14;
-        WIDTH_kernel_adr : integer := 8;
+        WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
+        DEFAULT_IMG_SIZE : integer := 100; -- width/height of the image
+        WIDTH_img_size : integer := 7; --Number of bits needed to reporesent img size
+        KERNEL_SIZE : integer := 9; -- widht/height of kernel
+        WIDTH_kernel_size : integer := 4; --Number of bits needed to reporesent kernel size
+        WIDTH_pixel : natural := 8; --Number of bits needed to represent pixel data
+        WIDTH_kernel : natural := 16; --Number of bits needed to represent kernel data
+        WIDTH_sum : natural := 32;  --Number of bits needed to represent final sum data
+        WIDTH_bram_in_out_adr : integer := 14; --Number of bits needed to represent number of all pixels addreses (100x100 or 425 x 425)
+        WIDTH_kernel_adr : integer := 8;  --Number of bits needed to represent kernel address data
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
@@ -65,8 +66,16 @@ entity adress_controler is
         
         kernel_0_adr_o: out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
         kernel_1_adr_o: out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-        kernel_2_adr_o: out std_logic_vector (WIDTH_kernel_adr - 1 downto 0)
+        kernel_2_adr_o: out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
 
+        pixel_0_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        pixel_0_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
+
+        pixel_1_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        pixel_1_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
+
+        pixel_2_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        pixel_2_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0)
     );
 end adress_controler;
 
@@ -82,8 +91,12 @@ architecture Behavioral of adress_controler is
     signal i_reg, j_reg, i_next, j_next : std_logic_vector(WIDTH_img_size - 1 downto 0);
     signal k_reg, l_reg, k_next, l_next : std_logic_vector(WIDTH_kernel_size - 1 downto 0);
 
+    signal pixel_0_bram_adr_s, pixel_1_bram_adr_s, pixel_2_bram_adr_s : std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
+    signal pixel_0_bram_slice_adr_s, pixel_1_bram_slice_adr_s, pixel_2_bram_slice_adr_s : std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
+
 begin
     -- combinational calculation of addresses
+    -- calculates exact adress
     pixel_0_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg))*DEFAULT_IMG_SIZE + unsigned(j_reg) + unsigned(l_reg));
     pixel_1_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg))*DEFAULT_IMG_SIZE + unsigned(j_reg) + unsigned(l_reg) + 1);
     pixel_2_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg))*DEFAULT_IMG_SIZE + unsigned(j_reg) + unsigned(l_reg) + 2);
@@ -95,6 +108,15 @@ begin
     kernel_2_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 2);
 
     --ker
+
+    pixel_0_bram_adr <= pixel_0_bram_adr_s;
+    pixel_0_bram_slice_adr <= pixel_0_bram_slice_adr_s;
+
+    pixel_1_bram_adr <= pixel_1_bram_adr_s;
+    pixel_1_bram_slice_adr <= pixel_1_bram_slice_adr_s;
+
+    pixel_2_bram_adr <= pixel_2_bram_adr_s;
+    pixel_2_bram_slice_adr <= pixel_2_bram_slice_adr_s;
 
     i_next <= i_i;
     j_next <= j_i;
@@ -140,6 +162,15 @@ begin
                 pixel_0_adr_s <= pixel_0_adr_next_s;
                 pixel_1_adr_s <= pixel_1_adr_next_s;
                 pixel_2_adr_s <= pixel_2_adr_next_s;
+                -- gets in which bram address the pixel is and which one of the eight pixels in bram slice it is
+                pixel_0_bram_adr_s <= pixel_0_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram); 
+                pixel_0_bram_slice_adr_s <= pixel_0_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
+
+                pixel_1_bram_adr_s <= pixel_1_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram); 
+                pixel_1_bram_slice_adr_s <= pixel_1_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
+
+                pixel_2_bram_adr_s <= pixel_2_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram); 
+                pixel_2_bram_slice_adr_s <= pixel_2_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
 
                 kernel_0_adr_s <= kernel_0_adr_next_s;
                 kernel_1_adr_s <= kernel_1_adr_next_s;
