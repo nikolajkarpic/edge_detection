@@ -2,9 +2,9 @@
 -- Company: 
 -- Engineer: 
 -- 
--- Create Date: 01/03/2022 11:50:39 AM
+-- Create Date: 01/04/2022 08:37:02 AM
 -- Design Name: 
--- Module Name: sipo_register - Behavioral
+-- Module Name: piso_register - Behavioral
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
@@ -31,33 +31,32 @@ use IEEE.STD_LOGIC_1164.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity sipo_register is
+entity piso_register is
     generic(
-        DEPTH: positive:= 3;
-        WIDTH: positive:= 8
+        WIDTH: positive := 8;
+        DEPTH: positive := 3
     );
-    port(
+    Port (
         clk: in std_logic;
         shift: in std_logic;
-        sereal_input: in std_logic_vector(WIDTH-1 downto 0);
-        parallel_output: out std_logic_vector(DEPTH*WIDTH-1 downto 0);
-        read_en: out std_logic
+        parallel_input: in std_logic_vector(DEPTH*WIDTH-1 downto 0);
+        sereal_output: out std_logic_vector(WIDTH-1 downto 0)
     );
-end sipo_register;
+end piso_register;
 
-architecture Behavioral of sipo_register is
-    signal en_gen_s: std_logic_vector(DEPTH-1 downto 0) := (0 => '1',
-                                                          others => '0');
+architecture Behavioral of piso_register is
     signal state_s: std_logic_vector(DEPTH*WIDTH-1 downto 0);
 begin
-    sipo_reg: process (clk) is
+    piso_reg: process (clk) is
     begin
-        if rising_edge(clk) and shift = '1' then
-            en_gen_s <= en_gen_s(0) & en_gen_s(DEPTH-1 downto 1);
-            state_s <= sereal_input & state_s(DEPTH*WIDTH-1 downto WIDTH);
+        if rising_edge(clk)then
+            if shift = '0' then
+                state_s <= parallel_input;
+            else
+                sereal_output <= state_s(WIDTH-1 downto 0);
+                state_s(WIDTH*(DEPTH-1)-1 downto 0) <= state_s(WIDTH*DEPTH-1 downto WIDTH);
+                state_s(WIDTH*DEPTH-1 downto WIDTH*(DEPTH-1)) <= (others=>'0');
+            end if;
         end if;
     end process;
-    
-    read_en <= en_gen_s(0);
-    parallel_output <= state_s;   
 end Behavioral;
