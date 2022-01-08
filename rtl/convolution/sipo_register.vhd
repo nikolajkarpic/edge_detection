@@ -48,7 +48,7 @@ end sipo_register;
 architecture Behavioral of sipo_register is
     signal en_gen_s: std_logic_vector(DEPTH-1 downto 0) := (0 => '1',
                                                           others => '0');
-    signal state_s: std_logic_vector(DEPTH*WIDTH-1 downto 0);
+    signal state_s: std_logic_vector(DEPTH*WIDTH-1 downto 0) := (others => '0');
 begin
     sipo_reg: process (clk) is
     begin
