@@ -66,7 +66,7 @@ begin
     if(rising_edge(clk)) then
 
         if(write_0_in = '1') then
-            bram(to_integer(unsigned(w_data_0_in))) <= w_adr_0_in;
+            bram(to_integer(unsigned(w_adr_0_in))) <= w_data_0_in;
         end if;
         
         r_data_0_out <= bram(to_integer(unsigned(r_adr_0_in)));

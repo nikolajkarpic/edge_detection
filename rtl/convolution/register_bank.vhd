@@ -46,7 +46,7 @@ entity register_bank is
         r_0_data_out : out std_logic_vector(WIDTH_data - 1 downto 0);
         r_0_addr_in: in std_logic_vector(WIDTH_addr - 1 downto 0);
 
-        r_1_data_out : out std_logic_vector(WIDTH_data - 1 downto 0);
+        r_1_kernel_data_out : out std_logic_vector(WIDTH_data - 1 downto 0);
         r_1_addr_in: in std_logic_vector(WIDTH_addr - 1 downto 0);
 
         r_2_data_out : out std_logic_vector(WIDTH_data - 1 downto 0);
@@ -85,6 +85,6 @@ begin
 
 
         r_0_data_out <= bank(to_integer(unsigned( r_0_addr_in )));
-        r_1_data_out <= bank(to_integer(unsigned( r_1_addr_in )));
+        r_1_kernel_data_out <= bank(to_integer(unsigned( r_1_addr_in )));
         r_2_data_out <= bank(to_integer(unsigned( r_2_addr_in )));
 end Behavioral;

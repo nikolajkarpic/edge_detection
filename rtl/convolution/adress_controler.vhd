@@ -41,7 +41,7 @@ entity adress_controler is
         WIDTH_pixel : natural := 8; --Number of bits needed to represent pixel data
         WIDTH_kernel : natural := 16; --Number of bits needed to represent kernel data
         WIDTH_sum : natural := 32;  --Number of bits needed to represent final sum data
-        WIDTH_bram_in_out_adr : integer := 14; --Number of bits needed to represent number of all pixels addreses (100x100 or 425 x 425)
+        WIDTH_bram_in_out_adr : integer := 15; --Number of bits needed to represent number of all pixels addreses (100x100 or 425 x 425)
         WIDTH_kernel_adr : integer := 8;  --Number of bits needed to represent kernel address data
         SIGNED_UNSIGNED : string := "signed"
     );

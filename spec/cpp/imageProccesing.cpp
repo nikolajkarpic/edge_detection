@@ -26,11 +26,18 @@ image2D convolution2D(kernel2D kernel, image2D source)
 					sum = sum + (kernel[k][l] * source[i + k][j + l].red);
 					
 				}
-				//cout << sum << endl;
 			}
-			//tempPixel.blue = (int)sum;
-			//tempPixel.red = (int)sum;
-			//tempPixel.green = (int)sum;
+			
+			if (sum < 0) {
+				sum = -1;
+			}
+			else if(sum > 0) {
+				sum = 1;
+			}
+			else {
+				sum = 0;
+			}
+			
 			tempPixel.convResult = sum;
 			imageResult[i].push_back(tempPixel);
 		}
