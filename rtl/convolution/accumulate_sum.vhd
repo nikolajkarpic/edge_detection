@@ -53,9 +53,9 @@ architecture Behavioral of accumulate_sum is
     attribute use_dsp : string;
     attribute use_dsp of Behavioral : architecture is "yes";
 
-    signal sum_next_reg, sum_reg, sum_1_reg, sum_2_reg, sum_0_reg, sum_1_next_reg, sum_2_next_reg, sum_0_next_reg: std_logic_vector(WIDTH_sum - 1 downto 0);
-
-
+    signal sum_1_reg, sum_2_reg, sum_0_reg, sum_1_next_reg, sum_2_next_reg, sum_0_next_reg: std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal sum_next_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others=>'0');
+    signal sum_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others=>'0');
 begin
 
     sum_0_next_reg<= sum_0_in;

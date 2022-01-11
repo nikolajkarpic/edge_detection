@@ -34,7 +34,7 @@ entity MAC is
     generic (
         WIDTH_pixel : natural := 8;
         WIDTH_kernel : natural := 16;
-        WIDTH_sum : natural := 32;
+        WIDTH_sum : natural := 24;
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
@@ -56,9 +56,11 @@ architecture Behavioral of MAC is
     --pipeline registers:
     signal pixel_reg, pixel_next : std_logic_vector(WIDTH_pixel - 1 downto 0);
     signal kernel_reg, kernel_next : std_logic_vector(WIDTH_kernel - 1 downto 0);
-    signal multiply_reg, multiply_next : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0);
-    signal accumulate_reg, accumulate_next, accumulate_final : std_logic_vector(WIDTH_sum - 1 downto 0);
-
+    signal multiply_next : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0);
+    signal multiply_reg : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0) := (others => '0');
+    signal accumulate_next, accumulate_final : std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal accumulate_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others => '0');
+    
 begin
 
     kernel_next <= kernel_in;
@@ -92,11 +94,11 @@ begin
                     pixel_reg <= pixel_next;
                     kernel_reg <= kernel_next;
                 end if;
-                if (sum_en_i = '1') then
-                    accumulate_final <= accumulate_reg;
-                else
-                    accumulate_final <= (others => '0');
-                end if;
+                -- if (sum_en_i = '1') then
+                --     accumulate_final <= accumulate_reg;
+                -- else
+                --     accumulate_final <= (others => '0');
+                -- end if;
                 multiply_reg <= multiply_next;
                 accumulate_reg <= accumulate_next;
             end if;
@@ -104,5 +106,5 @@ begin
         end if;
     end process;
     --dsp output:
-    mul_acc_out <= accumulate_final;
+    mul_acc_out <= accumulate_reg;
 end Behavioral;
