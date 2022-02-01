@@ -38,7 +38,7 @@ entity MAC is
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
-        sum_en_i : in std_logic;
+        --sum_en_i : in std_logic;
         rst_i : in std_logic;
         en_in : in std_logic;
         clk : in std_logic;
@@ -54,28 +54,21 @@ architecture Behavioral of MAC is
     attribute use_dsp of Behavioral : architecture is "yes";
 
     --pipeline registers:
-    signal pixel_reg, pixel_next : std_logic_vector(WIDTH_pixel - 1 downto 0);
-    signal kernel_reg, kernel_next : std_logic_vector(WIDTH_kernel - 1 downto 0);
+    signal pixel_reg : std_logic_vector(WIDTH_pixel - 1 downto 0);
+    signal kernel_reg : std_logic_vector(WIDTH_kernel - 1 downto 0);
     signal multiply_next : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0);
-    signal multiply_reg : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0) := (others => '0');
-    signal accumulate_next, accumulate_final : std_logic_vector(WIDTH_sum - 1 downto 0);
-    signal accumulate_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others => '0');
-    
-begin
+    signal multiply_reg : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0);-- := ( others => '0');
+    signal accumulate_reg : std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal accumulate_next : std_logic_vector(WIDTH_sum - 1 downto 0);--:=  (others => '0');
 
-    kernel_next <= kernel_in;
-    pixel_next <= pixel_in;
+begin
 
     --combinatorial part:
     process (kernel_reg, pixel_reg, multiply_reg, accumulate_reg)
     begin
-        if (SIGNED_UNSIGNED = "unsigned") then
-            multiply_next <= std_logic_vector(unsigned(pixel_reg) * unsigned(kernel_reg));
-            accumulate_next <= std_logic_vector(unsigned(multiply_reg) + unsigned(accumulate_reg));
-        else
-            multiply_next <= std_logic_vector(signed(pixel_reg) * signed(kernel_reg));
-            accumulate_next <= std_logic_vector(signed(multiply_reg) + signed(accumulate_reg));
-        end if;
+
+        multiply_next <= std_logic_vector(signed(pixel_reg) * signed(kernel_reg));
+        accumulate_next <= std_logic_vector(signed(multiply_reg) + signed(accumulate_reg));
     end process;
 
     --sequential part:
@@ -88,21 +81,16 @@ begin
                 kernel_reg <= (others => '0');
                 multiply_reg <= (others => '0');
                 accumulate_reg <= (others => '0');
-                accumulate_final <= (others => '0');
             else
+                
+                --flag mechanism for enabling register inputs
                 if (en_in = '1') then
-                    pixel_reg <= pixel_next;
-                    kernel_reg <= kernel_next;
+                    pixel_reg <= pixel_in;
+                    kernel_reg <= kernel_in;
                 end if;
-                -- if (sum_en_i = '1') then
-                --     accumulate_final <= accumulate_reg;
-                -- else
-                --     accumulate_final <= (others => '0');
-                -- end if;
                 multiply_reg <= multiply_next;
-                accumulate_reg <= accumulate_next;
+                accumulate_reg <= accumulate_next;               
             end if;
-
         end if;
     end process;
     --dsp output:
