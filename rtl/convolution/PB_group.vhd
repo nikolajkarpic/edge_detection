@@ -22,7 +22,7 @@ use IEEE.STD_LOGIC_1164.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
---use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.all;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -34,6 +34,7 @@ entity PB_group is
         WIDTH_pixel : natural := 8;
         WIDTH_kernel : natural := 16;
         WIDTH_sum : natural := 32;
+        WIDTH_conv : natural := 2;
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
@@ -46,6 +47,9 @@ entity PB_group is
 
         sum_out_en : in std_logic;
         sum_out : out std_logic_vector(WIDTH_sum - 1 downto 0);
+        signed_out : out std_logic_vector(WIDTH_conv - 1 downto 0);
+        -- for testing my band aid fix... it works ... line 183 184 
+        -- en_for_sum_out : out std_logic;
 
         kernel_0_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
         kernel_1_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
@@ -60,8 +64,9 @@ architecture Behavioral of PB_group is
     signal mac_0_sum_s, mac_1_sum_s, mac_2_sum_s, sum_out_reg_s : std_logic_vector(WIDTH_sum - 1 downto 0);
     signal pixel_0_in_s, pixel_1_in_s, pixel_2_in_s : std_logic_vector(WIDTH_pixel - 1 downto 0);
     signal kernel_0_in_s, kernel_1_in_s, kernel_2_in_s : std_logic_vector(WIDTH_kernel - 1 downto 0);
-    signal rst_i_s, en_in_s, clk_s, sum_out_en_s : std_logic;
-
+    signal rst_i_s, en_in_s, clk_s, sum_out_en_s, sign_check_en : std_logic;
+    signal signed_conv_out, signed_conv_out_n : std_logic_vector(WIDTH_conv - 1 downto 0);
+    signal shift_reg : std_logic_vector (1 downto 0); -- for band aid fix 
     --components
     component MAC
         generic (
@@ -167,6 +172,36 @@ begin
         sum_out => sum_out_reg_s
     );
 
+    sign_check_seq : process (clk)
+    begin
+        if (rising_edge(clk)) then
+            if (rst_i = '1') then
+                sign_check_en <= '0';
+                signed_conv_out <= (others => '0');
+            else
+                -- band aid fix for pipelining the procces, it shifts data en for signed conv out by one clock cycle... signed conv out data lags behind sum out data by once clock.
+                shift_reg(0) <= sum_out_en_s;
+                shift_reg(1) <= shift_reg(0);
+                if (shift_reg(1) = '1') then
+                    signed_conv_out <= signed_conv_out_n;
+                end if;
+            end if;
+        end if;
+
+    end process;
+    -- for testing my band aid fix... it works
+    -- en_for_sum_out<=sign_check_en;
+
+    sign_check_comb : process (sum_out_reg_s, sign_check_en)
+    begin
+            if (signed(sum_out_reg_s) = 0) then
+                signed_conv_out_n <= (others => '0');
+            elsif (sum_out_reg_s(sum_out_reg_s'left) = '1') then
+                signed_conv_out_n <= "10";
+            else
+                signed_conv_out_n <= "01";
+            end if;
+    end process;
     clk_s <= clk;
     rst_i_s <= rst_i;
     en_in_s <= en_in;
@@ -180,4 +215,5 @@ begin
     kernel_1_in_s <= kernel_1_in;
     kernel_2_in_s <= kernel_2_in;
     sum_out <= sum_out_reg_s;
+    signed_out <= signed_conv_out;
 end Behavioral;

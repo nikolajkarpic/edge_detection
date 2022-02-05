@@ -58,16 +58,16 @@ architecture Behavioral of accumulate_sum is
     signal sum_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others=>'0');
 begin
 
-    sum_0_next_reg<= sum_0_in;
-    sum_1_next_reg<= sum_1_in;
-    sum_2_next_reg<= sum_2_in;
+    --sum_0_next_reg<= sum_0_in;
+    --sum_1_next_reg<= sum_1_in;
+    --sum_2_next_reg<= sum_2_in;
 
-    process (sum_next_reg, sum_1_reg, sum_2_reg, sum_0_reg)
+    process (sum_next_reg, sum_1_in, sum_2_in, sum_0_in)
     begin
         if (SIGNED_UNSIGNED = "unsigned") then
-            sum_next_reg <= std_logic_vector(unsigned(sum_0_reg) + unsigned(sum_1_reg) + unsigned(sum_2_reg));
+            sum_next_reg <= std_logic_vector(unsigned(sum_0_in) + unsigned(sum_1_in) + unsigned(sum_2_in));
         else
-            sum_next_reg <= std_logic_vector(signed(sum_0_reg) + signed(sum_1_reg) + signed(sum_2_reg));
+            sum_next_reg <= std_logic_vector(signed(sum_0_in) + signed(sum_1_in) + signed(sum_2_in));
         end if;
     end process;
 
@@ -81,13 +81,10 @@ begin
                 sum_1_reg <= (others => '0');
                 sum_2_reg <= (others => '0');
             else
-                if (en_in = '1') then
-                    sum_0_reg <= sum_0_next_reg;
-                    sum_1_reg <= sum_1_next_reg;
-                    sum_2_reg <= sum_2_next_reg;
-
-                end if;
-                sum_reg <= sum_next_reg;
+                -- if (en_in = '1') then
+                --     sum_reg <= sum_next_reg;
+                -- end if;
+                 sum_reg <= sum_next_reg;
             end if;
 
         end if;

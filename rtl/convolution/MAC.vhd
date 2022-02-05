@@ -38,7 +38,7 @@ entity MAC is
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
-        --sum_en_i : in std_logic;
+        sum_en_i : in std_logic;
         rst_i : in std_logic;
         en_in : in std_logic;
         clk : in std_logic;
@@ -60,7 +60,7 @@ architecture Behavioral of MAC is
     signal multiply_reg : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0);-- := ( others => '0');
     signal accumulate_reg : std_logic_vector(WIDTH_sum - 1 downto 0);
     signal accumulate_next : std_logic_vector(WIDTH_sum - 1 downto 0);--:=  (others => '0');
-
+    signal accumulate_final : std_logic_vector(WIDTH_sum - 1 downto 0);
 begin
 
     --combinatorial part:
@@ -81,18 +81,27 @@ begin
                 kernel_reg <= (others => '0');
                 multiply_reg <= (others => '0');
                 accumulate_reg <= (others => '0');
+                accumulate_final <= (others => '0');
             else
                 
                 --flag mechanism for enabling register inputs
                 if (en_in = '1') then
                     pixel_reg <= pixel_in;
                     kernel_reg <= kernel_in;
+                else
+                    pixel_reg <= (others => '0');
+                    kernel_reg <= (others => '0');
                 end if;
+                if sum_en_i = '1' then
+                    accumulate_final <= accumulate_reg;
+                else
+                    accumulate_final <= (others => '0');
+                end if ;
                 multiply_reg <= multiply_next;
                 accumulate_reg <= accumulate_next;               
             end if;
         end if;
     end process;
     --dsp output:
-    mul_acc_out <= accumulate_reg;
+    mul_acc_out <= accumulate_final;
 end Behavioral;
