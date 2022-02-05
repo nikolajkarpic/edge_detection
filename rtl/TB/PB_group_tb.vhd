@@ -10,6 +10,7 @@ entity tb_PB_group is
         WIDTH_pixel : natural := 8;
         WIDTH_kernel : natural := 16;
         WIDTH_sum : natural := 32;
+        WIDTH_conv : natural := 2;
         SIGNED_UNSIGNED : string := "signed"
     );
 end tb_PB_group;
@@ -25,6 +26,7 @@ architecture tb of tb_PB_group is
               pixel_2_in  : in std_logic_vector (width_pixel - 1 downto 0);
               sum_out_en  : in std_logic;
               sum_out     : out std_logic_vector (width_sum - 1 downto 0);
+              signed_out : out std_logic_vector(WIDTH_conv - 1 downto 0);
               kernel_0_in : in std_logic_vector (width_kernel - 1 downto 0);
               kernel_1_in : in std_logic_vector (width_kernel - 1 downto 0);
               kernel_2_in : in std_logic_vector (width_kernel - 1 downto 0));
@@ -38,11 +40,12 @@ architecture tb of tb_PB_group is
     signal pixel_2_in  : std_logic_vector (width_pixel - 1 downto 0);
     signal sum_out_en  : std_logic;
     signal sum_out     : std_logic_vector (width_sum - 1 downto 0);
+    signal signed_out : std_logic_vector(WIDTH_conv - 1 downto 0);
     signal kernel_0_in : std_logic_vector (width_kernel - 1 downto 0);
     signal kernel_1_in : std_logic_vector (width_kernel - 1 downto 0);
     signal kernel_2_in : std_logic_vector (width_kernel - 1 downto 0);
 
-    constant TbPeriod : time := 100 ns; -- EDIT Put right period here
+    constant TbPeriod : time := 5 ns; -- EDIT Put right period here
     signal TbClock : std_logic := '0';
     signal TbSimEnded : std_logic := '0';
 
@@ -57,6 +60,7 @@ begin
               pixel_2_in  => pixel_2_in,
               sum_out_en  => sum_out_en,
               sum_out     => sum_out,
+              signed_out  => signed_out,
               kernel_0_in => kernel_0_in,
               kernel_1_in => kernel_1_in,
               kernel_2_in => kernel_2_in);
@@ -81,65 +85,29 @@ begin
 
         -- Reset generation
         -- EDIT: Check that rst_i is really your reset signal
-        -- rst_i <= '1';
-        -- wait for 100 ns;
-        -- rst_i <= '0';
-        -- wait for 100 ns;
+         rst_i <= '1';
+         wait for 5 * TbPeriod;
+         rst_i <= '0';
+         wait for 5 * TbPeriod;
 
-        -- pixel_0_in <="00000000", "00000001" after 500 ns, "00000010" after 500 ns, "00000100" after 500 ns, "00001000" after 500 ns; 
-        -- pixel_1_in <= "00000000", "00000001" after 500 ns, "00000010" after 500 ns, "00000100" after 500 ns, "00001000" after 500 ns; 
-        -- pixel_2_in <= "00000000", "00000001" after 500 ns, "00000010" after 500 ns, "00000100" after 500 ns, "00001000" after 500 ns; 
-
-        -- en_in <= '1', '0' after 250 ns, '1' after 250 ns, '0' after 250 ns, '1' after 250 ns, '0' after 250 ns, '1' after 250 ns;
-
-        -- kernel_0_in <= "0000000000000000","0000000000000001" after 500 ns, "0000000000000010" after 500 ns, "0000000000000100" after 500 ns, "0000000000001000" after 500 ns;
-        -- kernel_1_in <=  "0000000000000000","0000000000000001" after 500 ns, "0000000000000010" after 500 ns, "0000000000000100" after 500 ns, "0000000000001000" after 500 ns;
-        -- kernel_2_in <= "0000000000000000", "0000000000000001" after 500 ns, "0000000000000010" after 500 ns, "0000000000000100" after 500 ns, "0000000000001000" after 500 ns;
-
+        en_in <= '1';
 
         pixel_0_in <=   "00000001" ;
-        pixel_1_in <=  "00000001" ;
-        pixel_2_in <=  "00000001" ;
-        kernel_0_in <= "0000000000000001";
-        kernel_1_in <= "0000000000000001";
-        kernel_2_in <= "0000000000000001";
-        en_in <= '0';
-        wait for 50 ns;
-        en_in <= '1';
-        wait for 50 ns;
-        en_in <= '0';
-        wait for 400 ns;
-
-        pixel_0_in <=  "00000001" ;
         pixel_1_in <=  "00000010" ;
         pixel_2_in <=  "00000001" ;
         kernel_0_in <= "0000000000000001";
-        kernel_1_in <= "0000000000000010";
+        kernel_1_in <= "0000000000000001";
         kernel_2_in <= "0000000000000001";
 
-        en_in <= '0';
-        wait for 50 ns;
-        en_in <= '1';
-        wait for 50 ns;
-        en_in <= '0';
-        wait for 400 ns;
-
-        pixel_0_in <="00000001" ;
-        pixel_1_in <=  "00000001" ;
-        pixel_2_in <=  "00000100" ;
-        kernel_0_in <= "0000000000000001";
-        kernel_1_in <= "0000000000000001";
-        kernel_2_in <= "0000000000000100";
+        wait for 5 * TbPeriod;
 
         en_in <= '0';
-        wait for 50 ns;
-        en_in <= '1';
-        wait for 50 ns;
-        en_in <= '0';
-        wait for 400 ns;
 
+        wait for 3 * TbPeriod;
 
-        sum_out_en <= '1', '0' after 150 ns;
+        sum_out_en <= '1'; 
+        wait for 1 * TbPeriod;
+        sum_out_en <= '0'; 
         -- EDIT Add stimuli here
         wait for 100 * TbPeriod;
 

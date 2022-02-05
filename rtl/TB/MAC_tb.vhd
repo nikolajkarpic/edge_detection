@@ -17,7 +17,7 @@ end tb_MAC;
 architecture tb of tb_MAC is
 
     component MAC
-        port (sum_en_i    : in std_logic;
+        port (
               rst_i       : in std_logic;
               en_in       : in std_logic;
               clk         : in std_logic;
@@ -41,7 +41,7 @@ architecture tb of tb_MAC is
 begin
 
     dut : MAC
-    port map (sum_en_i    => sum_en_i,
+    port map (
               rst_i       => rst_i,
               en_in       => en_in,
               clk         => clk,
@@ -59,44 +59,53 @@ begin
     begin
         -- EDIT Adapt initialization as needed
         sum_en_i <= '0';
-        rst_i <= '0';
+        rst_i <= '1';
         en_in <= '0';
-        pixel_in <= (others => '0');
-        kernel_in <= (others => '0');
-
-        wait for 25 ns;
+        pixel_in <="00000000" ;
+        kernel_in <= "0000000000000000";
+        wait for 2 * TbPeriod;
+        rst_i <= '0';
+        
         pixel_in <="00000001" ;
         kernel_in <= "0000000000000001";
+
+        wait for 1 ns;
+
         en_in <= '1';
 
-        wait for 50 ns;
+        wait for 3 * TbPeriod;
+        -- pixel_in <="00000001" ;
+        -- kernel_in <= "0000000000000001";
+        -- en_in <= '1';
+
+        wait for 2 * TbPeriod;
 
         -- en_in <= '0';
 
-        wait for 25 ns;
+        -- wait for 5 * TbPeriod;
 
         pixel_in <="00000010" ;
         kernel_in <= "0000000000000101";
         -- en_in <= '1';
 
-        wait for 50 ns;
-
+        wait for 5 * TbPeriod;
         -- en_in <= '0';
 
-        wait for 25 ns;
+        --wait for 25 ns;
 
         pixel_in <="00000100" ;
         kernel_in <= "0000000000000011";
-        -- en_in <= '1';
+        en_in <= '0';
 
-        wait for 50 ns;
+        wait for 5 * TbPeriod;
 
-        -- en_in <= '0';
+        --  en_in <= '0';
+        --  rst_i <= '1';
 
-        wait for 25 ns;
+        wait for 5 * TbPeriod;
 
         -- EDIT Add stimuli here
-        wait for 100 * TbPeriod;
+        wait for 10 * TbPeriod;
 
         -- Stop the clock and hence terminate the simulation
         TbSimEnded <= '1';
