@@ -103,7 +103,7 @@ begin
     kernel_1_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 1);
     kernel_2_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 2);
 
-    --ker
+    
 
     pixel_0_bram_adr <= pixel_0_bram_adr_s;
     pixel_0_bram_slice_adr <= pixel_0_bram_slice_adr_s;
@@ -162,6 +162,9 @@ begin
                 pixel_2_adr_s <= pixel_2_adr_next_s;
                 -- gets in which bram address the pixel is and which one of the eight pixels in bram slice it is
                 --when out of procces it workds properly.....
+
+                -- this needs to be changed as the BRAM can be configured into 8 bit and 2 bit widhts. Bram slices aren't needed.
+                -- as of now 3 LSB represent 8 pixels 8 bit wide in 64 bit wide BRAM slice. The rest of the bits, upper 5 represent the adress of the 64 bit slice. 
                 pixel_0_bram_adr_s <= pixel_0_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
                 pixel_0_bram_slice_adr_s <= pixel_0_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
 

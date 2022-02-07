@@ -84,7 +84,7 @@ begin
                 accumulate_final <= (others => '0');
             else
                 
-                --flag mechanism for enabling register inputs
+                --flag mechanism for enabling register inputs, when its 0 the MAC unit acumulates 0
                 if (en_in = '1') then
                     pixel_reg <= pixel_in;
                     kernel_reg <= kernel_in;
@@ -92,7 +92,7 @@ begin
                     pixel_reg <= (others => '0');
                     kernel_reg <= (others => '0');
                 end if;
-                if sum_en_i = '1' then
+                if sum_en_i = '1' then -- flag to enable loading of sum to the register where it cannot be changed before FSM allows it
                     accumulate_final <= accumulate_reg;
                 else
                     accumulate_final <= (others => '0');

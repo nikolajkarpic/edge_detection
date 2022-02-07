@@ -103,6 +103,7 @@ architecture Behavioral of PB_group is
 
     end component;
 begin
+    -- three MAC units instanced and set up as to be connected to sumed and sign checked later
     MAC0 : MAC
     generic map(
         WIDTH_pixel => WIDTH_pixel,
@@ -156,7 +157,7 @@ begin
         kernel_in => kernel_2_in_s,
         mul_acc_out => mac_2_sum_s
     );
-
+    -- sums final results of the three MAC units
     SUM : accumulate_sum
     generic map(
         WIDTH_sum => WIDTH_sum,
@@ -171,7 +172,7 @@ begin
         sum_2_in => mac_2_sum_s,
         sum_out => sum_out_reg_s
     );
-
+    -- writes data to sign register and resets other registers and signals
     sign_check_seq : process (clk)
     begin
         if (rising_edge(clk)) then
@@ -191,17 +192,20 @@ begin
     end process;
     -- for testing my band aid fix... it works
     -- en_for_sum_out<=sign_check_en;
-
+    
+    -- checks the sign of the final sum 
     sign_check_comb : process (sum_out_reg_s, sign_check_en)
     begin
             if (signed(sum_out_reg_s) = 0) then
-                signed_conv_out_n <= (others => '0');
+                signed_conv_out_n <= (others => '0'); -- 0 when sum is 0
             elsif (sum_out_reg_s(sum_out_reg_s'left) = '1') then
-                signed_conv_out_n <= "10";
+                signed_conv_out_n <= "10"; -- -1 when sum is < 0
             else
-                signed_conv_out_n <= "01";
+                signed_conv_out_n <= "01"; -- 1 when sum is > 0
             end if;
     end process;
+
+    -- connects signals to interfaces
     clk_s <= clk;
     rst_i_s <= rst_i;
     en_in_s <= en_in;

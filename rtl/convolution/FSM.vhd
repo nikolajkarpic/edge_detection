@@ -129,6 +129,7 @@ begin
                 k_reg <= (others => '0');
                 l_reg <= (others => '0');
             else
+            -- if inc_x_s is an enable singal for registers that is updated in FSM
                 if(inc_i_s = '1') then
                     i_reg <= i_next_reg;
                 end if;
@@ -159,7 +160,7 @@ begin
 
     fsm_combinational : process (current_state, i_reg, i_next_reg, j_reg, j_next_reg, k_reg, k_next_reg, l_reg, l_next_reg, start_i)
     begin
-        --next_state <= current_state;
+        -- default values for states
         sum_en_o <= '0';
         mac_en_o <= '0';
         ready_o <= '0';
@@ -246,8 +247,8 @@ begin
                 sum_en_o <= '1';
                 --conv_out_adr_calculation
                 --sign check
-                if (j_reg = "1100100") then --make it no hard codded
-                    if (i_reg = "1100100") then -- same 
+                if (j_reg = "0000101") then --make it no hard codded
+                    if (i_reg = "0000101") then -- same 
                         next_state <= idle;
                     else
                         --next_state <= inc_i;
