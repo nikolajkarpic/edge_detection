@@ -34,8 +34,8 @@ entity adress_controler is
         WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
         DEFAULT_IMG_SIZE : integer := 100; -- width/height of the image
         WIDTH_img_size : integer := 7; --Number of bits needed to reporesent img size
-        KERNEL_SIZE : integer := 9; -- widht/height of kernel
-        WIDTH_kernel_size : integer := 4; --Number of bits needed to reporesent kernel size
+        KERNEL_SIZE : natural := 9; -- widht/height of kernel
+        WIDTH_kernel_size : natural := 4; --Number of bits needed to reporesent kernel size
         WIDTH_pixel : natural := 8; --Number of bits needed to represent pixel data
         WIDTH_kernel : natural := 16; --Number of bits needed to represent kernel data
         WIDTH_sum : natural := 32; --Number of bits needed to represent final sum data
@@ -55,23 +55,26 @@ entity adress_controler is
         l_i : in std_logic_vector(WIDTH_kernel_size - 1 downto 0);
 
         conv_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
-
-        pixel_0_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
-        pixel_1_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
-        pixel_2_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        -- These addreses have been put into bram shifted out 
+        -- pixel_0_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        -- pixel_1_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        -- pixel_2_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
 
         kernel_0_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
         kernel_1_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
         kernel_2_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
 
-        pixel_0_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
-        pixel_0_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        bram_shifted_out : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        bram_read_en_out : out std_logic
 
-        pixel_1_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
-        pixel_1_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        -- pixel_0_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        -- pixel_0_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
 
-        pixel_2_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
-        pixel_2_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0)
+        -- pixel_1_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
+        -- pixel_1_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
+
+        -- pixel_2_bram_adr : out std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0)
+        -- pixel_2_bram_slice_adr : out std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0)
     );
 end adress_controler;
 
@@ -90,38 +93,43 @@ architecture Behavioral of adress_controler is
     signal pixel_0_bram_adr_s, pixel_1_bram_adr_s, pixel_2_bram_adr_s : std_logic_vector (WIDTH_bram_in_out_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
     signal pixel_0_bram_slice_adr_s, pixel_1_bram_slice_adr_s, pixel_2_bram_slice_adr_s : std_logic_vector (WIDTH_num_of_pixels_in_bram - 1 downto 0);
 
+    type shift_adr_reg_t is array (0 to 2) of std_logic_vector(WIDTH_bram_in_out_adr - 1 downto 0);
+    signal adr_shift_reg : shift_adr_reg_t;
+    signal bram_r_en_shift_reg : std_logic_vector(2 downto 0);
+
 begin
     -- combinational calculation of addresses
     -- calculates exact adress
-    pixel_0_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + unsigned(j_reg) + unsigned(l_reg));
-    pixel_1_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + unsigned(j_reg) + unsigned(l_reg) + 1);
-    pixel_2_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + unsigned(j_reg) + unsigned(l_reg) + 2);
+    process (pixel_0_adr_next_s, pixel_1_adr_next_s, pixel_2_adr_next_s, i_reg, j_reg, k_reg, l_reg, conv_adr_next_s)
+    begin
+        pixel_0_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + (unsigned(j_reg) + unsigned(l_reg)));
+        pixel_1_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + ((unsigned(j_reg) + unsigned(l_reg)) + 1));
+        pixel_2_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + ((unsigned(j_reg) + unsigned(l_reg)) + 2));
 
-    conv_adr_next_s <= std_logic_vector((unsigned(i_reg) * DEFAULT_IMG_SIZE) + unsigned(j_reg));
+        conv_adr_next_s <= std_logic_vector((unsigned(i_reg) * DEFAULT_IMG_SIZE) + unsigned(j_reg));
 
-    kernel_0_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg));
-    kernel_1_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 1);
-    kernel_2_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 2);
+        kernel_0_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg));
+        kernel_1_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 1);
+        kernel_2_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 2);
+    end process;
 
-    
+    -- pixel_0_bram_adr <= pixel_0_bram_adr_s;
+    -- pixel_0_bram_slice_adr <= pixel_0_bram_slice_adr_s;
 
-    pixel_0_bram_adr <= pixel_0_bram_adr_s;
-    pixel_0_bram_slice_adr <= pixel_0_bram_slice_adr_s;
+    -- pixel_1_bram_adr <= pixel_1_bram_adr_s;
+    -- pixel_1_bram_slice_adr <= pixel_1_bram_slice_adr_s;
 
-    pixel_1_bram_adr <= pixel_1_bram_adr_s;
-    pixel_1_bram_slice_adr <= pixel_1_bram_slice_adr_s;
-
-    pixel_2_bram_adr <= pixel_2_bram_adr_s;
-    pixel_2_bram_slice_adr <= pixel_2_bram_slice_adr_s;
+    -- pixel_2_bram_adr <= pixel_2_bram_adr_s;
+    -- pixel_2_bram_slice_adr <= pixel_2_bram_slice_adr_s;
 
     i_next <= i_i;
     j_next <= j_i;
     k_next <= k_i;
     l_next <= l_i;
 
-    pixel_0_adr_o <= pixel_0_adr_s;
-    pixel_1_adr_o <= pixel_1_adr_s;
-    pixel_2_adr_o <= pixel_2_adr_s;
+    -- pixel_0_adr_o <= pixel_0_adr_s;
+    -- pixel_1_adr_o <= pixel_1_adr_s;
+    -- pixel_2_adr_o <= pixel_2_adr_s;
 
     -- conv_adr_o <= conv_adr_s;
 
@@ -129,14 +137,33 @@ begin
     kernel_1_adr_o <= kernel_1_adr_s;
     kernel_2_adr_o <= kernel_2_adr_s;
 
+    bram_shifted_out <= adr_shift_reg(0);
+    bram_read_en_out <= bram_r_en_shift_reg(0);
+
+    -- shift_reg : process (clk)
+    -- begin
+    --     if (rising_edge(clk)) then
+    --         if (rst_i = '1') then
+                
+    --         else
+    --             if (en_in = '1') then
+    --                 adr_shift_reg(0) <= adr_shift_reg(1);
+    --                 adr_shift_reg(1) <= adr_shift_reg(2);
+
+    --                 bram_r_en_shift_reg(0) <= bram_r_en_shift_reg(1);
+    --                 bram_r_en_shift_reg(1) <= bram_r_en_shift_reg(2);
+    --                 bram_r_en_shift_reg(2) <= '0';
+
+    --             end if;
+    --         end if;
+    --     end if;
+    -- end process;
+
     --ovaj proces nisam siguran da valja
     address_registers : process (clk)
     begin
         if (rising_edge(clk)) then
-            i_reg <= i_next;
-            j_reg <= j_next;
-            k_reg <= k_next;
-            l_reg <= l_next;
+
             if (rst_i = '1') then
                 i_reg <= (others => '0');
                 j_reg <= (others => '0');
@@ -146,38 +173,61 @@ begin
                 pixel_0_adr_s <= (others => '0');
                 pixel_1_adr_s <= (others => '0');
                 pixel_2_adr_s <= (others => '0');
+                -- shift registers for addreses
+                adr_shift_reg <= (others => (others => '0'));
+                bram_r_en_shift_reg <= (others => '0');
 
                 conv_adr_s <= (others => '0');
 
                 kernel_0_adr_s <= (others => '0');
                 kernel_1_adr_s <= (others => '0');
                 kernel_2_adr_s <= (others => '0');
-            end if;
-            if (calc_conv_adr_i = '1') then
-                conv_adr_o <= conv_adr_next_s;
-            end if;
-            if (calc_adr_i = '1') then
-                pixel_0_adr_s <= pixel_0_adr_next_s;
-                pixel_1_adr_s <= pixel_1_adr_next_s;
-                pixel_2_adr_s <= pixel_2_adr_next_s;
-                -- gets in which bram address the pixel is and which one of the eight pixels in bram slice it is
-                --when out of procces it workds properly.....
+            else
+                i_reg <= i_next;
+                j_reg <= j_next;
+                k_reg <= k_next;
+                l_reg <= l_next;
+                if (en_in = '1') then
+                    adr_shift_reg(0) <= adr_shift_reg(1);
+                    adr_shift_reg(1) <= adr_shift_reg(2);
 
-                -- this needs to be changed as the BRAM can be configured into 8 bit and 2 bit widhts. Bram slices aren't needed.
-                -- as of now 3 LSB represent 8 pixels 8 bit wide in 64 bit wide BRAM slice. The rest of the bits, upper 5 represent the adress of the 64 bit slice. 
-                pixel_0_bram_adr_s <= pixel_0_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
-                pixel_0_bram_slice_adr_s <= pixel_0_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
+                    bram_r_en_shift_reg(0) <= bram_r_en_shift_reg(1);
+                    bram_r_en_shift_reg(1) <= bram_r_en_shift_reg(2);
+                    bram_r_en_shift_reg(2) <= '0';
 
-                pixel_1_bram_adr_s <= pixel_1_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
-                pixel_1_bram_slice_adr_s <= pixel_1_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
+                end if;
+                if (calc_conv_adr_i = '1') then
+                    conv_adr_o <= conv_adr_next_s;
+                end if;
+                if (calc_adr_i = '1') then
+                    -- pixel_0_adr_s <= pixel_0_adr_next_s;
+                    -- pixel_1_adr_s <= pixel_1_adr_next_s;
+                    -- pixel_2_adr_s <= pixel_2_adr_next_s;
+                    -- puts addresses of pixels into shift reg which in turn will stream them in to BRAM adr in
+                    adr_shift_reg(0) <= pixel_0_adr_next_s;
+                    adr_shift_reg(1) <= pixel_1_adr_next_s;
+                    adr_shift_reg(2) <= pixel_2_adr_next_s;
+                    -- puts BRAM read en signal into shift reg.
+                    bram_r_en_shift_reg <= (others => '1');
+                    -- gets in which bram address the pixel is and which one of the eight pixels in bram slice it is
+                    --when out of procces it workds properly.....
+                    -- ALL of the below is put into shift register  bram_r_en_shift_reg.... In further code cleanups it will be deleted
+                    -- this needs to be changed as the BRAM can be configured into 8 bit and 2 bit widhts. Bram slices aren't needed.
+                    -- as of now 3 LSB represent 8 pixels 8 bit wide in 64 bit wide BRAM slice. The rest of the bits, upper 5 represent the adress of the 64 bit slice. 
+                    -- pixel_0_bram_adr_s <= pixel_0_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
+                    -- pixel_0_bram_slice_adr_s <= pixel_0_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
 
-                pixel_2_bram_adr_s <= pixel_2_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
-                pixel_2_bram_slice_adr_s <= pixel_2_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
+                    -- pixel_1_bram_adr_s <= pixel_1_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
+                    -- pixel_1_bram_slice_adr_s <= pixel_1_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
 
-                kernel_0_adr_s <= kernel_0_adr_next_s;
-                kernel_1_adr_s <= kernel_1_adr_next_s;
-                kernel_2_adr_s <= kernel_2_adr_next_s;
+                    -- pixel_2_bram_adr_s <= pixel_2_adr_next_s(WIDTH_bram_in_out_adr - 1 downto WIDTH_num_of_pixels_in_bram);
+                    -- pixel_2_bram_slice_adr_s <= pixel_2_adr_next_s(WIDTH_num_of_pixels_in_bram - 1 downto 0);
 
+                    kernel_0_adr_s <= kernel_0_adr_next_s;
+                    kernel_1_adr_s <= kernel_1_adr_next_s;
+                    kernel_2_adr_s <= kernel_2_adr_next_s;
+
+                end if;
             end if;
         end if;
     end process;

@@ -247,8 +247,8 @@ begin
                 sum_en_o <= '1';
                 --conv_out_adr_calculation
                 --sign check
-                if (j_reg = "0000101") then --make it no hard codded
-                    if (i_reg = "0000101") then -- same 
+                if (j_reg = "0000011") then --make it no hard codded
+                    if (i_reg = "0000011") then -- same 
                         next_state <= idle;
                     else
                         --next_state <= inc_i;
