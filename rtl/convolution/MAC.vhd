@@ -39,7 +39,7 @@ entity MAC is
     );
     port (
         sum_en_i : in std_logic;
-        rst_i : in std_logic;
+        reset_in : in std_logic;
         en_in : in std_logic;
         clk : in std_logic;
         pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -76,7 +76,7 @@ begin
     begin
         if (rising_edge(clk)) then
 
-            if (rst_i = '1') then
+            if (reset_in = '1') then
                 pixel_reg <= (others => '0');
                 kernel_reg <= (others => '0');
                 multiply_reg <= (others => '0');

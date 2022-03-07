@@ -39,8 +39,8 @@ architecture tb of tb_conv_FSM is
 
     component conv_FSM
         port (clk_i                : in std_logic;
-              reset_i              : in std_logic;
-              start_i              : in std_logic;
+              reset_in              : in std_logic;
+              start_in              : in std_logic;
             --   pixel_0_val_i        : in std_logic_vector (width_pixel - 1 downto 0);
             --   pixel_1_val_i        : in std_logic_vector (width_pixel - 1 downto 0);
             --   pixel_2_val_i        : in std_logic_vector (width_pixel - 1 downto 0);
@@ -71,8 +71,8 @@ architecture tb of tb_conv_FSM is
     end component;
 
     signal clk_i                : std_logic;
-    signal reset_i              : std_logic;
-    signal start_i              : std_logic;
+    signal reset_in              : std_logic;
+    signal start_in              : std_logic;
     -- signal pixel_0_val_i        : std_logic_vector (width_pixel - 1 downto 0);
     -- signal pixel_1_val_i        : std_logic_vector (width_pixel - 1 downto 0);
     -- signal pixel_2_val_i        : std_logic_vector (width_pixel - 1 downto 0);
@@ -109,8 +109,8 @@ begin
 
     dut : conv_FSM
     port map (clk_i                => clk_i,
-              reset_i              => reset_i,
-              start_i              => start_i,
+              reset_in              => reset_in,
+              start_in              => start_in,
             --   pixel_0_val_i        => pixel_0_val_i,
             --   pixel_1_val_i        => pixel_1_val_i,
             --   pixel_2_val_i        => pixel_2_val_i,
@@ -148,7 +148,7 @@ begin
     stimuli : process
     begin
         -- EDIT Adapt initialization as needed
-        start_i <= '0';
+        start_in <= '0';
         -- pixel_0_val_i <= (others => '0');
         -- pixel_1_val_i <= (others => '0');
         -- pixel_2_val_i <= (others => '0');
@@ -157,19 +157,19 @@ begin
         -- kernel_2_val_i <= (others => '0');
 
         -- Reset generation
-        -- EDIT: Check that reset_i is really your reset signal
-        reset_i <= '1';
+        -- EDIT: Check that reset_in is really your reset signal
+        reset_in <= '1';
         wait for 100 ns;
-        reset_i <= '0';
+        reset_in <= '0';
         wait for 100 ns;
 
-        start_i <= '1';
+        start_in <= '1';
         wait for 10 * TbPeriod;
-        start_i <= '0';
+        start_in <= '0';
         wait for 1 * TbPeriod;
 
         -- EDIT Add stimuli here
-        wait for 100 * TbPeriod;
+        wait for 1000 * TbPeriod;
 
         -- Stop the clock and hence terminate the simulation
         TbSimEnded <= '1';

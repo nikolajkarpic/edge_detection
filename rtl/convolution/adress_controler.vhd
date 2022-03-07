@@ -45,7 +45,7 @@ entity adress_controler is
     );
     port (
         clk : in std_logic;
-        rst_i : in std_logic;
+        reset_in : in std_logic;
         calc_adr_i : in std_logic;
         calc_conv_adr_i : in std_logic;
         en_in : in std_logic;
@@ -100,17 +100,17 @@ architecture Behavioral of adress_controler is
 begin
     -- combinational calculation of addresses
     -- calculates exact adress
-    process (pixel_0_adr_next_s, pixel_1_adr_next_s, pixel_2_adr_next_s, i_reg, j_reg, k_reg, l_reg, conv_adr_next_s)
+    process (pixel_0_adr_next_s, pixel_1_adr_next_s, pixel_2_adr_next_s, i_reg, j_reg, k_reg, l_reg, conv_adr_next_s, i_i, j_i, k_i, l_i)
     begin
-        pixel_0_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + (unsigned(j_reg) + unsigned(l_reg)));
-        pixel_1_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + ((unsigned(j_reg) + unsigned(l_reg)) + 1));
-        pixel_2_adr_next_s <= std_logic_vector((unsigned(i_reg) + unsigned(k_reg)) * DEFAULT_IMG_SIZE + ((unsigned(j_reg) + unsigned(l_reg)) + 2));
+        pixel_0_adr_next_s <= std_logic_vector((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE + (unsigned(j_i) + unsigned(l_i)));
+        pixel_1_adr_next_s <= std_logic_vector((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE + ((unsigned(j_i) + unsigned(l_i)) + 1));
+        pixel_2_adr_next_s <= std_logic_vector((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE + ((unsigned(j_i) + unsigned(l_i)) + 2));
 
-        conv_adr_next_s <= std_logic_vector((unsigned(i_reg) * DEFAULT_IMG_SIZE) + unsigned(j_reg));
+        conv_adr_next_s <= std_logic_vector((unsigned(i_i) * DEFAULT_IMG_SIZE) + unsigned(j_i));
 
-        kernel_0_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg));
-        kernel_1_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 1);
-        kernel_2_adr_next_s <= std_logic_vector((unsigned(k_reg) * KERNEL_SIZE) + unsigned(l_reg) + 2);
+        kernel_0_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + unsigned(l_i));
+        kernel_1_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + unsigned(l_i) + 1);
+        kernel_2_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + unsigned(l_i) + 2);
     end process;
 
     -- pixel_0_bram_adr <= pixel_0_bram_adr_s;
@@ -122,10 +122,10 @@ begin
     -- pixel_2_bram_adr <= pixel_2_bram_adr_s;
     -- pixel_2_bram_slice_adr <= pixel_2_bram_slice_adr_s;
 
-    i_next <= i_i;
-    j_next <= j_i;
-    k_next <= k_i;
-    l_next <= l_i;
+    -- i_next <= i_i;
+    -- j_next <= j_i;
+    -- k_next <= k_i;
+    -- l_next <= l_i;
 
     -- pixel_0_adr_o <= pixel_0_adr_s;
     -- pixel_1_adr_o <= pixel_1_adr_s;
@@ -143,7 +143,7 @@ begin
     -- shift_reg : process (clk)
     -- begin
     --     if (rising_edge(clk)) then
-    --         if (rst_i = '1') then
+    --         if (reset_in = '1') then
                 
     --         else
     --             if (en_in = '1') then
@@ -164,11 +164,11 @@ begin
     begin
         if (rising_edge(clk)) then
 
-            if (rst_i = '1') then
-                i_reg <= (others => '0');
-                j_reg <= (others => '0');
-                k_reg <= (others => '0');
-                l_reg <= (others => '0');
+            if (reset_in = '1') then
+                -- i_reg <= (others => '0');
+                -- j_reg <= (others => '0');
+                -- k_reg <= (others => '0');
+                -- l_reg <= (others => '0');
 
                 pixel_0_adr_s <= (others => '0');
                 pixel_1_adr_s <= (others => '0');
@@ -183,10 +183,10 @@ begin
                 kernel_1_adr_s <= (others => '0');
                 kernel_2_adr_s <= (others => '0');
             else
-                i_reg <= i_next;
-                j_reg <= j_next;
-                k_reg <= k_next;
-                l_reg <= l_next;
+                -- i_reg <= i_next;
+                -- j_reg <= j_next;
+                -- k_reg <= k_next;
+                -- l_reg <= l_next;
                 if (en_in = '1') then
                     adr_shift_reg(0) <= adr_shift_reg(1);
                     adr_shift_reg(1) <= adr_shift_reg(2);

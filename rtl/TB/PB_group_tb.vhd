@@ -18,7 +18,7 @@ end tb_PB_group;
 architecture tb of tb_PB_group is
 
     component PB_group
-        port (rst_i       : in std_logic;
+        port (reset_in       : in std_logic;
               en_in       : in std_logic;
               clk         : in std_logic;
               pixel_0_in  : in std_logic_vector (width_pixel - 1 downto 0);
@@ -32,7 +32,7 @@ architecture tb of tb_PB_group is
               kernel_2_in : in std_logic_vector (width_kernel - 1 downto 0));
     end component;
 
-    signal rst_i       : std_logic;
+    signal reset_in       : std_logic;
     signal en_in       : std_logic;
     signal clk         : std_logic;
     signal pixel_0_in  : std_logic_vector (width_pixel - 1 downto 0);
@@ -52,7 +52,7 @@ architecture tb of tb_PB_group is
 begin
 
     dut : PB_group
-    port map (rst_i       => rst_i,
+    port map (reset_in       => reset_in,
               en_in       => en_in,
               clk         => clk,
               pixel_0_in  => pixel_0_in,
@@ -84,10 +84,10 @@ begin
         kernel_2_in <= (others => '0');
 
         -- Reset generation
-        -- EDIT: Check that rst_i is really your reset signal
-         rst_i <= '1';
+        -- EDIT: Check that reset_in is really your reset signal
+         reset_in <= '1';
          wait for 5 * TbPeriod;
-         rst_i <= '0';
+         reset_in <= '0';
          wait for 5 * TbPeriod;
 
         en_in <= '1';

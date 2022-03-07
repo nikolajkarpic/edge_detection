@@ -18,7 +18,7 @@ architecture tb of tb_MAC is
 
     component MAC
         port (
-              rst_i       : in std_logic;
+              reset_in       : in std_logic;
               en_in       : in std_logic;
               clk         : in std_logic;
               pixel_in    : in std_logic_vector (width_pixel - 1 downto 0);
@@ -27,7 +27,7 @@ architecture tb of tb_MAC is
     end component;
 
     signal sum_en_i    : std_logic;
-    signal rst_i       : std_logic;
+    signal reset_in       : std_logic;
     signal en_in       : std_logic;
     signal clk         : std_logic;
     signal pixel_in    : std_logic_vector (width_pixel - 1 downto 0);
@@ -42,7 +42,7 @@ begin
 
     dut : MAC
     port map (
-              rst_i       => rst_i,
+              reset_in       => reset_in,
               en_in       => en_in,
               clk         => clk,
               pixel_in    => pixel_in,
@@ -59,12 +59,12 @@ begin
     begin
         -- EDIT Adapt initialization as needed
         sum_en_i <= '0';
-        rst_i <= '1';
+        reset_in <= '1';
         en_in <= '0';
         pixel_in <="00000000" ;
         kernel_in <= "0000000000000000";
         wait for 2 * TbPeriod;
-        rst_i <= '0';
+        reset_in <= '0';
         
         pixel_in <="00000001" ;
         kernel_in <= "0000000000000001";
@@ -100,7 +100,7 @@ begin
         wait for 5 * TbPeriod;
 
         --  en_in <= '0';
-        --  rst_i <= '1';
+        --  reset_in <= '1';
 
         wait for 5 * TbPeriod;
 

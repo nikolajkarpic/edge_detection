@@ -38,7 +38,7 @@ entity PB_group is
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
-        rst_i : in std_logic;
+        reset_in : in std_logic;
         en_in : in std_logic;
         clk : in std_logic;
         pixel_0_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -77,7 +77,7 @@ architecture Behavioral of PB_group is
         );
         port (
             sum_en_i : std_logic;
-            rst_i : in std_logic;
+            reset_in : in std_logic;
             en_in : in std_logic;
             clk : in std_logic;
             pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -92,7 +92,7 @@ architecture Behavioral of PB_group is
             SIGNED_UNSIGNED : string := "signed"
         );
         port (
-            rst_i : in std_logic;
+            reset_in : in std_logic;
             en_in : in std_logic;
             clk : in std_logic;
             sum_0_in : in std_logic_vector(WIDTH_sum - 1 downto 0);
@@ -116,7 +116,7 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        rst_i => rst_i_s,
+        reset_in => rst_i_s,
         pixel_in => pixel_0_in_s,
         kernel_in => kernel_0_in_s,
         mul_acc_out => mac_0_sum_s
@@ -134,7 +134,7 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        rst_i => rst_i_s,
+        reset_in => rst_i_s,
         pixel_in => pixel_1_in_s,
         kernel_in => kernel_1_in_s,
         mul_acc_out => mac_1_sum_s
@@ -152,7 +152,7 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        rst_i => rst_i_s,
+        reset_in => rst_i_s,
         pixel_in => pixel_2_in_s,
         kernel_in => kernel_2_in_s,
         mul_acc_out => mac_2_sum_s
@@ -166,7 +166,7 @@ begin
     port map(
         en_in => sum_out_en_s,
         clk => clk_s,
-        rst_i => rst_i_s,
+        reset_in => rst_i_s,
         sum_0_in => mac_0_sum_s,
         sum_1_in => mac_1_sum_s,
         sum_2_in => mac_2_sum_s,
@@ -176,7 +176,7 @@ begin
     sign_check_seq : process (clk)
     begin
         if (rising_edge(clk)) then
-            if (rst_i = '1') then
+            if (reset_in = '1') then
                 sign_check_en <= '0';
                 signed_conv_out <= (others => '0');
             else
@@ -207,7 +207,7 @@ begin
 
     -- connects signals to interfaces
     clk_s <= clk;
-    rst_i_s <= rst_i;
+    rst_i_s <= reset_in;
     en_in_s <= en_in;
     sum_out_en_s <= sum_out_en;
 

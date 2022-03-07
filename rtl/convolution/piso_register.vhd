@@ -38,7 +38,7 @@ entity piso_register is
         clk : in std_logic;
         write_en : in std_logic;
         shift_in : in std_logic;
-        rst_in : in std_logic;
+        reset_in : in std_logic;
         parallel_0_in : in std_logic_vector (WIDTH - 1 downto 0);
         parallel_1_in : in std_logic_vector (WIDTH - 1 downto 0);
         parallel_2_in : in std_logic_vector (WIDTH - 1 downto 0);
@@ -56,7 +56,7 @@ begin
     piso_reg : process (clk) is
     begin
         if rising_edge(clk) then
-            if rst_in = '1' then
+            if reset_in = '1' then
                 shift_reg_s(0) <= (others => '0');
                 shift_reg_s(1) <= (others => '0');
                 shift_reg_s(2) <= (others => '0');

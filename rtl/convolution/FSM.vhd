@@ -47,8 +47,8 @@ entity conv_FSM is
     port (
         --clock and start/reset interface --
         clk_i : in std_logic;
-        reset_i : in std_logic;
-        start_i : in std_logic;
+        reset_in : in std_logic;
+        start_in : in std_logic;
 
         --image config--
         --image
@@ -123,7 +123,7 @@ begin
     registers : process (clk_i)
     begin
         if (rising_edge(clk_i)) then
-            if (reset_i = '1') then
+            if (reset_in = '1') then
                 i_reg <= (others => '0');
                 j_reg <= (others => '0');
                 k_reg <= (others => '0');
@@ -150,7 +150,7 @@ begin
     fsm_sequential : process (clk_i)
     begin
         if (rising_edge(clk_i)) then
-            if (reset_i = '1') then
+            if (reset_in = '1') then
                 current_state <= idle;
             else
                 current_state <= next_state;
@@ -158,7 +158,7 @@ begin
         end if;
     end process;
 
-    fsm_combinational : process (current_state, i_reg, i_next_reg, j_reg, j_next_reg, k_reg, k_next_reg, l_reg, l_next_reg, start_i)
+    fsm_combinational : process (current_state, i_reg, i_next_reg, j_reg, j_next_reg, k_reg, k_next_reg, l_reg, l_next_reg, start_in)
     begin
         -- default values for states
         sum_en_o <= '0';
@@ -183,7 +183,7 @@ begin
             when idle =>
                 ready_o <= '1';
 
-                if (start_i = '1') then
+                if (start_in = '1') then
                     next_state <= init;
                 else
                     next_state <= idle;

@@ -37,7 +37,7 @@ entity sipo_register is
     port (
         clk : in std_logic;
         shift : in std_logic;
-        rst_in : in std_logic;
+        reset_in : in std_logic;
         sereal_input : in std_logic_vector(WIDTH - 1 downto 0);
         --parallel_output: out std_logic_vector(DEPTH*WIDTH-1 downto 0);
         parallel_0_out : out std_logic_vector(WIDTH - 1 downto 0);
@@ -58,7 +58,7 @@ begin
             if shift = '1' then
                 en_gen_s <= en_gen_s(0) & en_gen_s(DEPTH - 1 downto 1);
                 state_s <= sereal_input & state_s(DEPTH * WIDTH - 1 downto WIDTH);
-            elsif rst_in = '1' then
+            elsif reset_in = '1' then
                 state_s <= (others => '0');
                 en_gen_s <= (others => '0');
             end if;
