@@ -31,11 +31,11 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
--- This file containts VHDL code that implements  A*B + 1 width multipliy accumulate 
+-- This file containts VHDL code that implements  A*B + 1 WIDTH multipliy accumulate 
 
 -- Parameters:
--- WIDTHA - sets the width of operand a_i
--- WIDTHB - sets the width of operand b_i
+-- WIDTHA - sets the WIDTH of operand a_i
+-- WIDTHB - sets the WIDTH of operand b_i
 -- SIGNED_UNSIGNED - string that determines whether multiple_acc is unsigned or
 -- signed. If it needs to be signed, pass argument "signed" else it will be unsigned.
 

@@ -31,14 +31,14 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
--- This file containts VHDL code that implements a A*B width simple_multiplier
--- and it maps it to DSP cells. While the width of the multiplier is 25*18, syntesizer
+-- This file containts VHDL code that implements a A*B WIDTH simple_multiplier
+-- and it maps it to DSP cells. While the WIDTH of the multiplier is 25*18, syntesizer
 -- maps it to 1 dsp cels, and if it's bigger than that syntesizer maps it to
 -- more than one dsp cells.
 
 -- Parameters:
--- WIDTHA - sets the width of operand a_i
--- WIDTHB - sets the width of operand b_i
+-- WIDTHA - sets the WIDTH of operand a_i
+-- WIDTHB - sets the WIDTH of operand b_i
 -- SIGNED_UNSIGNED - string that determines whether multiple_acc is unsigned or
 --                                   signed. If it needs to be signed, pass argument "signed"
 --                                   else it will be unsigned.

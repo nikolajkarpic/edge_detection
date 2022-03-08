@@ -8,7 +8,7 @@ use ieee.std_logic_1164.all;
 entity tb_adress_controler is
     generic (
         WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
-        DEFAULT_IMG_SIZE : integer := 100; -- width/height of the image
+        DEFAULT_IMG_SIZE : integer := 100; -- WIDTH/height of the image
         WIDTH_img_size : integer := 7; --Number of bits needed to reporesent img size
         KERNEL_SIZE : integer := 9; -- widht/height of kernel
         WIDTH_kernel_size : integer := 4; --Number of bits needed to reporesent kernel size
@@ -29,15 +29,15 @@ architecture tb of tb_adress_controler is
               calc_adr_i       : in std_logic;
               calc_conv_adr_i  : in std_logic;
               en_in            : in std_logic;
-              i_i              : in std_logic_vector (width_img_size - 1 downto 0);
-              j_i              : in std_logic_vector (width_img_size - 1 downto 0);
-              k_i              : in std_logic_vector (width_kernel_size - 1 downto 0);
-              l_i              : in std_logic_vector (width_kernel_size - 1 downto 0);
-              conv_adr_o       : out std_logic_vector (width_bram_in_out_adr - 1 downto 0);
-              kernel_0_adr_o   : out std_logic_vector (width_kernel_adr - 1 downto 0);
-              kernel_1_adr_o   : out std_logic_vector (width_kernel_adr - 1 downto 0);
-              kernel_2_adr_o   : out std_logic_vector (width_kernel_adr - 1 downto 0);
-              bram_shifted_out : out std_logic_vector (width_bram_in_out_adr - 1 downto 0);
+              i_i              : in std_logic_vector (WIDTH_img_size - 1 downto 0);
+              j_i              : in std_logic_vector (WIDTH_img_size - 1 downto 0);
+              k_i              : in std_logic_vector (WIDTH_kernel_size - 1 downto 0);
+              l_i              : in std_logic_vector (WIDTH_kernel_size - 1 downto 0);
+              conv_adr_o       : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+              kernel_0_adr_o   : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+              kernel_1_adr_o   : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+              kernel_2_adr_o   : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+              bram_shifted_out : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
               bram_read_en_out : out std_logic);
     end component;
 
@@ -46,15 +46,15 @@ architecture tb of tb_adress_controler is
     signal calc_adr_i       : std_logic;
     signal calc_conv_adr_i  : std_logic;
     signal en_in            : std_logic;
-    signal i_i              : std_logic_vector (width_img_size - 1 downto 0);
-    signal j_i              : std_logic_vector (width_img_size - 1 downto 0);
-    signal k_i              : std_logic_vector (width_kernel_size - 1 downto 0);
-    signal l_i              : std_logic_vector (width_kernel_size - 1 downto 0);
-    signal conv_adr_o       : std_logic_vector (width_bram_in_out_adr - 1 downto 0);
-    signal kernel_0_adr_o   : std_logic_vector (width_kernel_adr - 1 downto 0);
-    signal kernel_1_adr_o   : std_logic_vector (width_kernel_adr - 1 downto 0);
-    signal kernel_2_adr_o   : std_logic_vector (width_kernel_adr - 1 downto 0);
-    signal bram_shifted_out : std_logic_vector (width_bram_in_out_adr - 1 downto 0);
+    signal i_i              : std_logic_vector (WIDTH_img_size - 1 downto 0);
+    signal j_i              : std_logic_vector (WIDTH_img_size - 1 downto 0);
+    signal k_i              : std_logic_vector (WIDTH_kernel_size - 1 downto 0);
+    signal l_i              : std_logic_vector (WIDTH_kernel_size - 1 downto 0);
+    signal conv_adr_o       : std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+    signal kernel_0_adr_o   : std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+    signal kernel_1_adr_o   : std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+    signal kernel_2_adr_o   : std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
+    signal bram_shifted_out : std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
     signal bram_read_en_out : std_logic;
 
     constant TbPeriod : time := 100 ns; -- EDIT Put right period here

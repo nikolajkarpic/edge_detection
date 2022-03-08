@@ -32,7 +32,7 @@ use IEEE.NUMERIC_STD.all;
 entity adress_controler is
     generic (
         WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
-        DEFAULT_IMG_SIZE : integer := 100; -- width/height of the image
+        DEFAULT_IMG_SIZE : integer := 100; -- WIDTH/height of the image
         WIDTH_img_size : integer := 7; --Number of bits needed to reporesent img size
         KERNEL_SIZE : natural := 9; -- widht/height of kernel
         WIDTH_kernel_size : natural := 4; --Number of bits needed to reporesent kernel size

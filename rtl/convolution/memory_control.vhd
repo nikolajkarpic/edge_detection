@@ -51,7 +51,6 @@ entity memory_control is
         --piso
 
         shift_in : in std_logic;
-        reset_in : in std_logic;
         write_en : in std_logic;
 
         

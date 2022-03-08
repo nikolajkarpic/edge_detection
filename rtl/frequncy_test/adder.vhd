@@ -31,15 +31,15 @@ use IEEE.NUMERIC_STD.ALL;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
--- This file containts VHDL code that implements a A*B width adder with
+-- This file containts VHDL code that implements a A*B WIDTH adder with
 -- optional number of pipeline stages. Number of pipeline stages depends on
 -- implementation desires, but recomended amount is 3 or 4, because then, all
 -- the register are inferred into dsp cells, otherwise the tool will use
 -- flipflops inside slices for register implementation. 
 
 -- Parameters:
--- WIDTHA - sets the width of operand a_i
--- WIDTHB - sets the width of operand b_i
+-- WIDTHA - sets the WIDTH of operand a_i
+-- WIDTHB - sets the WIDTH of operand b_i
 -- PIPE_STAGES - sets the number of pipeline stages
 -- SIGNED_UNSIGNED - string that determines whether multiple_acc is unsigned or
 --                                   signed. If it needs to be signed, pass argument "signed"

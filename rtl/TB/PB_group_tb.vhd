@@ -21,29 +21,29 @@ architecture tb of tb_PB_group is
         port (reset_in       : in std_logic;
               en_in       : in std_logic;
               clk         : in std_logic;
-              pixel_0_in  : in std_logic_vector (width_pixel - 1 downto 0);
-              pixel_1_in  : in std_logic_vector (width_pixel - 1 downto 0);
-              pixel_2_in  : in std_logic_vector (width_pixel - 1 downto 0);
+              pixel_0_in  : in std_logic_vector (WIDTH_pixel - 1 downto 0);
+              pixel_1_in  : in std_logic_vector (WIDTH_pixel - 1 downto 0);
+              pixel_2_in  : in std_logic_vector (WIDTH_pixel - 1 downto 0);
               sum_out_en  : in std_logic;
-              sum_out     : out std_logic_vector (width_sum - 1 downto 0);
+              sum_out     : out std_logic_vector (WIDTH_sum - 1 downto 0);
               signed_out : out std_logic_vector(WIDTH_conv - 1 downto 0);
-              kernel_0_in : in std_logic_vector (width_kernel - 1 downto 0);
-              kernel_1_in : in std_logic_vector (width_kernel - 1 downto 0);
-              kernel_2_in : in std_logic_vector (width_kernel - 1 downto 0));
+              kernel_0_in : in std_logic_vector (WIDTH_kernel - 1 downto 0);
+              kernel_1_in : in std_logic_vector (WIDTH_kernel - 1 downto 0);
+              kernel_2_in : in std_logic_vector (WIDTH_kernel - 1 downto 0));
     end component;
 
     signal reset_in       : std_logic;
     signal en_in       : std_logic;
     signal clk         : std_logic;
-    signal pixel_0_in  : std_logic_vector (width_pixel - 1 downto 0);
-    signal pixel_1_in  : std_logic_vector (width_pixel - 1 downto 0);
-    signal pixel_2_in  : std_logic_vector (width_pixel - 1 downto 0);
+    signal pixel_0_in  : std_logic_vector (WIDTH_pixel - 1 downto 0);
+    signal pixel_1_in  : std_logic_vector (WIDTH_pixel - 1 downto 0);
+    signal pixel_2_in  : std_logic_vector (WIDTH_pixel - 1 downto 0);
     signal sum_out_en  : std_logic;
-    signal sum_out     : std_logic_vector (width_sum - 1 downto 0);
+    signal sum_out     : std_logic_vector (WIDTH_sum - 1 downto 0);
     signal signed_out : std_logic_vector(WIDTH_conv - 1 downto 0);
-    signal kernel_0_in : std_logic_vector (width_kernel - 1 downto 0);
-    signal kernel_1_in : std_logic_vector (width_kernel - 1 downto 0);
-    signal kernel_2_in : std_logic_vector (width_kernel - 1 downto 0);
+    signal kernel_0_in : std_logic_vector (WIDTH_kernel - 1 downto 0);
+    signal kernel_1_in : std_logic_vector (WIDTH_kernel - 1 downto 0);
+    signal kernel_2_in : std_logic_vector (WIDTH_kernel - 1 downto 0);
 
     constant TbPeriod : time := 5 ns; -- EDIT Put right period here
     signal TbClock : std_logic := '0';

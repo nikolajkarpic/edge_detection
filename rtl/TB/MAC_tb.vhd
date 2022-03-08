@@ -21,18 +21,18 @@ architecture tb of tb_MAC is
               reset_in       : in std_logic;
               en_in       : in std_logic;
               clk         : in std_logic;
-              pixel_in    : in std_logic_vector (width_pixel - 1 downto 0);
-              kernel_in   : in std_logic_vector (width_kernel - 1 downto 0);
-              mul_acc_out : out std_logic_vector (width_sum - 1 downto 0));
+              pixel_in    : in std_logic_vector (WIDTH_pixel - 1 downto 0);
+              kernel_in   : in std_logic_vector (WIDTH_kernel - 1 downto 0);
+              mul_acc_out : out std_logic_vector (WIDTH_sum - 1 downto 0));
     end component;
 
     signal sum_en_i    : std_logic;
     signal reset_in       : std_logic;
     signal en_in       : std_logic;
     signal clk         : std_logic;
-    signal pixel_in    : std_logic_vector (width_pixel - 1 downto 0);
-    signal kernel_in   : std_logic_vector (width_kernel - 1 downto 0);
-    signal mul_acc_out : std_logic_vector (width_sum - 1 downto 0);
+    signal pixel_in    : std_logic_vector (WIDTH_pixel - 1 downto 0);
+    signal kernel_in   : std_logic_vector (WIDTH_kernel - 1 downto 0);
+    signal mul_acc_out : std_logic_vector (WIDTH_sum - 1 downto 0);
 
     constant TbPeriod : time := 10 ns; -- EDIT Put right period here
     signal TbClock : std_logic := '0';

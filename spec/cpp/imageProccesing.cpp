@@ -6,10 +6,10 @@ using namespace std;
 
 image2D convolution2D(kernel2D kernel, image2D source)
 {
-	int imageWidth = source[0].size();
+	int imageWIDTH = source[0].size();
 	int imageHeight = source.size();
 
-	int kernelWidth = kernel[0].size();
+	int kernelWIDTH = kernel[0].size();
 	int kernelHeight = kernel.size();
 
 	pixel tempPixel;
@@ -19,10 +19,10 @@ image2D convolution2D(kernel2D kernel, image2D source)
 
 	for (int i = 0; i < imageHeight - kernelHeight + 1; i++) {
 		imageResult.push_back(tempPixelArray);
-		for (int j = 0; j < imageWidth - kernelWidth +1; j++) {
+		for (int j = 0; j < imageWIDTH - kernelWIDTH +1; j++) {
 			sum = 0.0;
 			for (int k = 0; k < kernelHeight; k++) {
-				for (int l = 0; l < kernelWidth; l++) {
+				for (int l = 0; l < kernelWIDTH; l++) {
 					sum = sum + (kernel[k][l] * source[i + k][j + l].red);
 					
 				}
@@ -48,7 +48,7 @@ image2D convolution2D(kernel2D kernel, image2D source)
 
 image2D grayScale(image2D source)
 {
-	int width = source[0].size(); //gets widht of an image for loops
+	int WIDTH = source[0].size(); //gets widht of an image for loops
 	int height = source.size();		//gets height of an image for loops
 	
 	
@@ -61,7 +61,7 @@ image2D grayScale(image2D source)
 	//lopps through the image 
 	for (int i = 0; i < height; i++) {
 		tempImage.push_back(tempPixelArray); 
-		for (int j = 0; j < width; j++) {
+		for (int j = 0; j < WIDTH; j++) {
 			grayValue = source[i][j].blue * BLUE_VALUE + source[i][j].red * RED_VALUE + source[i][j].green * GREEN_VALUE; //gets grayscale value of pixels
 			tempPixel.blue = (int)grayValue; //assigns each chanel to grayscale value and typecasts float to integer
 			tempPixel.red = (int)grayValue;
@@ -79,7 +79,7 @@ image2D zeroCrossingTest(image2D source)
 	image2D imageResult;
 	image1D tempPixelArray;
 	pixel tempPixel;
-	int sourceWidth = source[0].size();
+	int sourceWIDTH = source[0].size();
 	int sourceHeight = source.size();
 
 	matrix1D tempRow;
@@ -90,7 +90,7 @@ image2D zeroCrossingTest(image2D source)
 
 	for (int i = 1; i < sourceHeight - 1; i++) {
 		imageResult.push_back(tempPixelArray);
-		for (int j = 1; j < sourceWidth - 1; j++) {
+		for (int j = 1; j < sourceWIDTH - 1; j++) {
 			negCouter = 0;
 			posCoutner = 0;
 			for (int k = -1; k < 2; k++) {

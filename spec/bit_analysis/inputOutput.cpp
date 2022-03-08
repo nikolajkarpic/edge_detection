@@ -11,7 +11,7 @@ image2D loadImage(string path){
 
     copyMakeBorder(img, paddedImage, 5, 5, 5, 5, BORDER_REPLICATE, (0, 0, 0)); //added zero padding to the bottom and left edge
 
-    int width = paddedImage.cols; //gets width of an image
+    int WIDTH = paddedImage.cols; //gets WIDTH of an image
     int height = paddedImage.rows;  //gets height of an image
     
     
@@ -21,7 +21,7 @@ image2D loadImage(string path){
 
     for (int i = 0; i < height; i++) { //loops through the image
         image.push_back(pixelArrayTemp);
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < WIDTH; j++) {
             temp.blue = (int)paddedImage.at<Vec3b>(i, j).val[0]; // this copys value of blue 
             temp.green = (int)paddedImage.at<Vec3b>(i, j).val[1]; // this copys value of green
             temp.red = (int)paddedImage.at<Vec3b>(i, j).val[2]; // this copys value of red 
@@ -37,7 +37,7 @@ SCimage2D SCloadImage(string path){
 
     copyMakeBorder(img, paddedImage, 5, 5, 5, 5, BORDER_REPLICATE, (0, 0, 0)); //added zero padding to the bottom and left edge
 
-    int width = paddedImage.cols; //gets width of an image
+    int WIDTH = paddedImage.cols; //gets WIDTH of an image
     int height = paddedImage.rows;  //gets height of an image
     
     
@@ -47,7 +47,7 @@ SCimage2D SCloadImage(string path){
 
     for (int i = 0; i < height; i++) { //loops through the image
         image.push_back(pixelArrayTemp);
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < WIDTH; j++) {
             temp.blue = (int)paddedImage.at<Vec3b>(i, j).val[0]; // this copys value of blue 
             temp.green = (int)paddedImage.at<Vec3b>(i, j).val[1]; // this copys value of green
             temp.red = (int)paddedImage.at<Vec3b>(i, j).val[2]; // this copys value of red 
@@ -59,12 +59,12 @@ SCimage2D SCloadImage(string path){
 
 void showImage(string path, image2D source) {
     Mat img = imread(path);
-    int width = source[0].size();
+    int WIDTH = source[0].size();
     int height = source.size();
     string newPath = path.replace(path.find("."), 4, "Edge.png");
     //temporary fix, needs to save at any path... Add through arguments.
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < WIDTH; j++) {
             img.ptr<Vec3b>(i)[j].val[0] = (uchar)source[i][j].blue;
             img.ptr<Vec3b>(i)[j].val[1] = (uchar)source[i][j].green;
             img.ptr<Vec3b>(i)[j].val[2] = (uchar)source[i][j].red;
@@ -78,16 +78,16 @@ void showImage(string path, image2D source) {
 
 void SCshowImage(string path, string pathToSave, SCimage2D source) {
     Mat img = imread(path);
-    int width_img = img.rows;
+    int WIDTH_img = img.rows;
     int height_img = img.cols;
-    int width = source[0].size();
+    int WIDTH = source[0].size();
     int height = source.size();
 
     
     string newPath = path.replace(path.find("."), 4, "Edge.png");
     //temporary fix, needs to save at any path... Add through arguments.
     for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
+        for (int j = 0; j < WIDTH; j++) {
             img.ptr<Vec3b>(i)[j].val[0] = (uchar)source[i][j].blue.to_int();
             img.ptr<Vec3b>(i)[j].val[1] = (uchar)source[i][j].green.to_int();
             img.ptr<Vec3b>(i)[j].val[2] = (uchar)source[i][j].red.to_int();

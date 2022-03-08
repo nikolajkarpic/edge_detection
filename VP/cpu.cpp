@@ -161,7 +161,7 @@ void cpu::zeroCrossingTest()
     //convOut = inputArray;
     //ENDING TEST
     int sourceHeight = convOut.size();
-    int sourceWidth = convOut[1].size();
+    int sourceWIDTH = convOut[1].size();
 
     int negCouter;
     int posCoutner;
@@ -169,7 +169,7 @@ void cpu::zeroCrossingTest()
     for (int i = 1; i < sourceHeight - 1; i++)
     {
         outputArray.push_back(tempMatrixRow);
-        for (int j = 1; j < sourceWidth - 1; j++)
+        for (int j = 1; j < sourceWIDTH - 1; j++)
         {
             negCouter = 0;
             posCoutner = 0;
