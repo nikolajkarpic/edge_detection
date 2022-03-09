@@ -41,7 +41,7 @@ entity memory_control is
         WIDTH_num_of_pixels_in_bram : integer := 3;
         DEPTH : integer := 3;
         WIDTH_pixel : natural := 8; --Number of bits needed to represent pixel data
-        WIDTH_bram_adr : integer := 15
+        WIDTH_bram_adr : integer := 14
     );
     port (
         -- clocking
@@ -50,8 +50,8 @@ entity memory_control is
 
         --piso
 
-        shift_in : in std_logic;
-        write_en : in std_logic;
+        -- shift_in : in std_logic;
+        -- write_en : in std_logic;
 
         
         --TESTING BRAM ACCESS AND WRITING... IP INTEGRATOR WILL BE USED TO IMPLEMENT BRAM.
@@ -60,7 +60,7 @@ entity memory_control is
         w_data_0_in : in std_logic_vector(WIDTH_data - 1 downto 0);
         w_adr_0_in : in std_logic_vector(WIDTH_bram_adr - WIDTH_num_of_pixels_in_bram - 1 downto 0);
         --read data for bram
-        bram_adr_in : in std_logic_vector (WIDTH_bram_adr- 1 downto 0);
+        bram_adr_in : in std_logic_vector (WIDTH_bram_adr - 1 downto 0);
         bram_data_out : out std_logic_vector (WIDTH_pixel - 1 downto 0);
         bram_data_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         -- END TESTING OF BRAM
@@ -68,15 +68,16 @@ entity memory_control is
         
         -- shift en and data in from bram... while shift is enabled it loads data
         pixel_shift_en : in std_logic;
+        pixle_shift_en_out : out std_logic;
         pixel_data_in : in std_logic_vector (WIDTH_pixel - 1 downto 0);
 
         pixel_0_data_out : out std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_1_data_out : out std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_2_data_out : out std_logic_vector(WIDTH_pixel - 1 downto 0);
 
-        read_pixel_data_en_in : in std_logic;
+        -- read_pixel_data_en_in : in std_logic;
         --r_adr_0_in : in std_logic_vector(WIDTH_bram_adr - 1 downto 0);
-        r_data_0_out : out std_logic_vector(WIDTH_data - 1 downto 0);
+        -- r_data_0_out : out std_logic_vector(WIDTH_data - 1 downto 0);
 
         --kernel reg bank
         -- read interface
@@ -122,6 +123,8 @@ begin
     pixel_2_data_out <= pixel_data_shift_s(2);
     pixel_1_data_out <= pixel_data_shift_s(1);
     pixel_0_data_out <= pixel_data_shift_s(0);
+
+    pixle_shift_en_out <= bram_en_s; -- this is transfered to IP integrator bram as read enable singal
     -- *This has to be synced wtih the enable signals... the idea is to have one enable so when its active it writes "111" into shift reg, and so after one clock cycke it gives enable to the bram in data procces
     -- so the bram data in procces is delayed for one clock so that bram has time to put correct data on the data line.
     bram_data_in_proc : process (clk)

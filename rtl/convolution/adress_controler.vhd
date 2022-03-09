@@ -48,7 +48,7 @@ entity adress_controler is
         reset_in : in std_logic;
         calc_adr_i : in std_logic;
         calc_conv_adr_i : in std_logic;
-        en_in : in std_logic;
+        shift_en_in : in std_logic;
         i_i : in std_logic_vector(WIDTH_img_size - 1 downto 0);
         j_i : in std_logic_vector(WIDTH_img_size - 1 downto 0);
         k_i : in std_logic_vector(WIDTH_kernel_size - 1 downto 0);
@@ -146,7 +146,7 @@ begin
     --         if (reset_in = '1') then
                 
     --         else
-    --             if (en_in = '1') then
+    --             if (shift_en_in = '1') then
     --                 adr_shift_reg(0) <= adr_shift_reg(1);
     --                 adr_shift_reg(1) <= adr_shift_reg(2);
 
@@ -187,7 +187,7 @@ begin
                 -- j_reg <= j_next;
                 -- k_reg <= k_next;
                 -- l_reg <= l_next;
-                if (en_in = '1') then
+                if (shift_en_in = '1') then
                     adr_shift_reg(0) <= adr_shift_reg(1);
                     adr_shift_reg(1) <= adr_shift_reg(2);
 

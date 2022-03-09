@@ -28,7 +28,7 @@ architecture tb of tb_adress_controler is
               reset_in            : in std_logic;
               calc_adr_i       : in std_logic;
               calc_conv_adr_i  : in std_logic;
-              en_in            : in std_logic;
+              shift_en_in            : in std_logic;
               i_i              : in std_logic_vector (WIDTH_img_size - 1 downto 0);
               j_i              : in std_logic_vector (WIDTH_img_size - 1 downto 0);
               k_i              : in std_logic_vector (WIDTH_kernel_size - 1 downto 0);
@@ -45,7 +45,7 @@ architecture tb of tb_adress_controler is
     signal reset_in            : std_logic;
     signal calc_adr_i       : std_logic;
     signal calc_conv_adr_i  : std_logic;
-    signal en_in            : std_logic;
+    signal shift_en_in            : std_logic;
     signal i_i              : std_logic_vector (WIDTH_img_size - 1 downto 0);
     signal j_i              : std_logic_vector (WIDTH_img_size - 1 downto 0);
     signal k_i              : std_logic_vector (WIDTH_kernel_size - 1 downto 0);
@@ -68,7 +68,7 @@ begin
               reset_in            => reset_in,
               calc_adr_i       => calc_adr_i,
               calc_conv_adr_i  => calc_conv_adr_i,
-              en_in            => en_in,
+              shift_en_in            => shift_en_in,
               i_i              => i_i,
               j_i              => j_i,
               k_i              => k_i,
@@ -91,7 +91,7 @@ begin
         -- EDIT Adapt initialization as needed
         calc_adr_i <= '0';
         calc_conv_adr_i <= '0';
-        en_in <= '0';
+        shift_en_in <= '0';
         i_i <= (others => '0');
         j_i <= (others => '0');
         k_i <= (others => '0');
@@ -107,7 +107,7 @@ begin
         reset_in <= '0';
         calc_adr_i <= '0';
         calc_conv_adr_i <= '0';
-        en_in <= '0';
+        shift_en_in <= '0';
         i_i <= (others => '0');
         j_i <= (others => '0');
         k_i <= (others => '0');
@@ -118,7 +118,7 @@ begin
         wait for 1 * TbPeriod;
         calc_adr_i <= '0';
         calc_conv_adr_i <= '0';
-        en_in <= '1';
+        shift_en_in <= '1';
 
         -- i_i <="0000100";
 

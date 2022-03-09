@@ -41,6 +41,8 @@ entity PB_group is
         reset_in : in std_logic;
         en_in : in std_logic;
         clk : in std_logic;
+        reset_sum_in : in std_logic;
+
         pixel_0_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_1_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_2_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -67,6 +69,7 @@ architecture Behavioral of PB_group is
     signal rst_i_s, en_in_s, clk_s, sum_out_en_s, sign_check_en : std_logic;
     signal signed_conv_out, signed_conv_out_n : std_logic_vector(WIDTH_conv - 1 downto 0);
     signal shift_reg : std_logic_vector (1 downto 0); -- for band aid fix 
+    signal reset_sum_s: std_logic;
     --components
     component MAC
         generic (
@@ -78,6 +81,7 @@ architecture Behavioral of PB_group is
         port (
             sum_en_i : std_logic;
             reset_in : in std_logic;
+            
             en_in : in std_logic;
             clk : in std_logic;
             pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -166,7 +170,7 @@ begin
     port map(
         en_in => sum_out_en_s,
         clk => clk_s,
-        reset_in => rst_i_s,
+        reset_in => reset_sum_s,
         sum_0_in => mac_0_sum_s,
         sum_1_in => mac_1_sum_s,
         sum_2_in => mac_2_sum_s,
@@ -208,6 +212,8 @@ begin
     -- connects signals to interfaces
     clk_s <= clk;
     rst_i_s <= reset_in;
+    reset_sum_s <= reset_in;
+    reset_sum_s <= reset_sum_in;
     en_in_s <= en_in;
     sum_out_en_s <= sum_out_en;
 

@@ -71,7 +71,7 @@ entity conv_FSM is
         -- kernel_2_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
         --ip output data and addres--
 
-        inc_l_out : out std_logic;
+        -- inc_l_out : out std_logic;
 
         i_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
         j_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
@@ -84,9 +84,9 @@ entity conv_FSM is
         sum_en_o : out std_logic;
         reset_PB_o : out std_logic;
 
-        conv_en_out : out std_logic;
-        conv_o : out std_logic_vector (1 downto 0);
-        conv_out_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
+        -- conv_en_out : out std_logic;
+        -- conv_o : out std_logic_vector (1 downto 0);
+        -- conv_out_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
         --ready to write output--
         ready_o : out std_logic;
         --conv done--
@@ -250,6 +250,7 @@ begin
                 if (j_reg = "0000011") then --make it no hard codded
                     if (i_reg = "0000011") then -- same 
                         next_state <= idle;
+                        done_o <= '1';
                     else
                         --next_state <= inc_i;
                         i_next_reg <= std_logic_vector(unsigned(i_reg) + 1);
@@ -266,7 +267,7 @@ begin
 
     end process;
 
-    inc_l_out<= inc_l_s;
+    -- inc_l_out<= inc_l_s;
     -- counter_inc_comb: process(i_reg, i_next_reg, j_reg, j_next_reg, k_reg, k_next_reg, l_reg, l_next_reg)
     -- begin
     --     i_next_reg <= std_logic_vector(unsigned(i_reg) + 1);
