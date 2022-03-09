@@ -57,6 +57,7 @@ entity convolution_ip is
         clk : in std_logic;
         reset_in : in std_logic;
         start_in : in std_logic;
+        ready_out : out std_logic;
 
         done_out : out std_logic;
 
@@ -65,7 +66,8 @@ entity convolution_ip is
         bram_pixel_adr_out : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
         -- bram interface for conv out data... write en is missing
         bram_conv_res_data_out : out std_logic_vector(WIDTH_conv_out_data - 1 downto 0);
-        bram_conv_res_adr_out : out std_logic_vector(WIDTH_bram_in_out_adr - 1 downto 0)
+        bram_conv_res_adr_out : out std_logic_vector(WIDTH_bram_in_out_adr - 1 downto 0);
+        bram_conv_res_write_en_out : out std_logic
 
     );
 end convolution_ip;
@@ -90,7 +92,8 @@ architecture Behavioral of convolution_ip is
             clk_i : in std_logic;
             reset_in : in std_logic;
             start_in : in std_logic;
-            -- inc_l_out : out std_logic;
+            reset_out : out std_logic;
+            shift_addreses_out : out std_logic;
             i_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
             j_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
             k_o : out std_logic_vector (WIDTH_kernel_size - 1 downto 0);
@@ -100,9 +103,6 @@ architecture Behavioral of convolution_ip is
             mac_en_o : out std_logic;
             sum_en_o : out std_logic;
             reset_PB_o : out std_logic;
-            -- conv_en_out : out std_logic;
-            -- conv_o : out std_logic_vector (1 downto 0);
-            -- conv_out_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
             ready_o : out std_logic;
             done_o : out std_logic);
     end component;
@@ -120,6 +120,7 @@ architecture Behavioral of convolution_ip is
             en_in : in std_logic;
             clk : in std_logic;
             reset_sum_in : in std_logic;
+            bram_write_enable_out : out std_logic;
             pixel_0_in : in std_logic_vector (WIDTH_pixel - 1 downto 0);
             pixel_1_in : in std_logic_vector (WIDTH_pixel - 1 downto 0);
             pixel_2_in : in std_logic_vector (WIDTH_pixel - 1 downto 0);
@@ -260,6 +261,7 @@ architecture Behavioral of convolution_ip is
     signal done_s : std_logic;
     signal ready_s : std_logic;
     signal conv_en_out_s : std_logic;
+    signal reset_out_s : std_logic;
 begin
 
     clk_s <= clk;
@@ -268,8 +270,10 @@ begin
     done_out <= done_s;
     bram_pixel_data_in_s <= bram_pixel_data_in;
     bram_pixel_adr_out <= bram_pixel_adr_out_s;
-    bram_read_data_en_out <= bram_read_data_en_out_s;
+    bram_read_data_en_out <= pixle_shift_en_out_s;
     bram_conv_res_adr_out <= conv_adr_o_s;
+    ready_out <= ready_s;
+    
 
 
     adr_control : adress_controler
@@ -288,7 +292,7 @@ begin
     )
     port map(
         clk => clk_s,
-        reset_in => reset_in_s,
+        reset_in => reset_out_s,
         calc_adr_i => calc_adr_i_s,
         calc_conv_adr_i => calc_conv_adr_i_s,
         shift_en_in => shift_en_in_s,
@@ -321,24 +325,19 @@ begin
     )
     port map(
         clk => clk_s, --
-        reset_in => reset_in_s, --
-        --   shift_in              => shift_in,
-        --   reset_in                => reset_in,
-        --   write_en              => write_en,
+        reset_in => reset_out_s, --
         write_0_en_in => write_0_en_in,
         w_data_0_in => w_data_0_in,
         w_adr_0_in => w_adr_0_in,
         bram_adr_in => bram_shifted_out_s, --
         bram_data_out => bram_data_out,
         bram_data_in => bram_data_in,
-        pixel_shift_en => bram_read_en_out_s, --
-        pixle_shift_en_out => pixle_shift_en_out_s, --
+        pixel_shift_en => bram_read_data_en_out_s, --shift_en_in_s
+        pixle_shift_en_out => pixle_shift_en_out_s, -- bram out 
         pixel_data_in => bram_pixel_data_in_s, --
         pixel_0_data_out => pixel_0_data_out_s, --
         pixel_1_data_out => pixel_1_data_out_s, --
         pixel_2_data_out => pixel_2_data_out_s, --
-        -- read_pixel_data_en_in => bram_read_en_out_s,--
-        -- r_data_0_out => r_data_0_out,
         r_0_kernel_data_out => r_0_kernel_data_out_s, --
         r_0_kernel_addr_in => kernel_0_adr_o_s, --
         r_1_kernel_data_out => r_1_kernel_data_out_s, --
@@ -358,9 +357,10 @@ begin
         SIGNED_UNSIGNED => SIGNED_UNSIGNED
     )
     port map(
-        reset_in => reset_in_s,
+        reset_in => reset_out_s,
         en_in => mac_en_s,
         clk => clk_s,
+        bram_write_enable_out => bram_conv_res_write_en_out,
         reset_sum_in => reset_PB_s,
         pixel_0_in => pixel_0_data_out_s,
         pixel_1_in => pixel_1_data_out_s,
@@ -388,7 +388,8 @@ begin
     port map (clk_i                => clk_s,
               reset_in              => reset_in_s,
               start_in              => start_in,
-            --   inc_l_out => inc_l_out ,
+              reset_out            => reset_out_s,
+              shift_addreses_out   => shift_en_in_s,
               i_o                  => i_i_s,
               j_o                  => j_i_s,
               k_o                  => k_i_s,
@@ -398,9 +399,6 @@ begin
               mac_en_o             => mac_en_s,
               sum_en_o             => sum_en_s,
               reset_PB_o           => reset_PB_s,
-            --   conv_en_out          => conv_en_out_s,
-            --   conv_o               => conv_o,
-            --   conv_out_adr_o       => conv_out_adr_o,
               ready_o              => ready_s,
               done_o               => done_s);
 

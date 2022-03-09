@@ -42,6 +42,7 @@ entity PB_group is
         en_in : in std_logic;
         clk : in std_logic;
         reset_sum_in : in std_logic;
+        bram_write_enable_out : out std_logic;
 
         pixel_0_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_1_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -70,6 +71,7 @@ architecture Behavioral of PB_group is
     signal signed_conv_out, signed_conv_out_n : std_logic_vector(WIDTH_conv - 1 downto 0);
     signal shift_reg : std_logic_vector (1 downto 0); -- for band aid fix 
     signal reset_sum_s: std_logic;
+    signal bram_write_enable_s : std_logic;
     --components
     component MAC
         generic (
@@ -189,11 +191,15 @@ begin
                 shift_reg(1) <= shift_reg(0);
                 if (shift_reg(1) = '1') then
                     signed_conv_out <= signed_conv_out_n;
+                    bram_write_enable_s <= '1';
+                else
+                    bram_write_enable_s <= '0';
                 end if;
             end if;
         end if;
 
     end process;
+    bram_write_enable_out <= bram_write_enable_s;
     -- for testing my band aid fix... it works
     -- en_for_sum_out<=sign_check_en;
     
@@ -212,7 +218,7 @@ begin
     -- connects signals to interfaces
     clk_s <= clk;
     rst_i_s <= reset_in;
-    reset_sum_s <= reset_in;
+    -- reset_sum_s <= reset_in;
     reset_sum_s <= reset_sum_in;
     en_in_s <= en_in;
     sum_out_en_s <= sum_out_en;

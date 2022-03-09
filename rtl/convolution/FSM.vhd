@@ -49,29 +49,7 @@ entity conv_FSM is
         clk_i : in std_logic;
         reset_in : in std_logic;
         start_in : in std_logic;
-
-        --image config--
-        --image
-        --pixel and kernel data--
-        -- not needed
-        -- pixel_0_val_i : in std_logic_vector (WIDTH_pixel - 1 downto 0);
-        -- pixel_1_val_i : in std_logic_vector (WIDTH_pixel - 1 downto 0);
-        -- pixel_2_val_i : in std_logic_vector (WIDTH_pixel - 1 downto 0);
-        -- kernel_0_val_i : in std_logic_vector (WIDTH_kernel - 1 downto 0);
-        -- kernel_1_val_i : in std_logic_vector (WIDTH_kernel - 1 downto 0);
-        -- kernel_2_val_i : in std_logic_vector (WIDTH_kernel - 1 downto 0);
-
-        --pixel and kernel addres data--
-        -- adress controler calculates this
-        -- pixel_0_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
-        -- pixel_1_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
-        -- pixel_2_adr_o : out std_logic_vector (WIDTH_bram_in_out_adr - 1 downto 0);
-        -- kernel_0_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-        -- kernel_1_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-        -- kernel_2_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-        --ip output data and addres--
-
-        -- inc_l_out : out std_logic;
+        reset_out : out std_logic;
 
         i_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
         j_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
@@ -83,6 +61,7 @@ entity conv_FSM is
         mac_en_o : out std_logic;
         sum_en_o : out std_logic;
         reset_PB_o : out std_logic;
+        shift_addreses_out : out std_logic;
 
         -- conv_en_out : out std_logic;
         -- conv_o : out std_logic_vector (1 downto 0);
@@ -96,7 +75,7 @@ end conv_FSM;
 
 architecture Behavioral of conv_FSM is
 
-    type state is (idle, init, reset_j, reset_k, reset_l, mac_adr_and_data, mac, conv_out);--, inc_i, inc_j, inc_k, inc_l);
+    type state is (idle, init, reset_j, reset_k, reset_l, mac_adr_and_data, wait_data_0, wait_data_1, wait_data_2, mac, conv_out);--, inc_i, inc_j, inc_k, inc_l);
     signal next_state, current_state : state;
     signal pixel_0_val_reg, pixel_1_val_reg, pixel_2_val_reg : std_logic_vector (WIDTH_pixel - 1 downto 0);
     signal kernel_0_val_reg, kernel_1_val_reg, kernel_2_val_reg : std_logic_vector (WIDTH_kernel - 1 downto 0);
@@ -152,6 +131,7 @@ begin
         if (rising_edge(clk_i)) then
             if (reset_in = '1') then
                 current_state <= idle;
+                -- reset_PB_o <= '1';
             else
                 current_state <= next_state;
             end if;
@@ -168,6 +148,8 @@ begin
         done_o <= '0';
         calculate_p_k_adr_o <= '0';
         calculate_conv_adr_o <= '0';
+        reset_out <= '0';
+        shift_addreses_out <= '0';
         
         inc_i_s <= '0';
         inc_j_s <= '0';
@@ -182,7 +164,8 @@ begin
         case current_state is
             when idle =>
                 ready_o <= '1';
-
+                reset_out <= '1';
+                reset_PB_o <= '1';
                 if (start_in = '1') then
                     next_state <= init;
                 else
@@ -208,57 +191,43 @@ begin
                 calculate_p_k_adr_o <= '1';
                 -- mac adr calculation
                 -- mac data gather
+                next_state <= wait_data_0;
+            when wait_data_0 => 
+                shift_addreses_out <= '1';
+                next_state <= wait_data_1;
+            when wait_data_1 => 
+                next_state <= wait_data_2;
+            when wait_data_2 => 
                 next_state <= mac;
             when mac =>
                 mac_en_o <= '1';
-                --mac 0
-                --mac 1
-                --mac 2
                 if (l_reg = "0110") then
                     if (k_reg = "1000") then
                         next_state <= conv_out;
                     else
-                        --next_state <= inc_k;
                         inc_k_s <= '1';
                         k_next_reg <= std_logic_vector(unsigned(k_reg) + 1);
                         next_state <= reset_l;
                     end if;
                 else
-                    -- next_state <= inc_l;
                     l_next_reg <= std_logic_vector(unsigned(l_reg) + 3);
                     inc_l_s <= '1';
                     next_state <= mac_adr_and_data;
                 end if;
 
-                -- when inc_i =>
-                --     i_next_reg <= std_logic_vector(unsigned(i_reg) + 1);
-                --     next_state <= reset_j;
-                -- when inc_j =>
-                --     j_next_reg <= std_logic_vector(unsigned(j_reg) + 1);
-                --     next_state <= reset_k;
-                -- when inc_k =>
-                --     k_next_reg <= std_logic_vector(unsigned(k_reg) + 1);
-                --     next_state <= reset_l;
-                -- when inc_l =>
-                --     l_next_reg <= std_logic_vector(unsigned(l_reg) + 3);
-                --     next_state <= mac_adr_and_data;
             when conv_out =>
                 calculate_conv_adr_o <= '1';
                 sum_en_o <= '1';
-                --conv_out_adr_calculation
-                --sign check
                 if (j_reg = "0000011") then --make it no hard codded
                     if (i_reg = "0000011") then -- same 
                         next_state <= idle;
                         done_o <= '1';
                     else
-                        --next_state <= inc_i;
                         i_next_reg <= std_logic_vector(unsigned(i_reg) + 1);
                         inc_i_s <= '1';
                         next_state <= reset_j;
                     end if;
                 else
-                    --next_state <= inc_j;
                     j_next_reg <= std_logic_vector(unsigned(j_reg) + 1);
                     inc_j_s <= '1';
                     next_state <= reset_k;
@@ -266,13 +235,4 @@ begin
         end case;
 
     end process;
-
-    -- inc_l_out<= inc_l_s;
-    -- counter_inc_comb: process(i_reg, i_next_reg, j_reg, j_next_reg, k_reg, k_next_reg, l_reg, l_next_reg)
-    -- begin
-    --     i_next_reg <= std_logic_vector(unsigned(i_reg) + 1);
-    --     j_next_reg <= std_logic_vector(unsigned(j_reg) + 1);
-    --     l_next_reg <= std_logic_vector(unsigned(l_reg) + 3);
-    --     k_next_reg <= std_logic_vector(unsigned(k_reg) + 1);
-    -- end process;
 end Behavioral;
