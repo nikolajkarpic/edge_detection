@@ -1,10 +1,6 @@
 # edge_detection
 
-Hardware accelerated algorithm for edge detection using laplacian of gaussian.   
-Where the system was designed in C++ using SystemC libary.  
-IP core was designed using HVDL,
-and it was tested in SystemVerilog.
-Drivers were written in C.
+Hardware accelerated algorithm for edge detection using laplacian of gaussian. Where the system was designed in C++ using SystemC libary. IP core was designed using HVDL, and it was tested in SystemVerilog. Drivers were written in C.
 
 
 
@@ -25,9 +21,7 @@ The Laplacian of Gaussian matrix is convolved with grayscaled source image.
 
 ### Grayscale
 
-In digital photography, computer-generated imagery, and colorimetry, a grayscale image is one in which the value of each pixel is a single sample representing  
-only an amount of light; that is, it carries only intensity information. Grayscale images, a kind of black-and-white or gray monochrome, are composed exclusively  
-of shades of gray. The contrast ranges from black at the weakest intensity to white at the strongest.
+In digital photography, computer-generated imagery, and colorimetry, a grayscale image is one in which the value of each pixel is a single sample representing only an amount of light; that is, it carries only intensity information. Grayscale images, a kind of black-and-white or gray monochrome, are composed exclusively of shades of gray. The contrast ranges from black at the weakest intensity to white at the strongest.
 
 In this project the images are represented in their RGB format (red, green, blue). To gray scale images we've used the following formula:
 
@@ -44,10 +38,7 @@ Example of grayscale:
 
 ### Brief introduction to Laplacian of Gaussian
 
-The Laplacian is a 2-D isotropic measure of the 2nd spatial derivative of an image. The Laplacian of an image highlights regions of rapid intensity change  
-and is therefore often used for edge detection (see zero crossing edge detectors). The Laplacian is often applied to an image that has first been smoothed  
-with something approximating a Gaussian smoothing filter in order to reduce its sensitivity to noise, and hence the two variants will be described together  
-here.  The operator normally takes a single graylevel image as input and produces another graylevel image as output.
+The Laplacian is a 2-D isotropic measure of the 2nd spatial derivative of an image. The Laplacian of an image highlights regions of rapid intensity change and is therefore often used for edge detection (see zero crossing edge detectors). The Laplacian is often applied to an image that has first been smoothed with something approximating a Gaussian smoothing filter in order to reduce its sensitivity to noise, and hence the two variants will be described together here. The operator normally takes a single graylevel image as input and produces another graylevel image as output.
 
 The following formula was used to calculate kernel matrix:
 
@@ -63,20 +54,11 @@ When graphing previosly stated matrix the following graph is obtained.
 
 ### Zero crossing check
 
-The zero crossing detector looks for places in the Laplacian of an image where the value of the Laplacian passes through zero --- i.e. points where the Laplacian  
-changes sign. Such points often occur at `edges' in images --- i.e. points where the intensity of the image changes rapidly, but they also occur at places that  
-are not as easy to associate with edges. It is best to think of the zero crossing detector as some sort of feature detector rather than as a specific edge detector.  
-Zero crossings always lie on closed contours, and so the output from the zero crossing detector is usually a binary image with single pixel thickness lines showing  
-the positions of the zero crossing points.
+The zero crossing detector looks for places in the Laplacian of an image where the value of the Laplacian passes through zero --- i.e. points where the Laplacian changes sign. Such points often occur at `edges' in images --- i.e. points where the intensity of the image changes rapidly, but they also occur at places that are not as easy to associate with edges. It is best to think of the zero crossing detector as some sort of feature detector rather than as a specific edge detector. Zero crossings always lie on closed contours, and so the output from the zero crossing detector is usually a binary image with single pixel thickness lines showing the positions of the zero crossing points.
 
-The starting point for the zero crossing detector is an image which has been filtered using the Laplacian of Gaussian filter. The zero crossings that result are  
-strongly influenced by the size of the Gaussian used for the smoothing stage of this operator. As the smoothing is increased then fewer and fewer zero crossing  
-contours will be found, and those that do remain will correspond to features of larger and larger scale in the image.
+The starting point for the zero crossing detector is an image which has been filtered using the Laplacian of Gaussian filter. The zero crossings that result are strongly influenced by the size of the Gaussian used for the smoothing stage of this operator. As the smoothing is increased then fewer and fewer zero crossing contours will be found, and those that do remain will correspond to features of larger and larger scale in the image.
 
-Once the image has been LoG filtered, it only remains to detect the zero crossings. This can be done in several ways. The simplest is to simply threshold the LoG  
-output at zero, to produce a binary image where the boundaries between foreground and background regions represent the locations of zero crossing points. These  
-boundaries can then be easily detected and marked in single pass, e.g. using some morphological operator. For instance, to locate all boundary points, we simply  
-have to mark each foreground point that has at least one background neighbor. 
+Once the image has been LoG filtered, it only remains to detect the zero crossings. This can be done in several ways. The simplest is to simply threshold the LoG output at zero, to produce a binary image where the boundaries between foreground and background regions represent the locations of zero crossing points. These boundaries can then be easily detected and marked in single pass, e.g. using some morphological operator. For instance, to locate all boundary points, we simply have to mark each foreground point that has at least one background neighbor. 
 
 
 Response of 1-D LoG filter to a step edge. The left hand graph shows a 1-D image, 200 pixels long, containing a step edge. The right hand graph shows the response  
