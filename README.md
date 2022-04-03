@@ -3,6 +3,12 @@
 Hardware accelerated algorithm for edge detection using laplacian of gaussian. Where the system was designed in C++ using SystemC libary. IP core was designed using HVDL, and it was tested in SystemVerilog. Drivers were written in C.
 
 
+*[Algorithm explanation](https://github.com/nikolajkarpic/edge_detection#Algorithm-explanation)
+
+*[Installation](https://github.com/nikolajkarpic/edge_detection#Installation)
+
+*[Run Locally](https://github.com/nikolajkarpic/edge_detection#run-locally)
+
 
 ## Algorithm explanation
 The projects algorithm is based on the matrix convolution. Where the Laplacian of Gaussian kernel  
