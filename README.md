@@ -31,6 +31,7 @@ of shades of gray. The contrast ranges from black at the weakest intensity to wh
 
 In this project the images are represented in their RGB format (red, green, blue). To gray scale images we've used the following formula:
 
+
 ![Grayscale formula](https://wikimedia.org/api/rest_v1/media/math/render/svg/0069616bf46ed5b8405855e3748089f945aaf92f)
 
 
