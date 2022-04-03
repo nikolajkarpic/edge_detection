@@ -20,6 +20,7 @@ For more information reffer to this [article](https://www.allaboutcircuits.com/t
 
 ![Convolution explanation gif](https://upload.wikimedia.org/wikipedia/commons/1/19/2D_Convolution_Animation.gif)
 
+
 The Laplacian of Gaussian matrix is convolved with grayscaled source image.
 
 ### Grayscale
@@ -31,9 +32,12 @@ of shades of gray. The contrast ranges from black at the weakest intensity to wh
 In this project the images are represented in their RGB format (red, green, blue). To gray scale images we've used the following formula:
 
 ![Grayscale formula](https://wikimedia.org/api/rest_v1/media/math/render/svg/0069616bf46ed5b8405855e3748089f945aaf92f)
+
+
 Where Y' represents the final value of grayscaled pixel.
 
 Example of grayscale:
+
 
 ![GrayScale example](https://www.researchgate.net/publication/353272873/figure/fig3/AS:1046072000528387@1626414408558/a-Lena-gray-scale-image-b-Lena-color-image.png)
 
