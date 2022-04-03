@@ -50,10 +50,15 @@ with something approximating a Gaussian smoothing filter in order to reduce its 
 here.  The operator normally takes a single graylevel image as input and produces another graylevel image as output.
 
 The following formula was used to calculate kernel matrix:
+
 ![LoG formula](https://homepages.inf.ed.ac.uk/rbf/HIPR2/eqns/eqnlog2.gif)
+
 By using the σ = 1.4 the following matrix is calculated:
+
 ![LoG matrix](https://homepages.inf.ed.ac.uk/rbf/HIPR2/figs/logdisc.gif)
+
 When graphing previosly stated matrix the following graph is obtained.
+
 ![LoG matrix](https://homepages.inf.ed.ac.uk/rbf/HIPR2/figs/logcont.gif)
 
 ### Zero crossing check
