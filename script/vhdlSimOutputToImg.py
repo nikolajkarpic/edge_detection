@@ -49,7 +49,7 @@ def zeroCrossingTest(image):
     cv2.imshow("img", returnImg)
     cv2.waitKey(0)
     cv2.destroyAllWindows
-    return list2D
+    return returnImg
 
 
 inPath = sys.argv[1]
@@ -90,12 +90,12 @@ with open(inPath, "r") as text_file:
             counter += 1
 
 
-print(list2D)
+# print(list2D)
 img = zeroCrossingTest(list2D)
-imgToSave = np.zeros((100, 100, 3), np.uint8)
-for y in range(1, len(img) - 1):
-    for x in range(1, len(img[0]) - 1):
-        imgToSave[y][x][0] = img[y][x][0]
-        imgToSave[y][x][1] = img[y][x][0]
-        imgToSave[y][x][2] = img[y][x][0]
-cv2.imwrite(outPath, imgToSave)
+# imgToSave = np.zeros((100, 100, 3), np.uint8)
+# for y in range(1, len(img) - 1):
+#     for x in range(1, len(img[0]) - 1):
+#         imgToSave[y][x][0] = img[y][x][0]
+#         imgToSave[y][x][1] = img[y][x][0]
+#         imgToSave[y][x][2] = img[y][x][0]
+cv2.imwrite(outPath, img)

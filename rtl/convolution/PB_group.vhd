@@ -38,32 +38,31 @@ entity PB_group is
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
+        -- clocling
         reset_in : in std_logic;
-        en_in : in std_logic;
         clk : in std_logic;
+
+        --enable for calculating current sum.
+        en_in : in std_logic;
+        --reset sum
         reset_sum_in : in std_logic;
+        -- write output to bram enable
         bram_write_enable_out : out std_logic;
 
+        -- pixel input values
         pixel_0_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_1_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_2_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
-
+        -- enable for final sum calculation
         sum_out_en : in std_logic;
+        -- sum value
         sum_out : out std_logic_vector(WIDTH_sum - 1 downto 0);
+        -- sum sign needed for zero crossing check which is done in cpu
         signed_out : out std_logic_vector(WIDTH_conv - 1 downto 0);
-        -- for testing my band aid fix... it works ... line 183 184 
-        -- en_for_sum_out : out std_logic;
-
+        -- kernel input values
         kernel_0_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
         kernel_1_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
-        kernel_2_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
-        
-        -- testing interfaces
-        current_sum_0 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        current_sum_1 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        current_sum_2 : out std_logic_vector(WIDTH_sum - 1 downto 0)
-        
-
+        kernel_2_in : in std_logic_vector(WIDTH_kernel - 1 downto 0)
     );
 end PB_group;
 
@@ -76,11 +75,8 @@ architecture Behavioral of PB_group is
     signal rst_i_s, en_in_s, clk_s, sum_out_en_s, sign_check_en : std_logic;
     signal signed_conv_out, signed_conv_out_n : std_logic_vector(WIDTH_conv - 1 downto 0);
     signal shift_reg : std_logic_vector (1 downto 0); -- for band aid fix 
-    signal reset_sum_s: std_logic;
+    signal reset_sum_s : std_logic;
     signal bram_write_enable_s : std_logic;
-    signal current_sum_0_s : std_logic_vector(WIDTH_sum - 1 downto 0);
-    signal current_sum_1_s : std_logic_vector(WIDTH_sum - 1 downto 0);
-    signal current_sum_2_S : std_logic_vector(WIDTH_sum - 1 downto 0);
     --components
     component MAC
         generic (
@@ -92,7 +88,6 @@ architecture Behavioral of PB_group is
         port (
             sum_en_i : std_logic;
             reset_in : in std_logic;
-            currentSum: out std_logic_vector(WIDTH_sum - 1 downto 0); 
             en_in : in std_logic;
             clk : in std_logic;
             pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -118,13 +113,6 @@ architecture Behavioral of PB_group is
 
     end component;
 begin
-
-    --testing 
-    
-    current_sum_0<= current_sum_0_s;
-    current_sum_1<= current_sum_1_s;
-    current_sum_2<= current_sum_2_s;
-
     -- three MAC units instanced and set up as to be connected to sumed and sign checked later
     MAC0 : MAC
     generic map(
@@ -138,7 +126,7 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        currentSum => current_sum_0_s,
+
         reset_in => reset_sum_s,
         pixel_in => pixel_0_in_s,
         kernel_in => kernel_0_in_s,
@@ -158,7 +146,7 @@ begin
         en_in => en_in_s,
         clk => clk_s,
         reset_in => reset_sum_s,
-        currentSum => current_sum_1_s,
+
         pixel_in => pixel_1_in_s,
         kernel_in => kernel_1_in_s,
         mul_acc_out => mac_1_sum_s
@@ -177,7 +165,7 @@ begin
         en_in => en_in_s,
         clk => clk_s,
         reset_in => reset_sum_s,
-        currentSum => current_sum_2_s,
+
         pixel_in => pixel_2_in_s,
         kernel_in => kernel_2_in_s,
         mul_acc_out => mac_2_sum_s
@@ -213,29 +201,26 @@ begin
                     bram_write_enable_s <= '1';
                 else
                     bram_write_enable_s <= '0';
-                    signed_conv_out<= "11";
+                    signed_conv_out <= "11";
                 end if;
             end if;
         end if;
 
     end process;
     bram_write_enable_out <= bram_write_enable_s;
-    -- for testing my band aid fix... it works
-    -- en_for_sum_out<=sign_check_en;
-    
     -- checks the sign of the final sum 
     sign_check_comb : process (sum_out_reg_s, sign_check_en)
     begin
-            if (signed(sum_out_reg_s) = 0) then
-                signed_conv_out_n <= (others => '0'); -- 0 when sum is 0
+        if (signed(sum_out_reg_s) = 0) then
+            signed_conv_out_n <= (others => '0'); -- 0 when sum is 0
+        else
+            if (signed(sum_out_reg_s) < 0) then
+                signed_conv_out_n <= "10"; -- -1 when sum is < 0
+
             else
-                if (signed(sum_out_reg_s) < 0) then
-                    signed_conv_out_n <= "10"; -- -1 when sum is < 0
-                    
-                else
-                    signed_conv_out_n <= "01"; -- 1 when sum is > 0
-                end if;
+                signed_conv_out_n <= "01"; -- 1 when sum is > 0
             end if;
+        end if;
     end process;
 
     -- connects signals to interfaces

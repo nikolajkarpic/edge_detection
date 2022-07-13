@@ -67,34 +67,10 @@ entity convolution_ip is
         -- bram interface for conv out data... write en is missing
         bram_conv_res_data_out : out std_logic_vector(WIDTH_conv_out_data - 1 downto 0);
         bram_conv_res_adr_out : out std_logic_vector(WIDTH_bram_in_out_adr - 1 downto 0);
-        bram_conv_res_write_en_out : out std_logic;
+        bram_conv_res_write_en_out : out std_logic
         
         
          -- testing interfaces
-        current_sum_0 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        current_sum_1 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        current_sum_2 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        
-            pixel_0_in : out std_logic_vector (WIDTH_pixel - 1 downto 0);
-            pixel_1_in : out std_logic_vector (WIDTH_pixel - 1 downto 0);
-            pixel_2_in : out std_logic_vector (WIDTH_pixel - 1 downto 0);
-            sum_out : out std_logic_vector (WIDTH_sum - 1 downto 0);
-            signed_out : out std_logic_vector(WIDTH_conv_out_data - 1 downto 0);
-            kernel_0_in : out std_logic_vector (WIDTH_kernel - 1 downto 0);
-            kernel_1_in : out std_logic_vector (WIDTH_kernel - 1 downto 0);
-            kernel_2_in : out std_logic_vector (WIDTH_kernel - 1 downto 0);
-            
-            i_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
-            j_o : out std_logic_vector (WIDTH_img_size - 1 downto 0);
-            k_o : out std_logic_vector (WIDTH_kernel_size - 1 downto 0);
-            l_o : out std_logic_vector (WIDTH_kernel_size - 1 downto 0);
-            
-            kernel_0_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-            kernel_1_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-            kernel_2_adr_o : out std_logic_vector (WIDTH_kernel_adr - 1 downto 0);
-            
-            mac_en_o : out std_logic
-
     );
 end convolution_ip;
 
@@ -155,12 +131,8 @@ architecture Behavioral of convolution_ip is
             signed_out : out std_logic_vector(WIDTH_conv - 1 downto 0);
             kernel_0_in : in std_logic_vector (WIDTH_kernel - 1 downto 0);
             kernel_1_in : in std_logic_vector (WIDTH_kernel - 1 downto 0);
-            kernel_2_in : in std_logic_vector (WIDTH_kernel - 1 downto 0);
+            kernel_2_in : in std_logic_vector (WIDTH_kernel - 1 downto 0));
             
-             -- testing interfaces
-        current_sum_0 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        current_sum_1 : out std_logic_vector(WIDTH_sum - 1 downto 0);
-        current_sum_2 : out std_logic_vector(WIDTH_sum - 1 downto 0));
     end component;
 
     component adress_controler
@@ -283,10 +255,6 @@ architecture Behavioral of convolution_ip is
     signal signed_out_s : std_logic_vector(WIDTH_conv_out_data - 1 downto 0);
     signal sum_out_s : std_logic_vector (WIDTH_sum - 1 downto 0);
     
-     -- testing interfaces
-     signal   current_sum_0_s :  std_logic_vector(WIDTH_sum - 1 downto 0);
-     signal   current_sum_1_s :  std_logic_vector(WIDTH_sum - 1 downto 0);
-     signal   current_sum_2_s :  std_logic_vector(WIDTH_sum - 1 downto 0);
 
     --FSM signals
     signal calculate_p_k_adr_s : std_logic;
@@ -299,31 +267,6 @@ architecture Behavioral of convolution_ip is
     signal conv_en_out_s : std_logic;
     signal reset_out_s : std_logic;
 begin
-
-    current_sum_0 <= current_sum_0_s;
-        current_sum_1 <= current_sum_1_s;
-        current_sum_2 <= current_sum_2_s;
-
-mac_en_o <= mac_en_s;
-    kernel_0_adr_o <= kernel_0_adr_o_s;
-        kernel_1_adr_o <= kernel_1_adr_o_s;
-        kernel_2_adr_o <= kernel_2_adr_o_s;
-
-    i_o <= i_i_s;
-        j_o <= j_i_s;
-        k_o <= k_i_s;
-        l_o <= l_i_s;
-
-
-    pixel_0_in <= pixel_0_data_out_s;
-        pixel_1_in <= pixel_1_data_out_s;
-        pixel_2_in <= pixel_2_data_out_s;
-
-        sum_out <= sum_out_s;
-        signed_out <= signed_out_s;
-        kernel_0_in <= r_0_kernel_data_out_s;
-        kernel_1_in <= r_1_kernel_data_out_s;
-        kernel_2_in <= r_2_kernel_data_out_s;
 
     clk_s <= clk;
     reset_in_s <= reset_in;
@@ -431,11 +374,8 @@ mac_en_o <= mac_en_s;
         signed_out => signed_out_s,
         kernel_0_in => r_0_kernel_data_out_s,
         kernel_1_in => r_1_kernel_data_out_s,
-        kernel_2_in => r_2_kernel_data_out_s,
-         -- testing interfaces
-        current_sum_0 => current_sum_0_s,
-        current_sum_1 => current_sum_1_s,
-        current_sum_2 => current_sum_2_s);
+        kernel_2_in => r_2_kernel_data_out_s
+        );
 
     conv_ip_FSM : conv_FSM
     generic map(

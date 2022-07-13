@@ -17,14 +17,12 @@
 -- Additional Comments:
 -- 
 ----------------------------------------------------------------------------------
-
-
 library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_1164.all;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
-use IEEE.NUMERIC_STD.ALL;
+use IEEE.NUMERIC_STD.all;
 
 -- Uncomment the following library declaration if instantiating
 -- any Xilinx leaf cells in this code.
@@ -37,13 +35,13 @@ entity accumulate_sum is
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
-        reset_in : in std_logic;
-        en_in : in std_logic;
-        clk : in std_logic;
-        sum_0_in: in std_logic_vector(WIDTH_sum - 1 downto 0);
-        sum_1_in: in std_logic_vector(WIDTH_sum - 1 downto 0);
-        sum_2_in: in std_logic_vector(WIDTH_sum - 1 downto 0);
-        sum_out: out std_logic_vector(WIDTH_sum - 1 downto 0)
+        reset_in : in std_logic; -- reset signal
+        en_in : in std_logic; -- enables the final sum procces which summs 3 MAC units values
+        clk : in std_logic; --clock
+        sum_0_in : in std_logic_vector(WIDTH_sum - 1 downto 0); --MAC output
+        sum_1_in : in std_logic_vector(WIDTH_sum - 1 downto 0);
+        sum_2_in : in std_logic_vector(WIDTH_sum - 1 downto 0);
+        sum_out : out std_logic_vector(WIDTH_sum - 1 downto 0) -- final sum
     );
 
 end accumulate_sum;
@@ -53,9 +51,9 @@ architecture Behavioral of accumulate_sum is
     attribute use_dsp : string;
     attribute use_dsp of Behavioral : architecture is "yes";
 
-    signal sum_1_reg, sum_2_reg, sum_0_reg, sum_1_next_reg, sum_2_next_reg, sum_0_next_reg: std_logic_vector(WIDTH_sum - 1 downto 0);
-    signal sum_next_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others=>'0');
-    signal sum_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others=>'0');
+    signal sum_1_reg, sum_2_reg, sum_0_reg, sum_1_next_reg, sum_2_next_reg, sum_0_next_reg : std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal sum_next_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others => '0');
+    signal sum_reg : std_logic_vector(WIDTH_sum - 1 downto 0) := (others => '0');
 begin
 
     --sum_0_next_reg<= sum_0_in;
@@ -75,7 +73,7 @@ begin
     begin
         if (rising_edge(clk)) then
 
-            if (reset_in = '1') then
+            if (reset_in = '1') then -- reset
                 sum_reg <= (others => '0');
                 sum_0_reg <= (others => '0');
                 sum_1_reg <= (others => '0');
@@ -84,12 +82,10 @@ begin
                 -- if (en_in = '1') then
                 --     sum_reg <= sum_next_reg;
                 -- end if;
-                 sum_reg <= sum_next_reg;
+                sum_reg <= sum_next_reg;
             end if;
 
         end if;
     end process;
-    
-
     sum_out <= sum_reg;
 end Behavioral;

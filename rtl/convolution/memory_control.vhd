@@ -50,10 +50,6 @@ entity memory_control is
         clk : in std_logic;
         reset_in : in std_logic;
 
-        --piso
-
-        -- shift_in : in std_logic;
-        -- write_en : in std_logic;
         --TESTING BRAM ACCESS AND WRITING... IP INTEGRATOR WILL BE USED TO IMPLEMENT BRAM.
         --write data to BRAM
         write_0_en_in : in std_logic;
@@ -72,10 +68,6 @@ entity memory_control is
         pixel_0_data_out : out std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_1_data_out : out std_logic_vector(WIDTH_pixel - 1 downto 0);
         pixel_2_data_out : out std_logic_vector(WIDTH_pixel - 1 downto 0);
-
-        -- read_pixel_data_en_in : in std_logic;
-        --r_adr_0_in : in std_logic_vector(WIDTH_bram_adr - 1 downto 0);
-        -- r_data_0_out : out std_logic_vector(WIDTH_data - 1 downto 0);
 
         --kernel reg bank
         -- read interface
@@ -113,6 +105,8 @@ architecture Behavioral of memory_control is
 
     --     return reg_content;
     -- end function;
+
+    --kernel data preloaded
     signal bank : reg_bank := (
         "0000000000101001",
         "0000000010111011",
@@ -217,6 +211,7 @@ begin
     pixle_shift_en_out <= bram_en_s; -- this is transfered to IP integrator bram as read enable singal
     -- *This has to be synced wtih the enable signals... the idea is to have one enable so when its active it writes "111" into shift reg, and so after one clock cycke it gives enable to the bram in data procces
     -- so the bram data in procces is delayed for one clock so that bram has time to put correct data on the data line.
+    --as data from bram is shifted into shift register after 3 cycles, 3 pixel values are avalibale at pixel data out interface.
     bram_data_in_proc : process (clk)
     begin
         if (rising_edge(clk)) then
@@ -224,11 +219,6 @@ begin
                 pixel_data_shift_s <= (others => (others => '0'));
                 bram_en_s <= '0';
             else
-                -- ** probably doesnt need to be synced any more... well see... connect these shift regs to add cnt shift 
-                -- bram_en_shift_s(0) <= pixel_shift_en;
-                -- bram_en_shift_s(1) <= bram_en_shift_s(1);
-                -- bram_en_shift_s(0) <=
-                -- bram_en_shift_s(0)
                 bram_en_s <= pixel_shift_en;
                 if (bram_en_s = '1') then
                     pixel_data_shift_s(2) <= pixel_data_in;
@@ -260,6 +250,8 @@ begin
         end if;
 
     end process;
+
+    -- isnt needed as the bram will be integrated with IP integrator
     bram : process (clk) is
     begin
         if (rising_edge(clk)) then

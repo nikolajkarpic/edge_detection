@@ -44,10 +44,7 @@ entity MAC is
         clk : in std_logic;
         pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         kernel_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
-        mul_acc_out : out std_logic_vector(WIDTH_sum - 1 downto 0); --multiply accumulate 
-        
-        --testing
-        currentSum : out std_logic_vector(WIDTH_sum - 1 downto 0)
+        mul_acc_out : out std_logic_vector(WIDTH_sum - 1 downto 0) --multiply accumulate 
     );
 end MAC;
 
@@ -67,9 +64,6 @@ architecture Behavioral of MAC is
     signal accumulate_final : std_logic_vector(WIDTH_sum - 1 downto 0);
     signal resetVal :std_logic;
 begin
-
-    --testing
-    currentSum <= accumulate_next;
 
     --combinatorial part:
     process (kernel_reg, pixel_reg, multiply_reg, accumulate_reg)
