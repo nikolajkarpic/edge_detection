@@ -96,21 +96,24 @@ architecture Behavioral of adress_controler is
     type shift_adr_reg_t is array (0 to 2) of std_logic_vector(WIDTH_bram_in_out_adr - 1 downto 0);
     signal adr_shift_reg : shift_adr_reg_t;
     signal bram_r_en_shift_reg : std_logic_vector(2 downto 0);
+    
+    --jul 12 22
+    signal temp : std_logic_vector(WIDTH_bram_in_out_adr - 1 downto 0);
 
 begin
     -- combinational calculation of addresses
     -- calculates exact adress
     process (pixel_0_adr_next_s, pixel_1_adr_next_s, pixel_2_adr_next_s, i_reg, j_reg, k_reg, l_reg, conv_adr_next_s, i_i, j_i, k_i, l_i)
     begin
-        pixel_0_adr_next_s <= std_logic_vector((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE + (unsigned(j_i) + unsigned(l_i)));
-        pixel_1_adr_next_s <= std_logic_vector((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE + ((unsigned(j_i) + unsigned(l_i)) + 1));
-        pixel_2_adr_next_s <= std_logic_vector((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE + ((unsigned(j_i) + unsigned(l_i)) + 2));
+        pixel_0_adr_next_s <= std_logic_vector(((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE) + (unsigned(j_i) + unsigned(l_i)));
+        pixel_1_adr_next_s <= std_logic_vector(((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE) + ((unsigned(j_i) + unsigned(l_i)) + 1));
+        pixel_2_adr_next_s <= std_logic_vector(((unsigned(i_i) + unsigned(k_i)) * DEFAULT_IMG_SIZE) + ((unsigned(j_i) + unsigned(l_i)) + 2));
 
         conv_adr_next_s <= std_logic_vector((unsigned(i_i) * DEFAULT_IMG_SIZE) + unsigned(j_i));
 
         kernel_0_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + unsigned(l_i));
-        kernel_1_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + unsigned(l_i) + 1);
-        kernel_2_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + unsigned(l_i) + 2);
+        kernel_1_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + (unsigned(l_i) + 1));
+        kernel_2_adr_next_s <= std_logic_vector((unsigned(k_i) * KERNEL_SIZE) + (unsigned(l_i) + 2));
     end process;
 
     -- pixel_0_bram_adr <= pixel_0_bram_adr_s;
@@ -137,14 +140,16 @@ begin
     kernel_1_adr_o <= kernel_1_adr_s;
     kernel_2_adr_o <= kernel_2_adr_s;
 
-    bram_shifted_out <= adr_shift_reg(0);
+--    bram_shifted_out <= adr_shift_reg(0); ///////12 jul 2022
+        bram_shifted_out<= temp;
+    
     bram_read_en_out <= bram_r_en_shift_reg(0);
 
     -- shift_reg : process (clk)
     -- begin
     --     if (rising_edge(clk)) then
     --         if (reset_in = '1') then
-                
+
     --         else
     --             if (shift_en_in = '1') then
     --                 adr_shift_reg(0) <= adr_shift_reg(1);
@@ -188,6 +193,7 @@ begin
                 -- k_reg <= k_next;
                 -- l_reg <= l_next;
                 if (shift_en_in = '1') then
+                    temp <= adr_shift_reg(0);
                     adr_shift_reg(0) <= adr_shift_reg(1);
                     adr_shift_reg(1) <= adr_shift_reg(2);
 

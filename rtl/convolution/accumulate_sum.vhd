@@ -67,7 +67,7 @@ begin
         if (SIGNED_UNSIGNED = "unsigned") then
             sum_next_reg <= std_logic_vector(unsigned(sum_0_in) + unsigned(sum_1_in) + unsigned(sum_2_in));
         else
-            sum_next_reg <= std_logic_vector(signed(sum_0_in) + signed(sum_1_in) + signed(sum_2_in));
+            sum_next_reg <= std_logic_vector((signed(sum_0_in) + signed(sum_1_in)) + signed(sum_2_in));
         end if;
     end process;
 

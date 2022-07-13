@@ -32,9 +32,9 @@ use IEEE.NUMERIC_STD.all;
 
 entity MAC is
     generic (
-        WIDTH_pixel : natural := 8;
+        WIDTH_pixel : natural := 9;
         WIDTH_kernel : natural := 16;
-        WIDTH_sum : natural := 24;
+        WIDTH_sum : natural := 32;
         SIGNED_UNSIGNED : string := "signed"
     );
     port (
@@ -44,7 +44,10 @@ entity MAC is
         clk : in std_logic;
         pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
         kernel_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
-        mul_acc_out : out std_logic_vector(WIDTH_sum - 1 downto 0) --multiply accumulate 
+        mul_acc_out : out std_logic_vector(WIDTH_sum - 1 downto 0); --multiply accumulate 
+        
+        --testing
+        currentSum : out std_logic_vector(WIDTH_sum - 1 downto 0)
     );
 end MAC;
 
@@ -60,8 +63,13 @@ architecture Behavioral of MAC is
     signal multiply_reg : std_logic_vector(WIDTH_pixel + WIDTH_kernel - 1 downto 0);-- := ( others => '0');
     signal accumulate_reg : std_logic_vector(WIDTH_sum - 1 downto 0);
     signal accumulate_next : std_logic_vector(WIDTH_sum - 1 downto 0);--:=  (others => '0');
+    
     signal accumulate_final : std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal resetVal :std_logic;
 begin
+
+    --testing
+    currentSum <= accumulate_next;
 
     --combinatorial part:
     process (kernel_reg, pixel_reg, multiply_reg, accumulate_reg)
@@ -88,10 +96,16 @@ begin
                 if (en_in = '1') then
                     pixel_reg <= pixel_in;
                     kernel_reg <= kernel_in;
-                else
+--                    resetVal<='1';
+                else 
                     pixel_reg <= (others => '0');
                     kernel_reg <= (others => '0');
                 end if;
+--                if ( resetVal = '1' ) then
+--                    resetVal <= '0';
+--                    pixel_reg <= (others => '0');
+--                    kernel_reg <= (others => '0');
+--                end if;
                 if sum_en_i = '1' then -- flag to enable loading of sum to the register where it cannot be changed before FSM allows it
                     accumulate_final <= accumulate_reg;
                 else

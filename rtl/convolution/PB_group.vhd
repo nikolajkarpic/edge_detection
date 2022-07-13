@@ -56,7 +56,13 @@ entity PB_group is
 
         kernel_0_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
         kernel_1_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
-        kernel_2_in : in std_logic_vector(WIDTH_kernel - 1 downto 0)
+        kernel_2_in : in std_logic_vector(WIDTH_kernel - 1 downto 0);
+        
+        -- testing interfaces
+        current_sum_0 : out std_logic_vector(WIDTH_sum - 1 downto 0);
+        current_sum_1 : out std_logic_vector(WIDTH_sum - 1 downto 0);
+        current_sum_2 : out std_logic_vector(WIDTH_sum - 1 downto 0)
+        
 
     );
 end PB_group;
@@ -72,10 +78,13 @@ architecture Behavioral of PB_group is
     signal shift_reg : std_logic_vector (1 downto 0); -- for band aid fix 
     signal reset_sum_s: std_logic;
     signal bram_write_enable_s : std_logic;
+    signal current_sum_0_s : std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal current_sum_1_s : std_logic_vector(WIDTH_sum - 1 downto 0);
+    signal current_sum_2_S : std_logic_vector(WIDTH_sum - 1 downto 0);
     --components
     component MAC
         generic (
-            WIDTH_pixel : natural := 8;
+            WIDTH_pixel : natural := 9;
             WIDTH_kernel : natural := 16;
             WIDTH_sum : natural := 32;
             SIGNED_UNSIGNED : string := "signed"
@@ -83,7 +92,7 @@ architecture Behavioral of PB_group is
         port (
             sum_en_i : std_logic;
             reset_in : in std_logic;
-            
+            currentSum: out std_logic_vector(WIDTH_sum - 1 downto 0); 
             en_in : in std_logic;
             clk : in std_logic;
             pixel_in : in std_logic_vector(WIDTH_pixel - 1 downto 0);
@@ -109,6 +118,13 @@ architecture Behavioral of PB_group is
 
     end component;
 begin
+
+    --testing 
+    
+    current_sum_0<= current_sum_0_s;
+    current_sum_1<= current_sum_1_s;
+    current_sum_2<= current_sum_2_s;
+
     -- three MAC units instanced and set up as to be connected to sumed and sign checked later
     MAC0 : MAC
     generic map(
@@ -122,7 +138,8 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        reset_in => rst_i_s,
+        currentSum => current_sum_0_s,
+        reset_in => reset_sum_s,
         pixel_in => pixel_0_in_s,
         kernel_in => kernel_0_in_s,
         mul_acc_out => mac_0_sum_s
@@ -140,7 +157,8 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        reset_in => rst_i_s,
+        reset_in => reset_sum_s,
+        currentSum => current_sum_1_s,
         pixel_in => pixel_1_in_s,
         kernel_in => kernel_1_in_s,
         mul_acc_out => mac_1_sum_s
@@ -158,7 +176,8 @@ begin
         sum_en_i => sum_out_en_s,
         en_in => en_in_s,
         clk => clk_s,
-        reset_in => rst_i_s,
+        reset_in => reset_sum_s,
+        currentSum => current_sum_2_s,
         pixel_in => pixel_2_in_s,
         kernel_in => kernel_2_in_s,
         mul_acc_out => mac_2_sum_s
@@ -194,6 +213,7 @@ begin
                     bram_write_enable_s <= '1';
                 else
                     bram_write_enable_s <= '0';
+                    signed_conv_out<= "11";
                 end if;
             end if;
         end if;
@@ -208,10 +228,13 @@ begin
     begin
             if (signed(sum_out_reg_s) = 0) then
                 signed_conv_out_n <= (others => '0'); -- 0 when sum is 0
-            elsif (sum_out_reg_s(sum_out_reg_s'left) = '1') then
-                signed_conv_out_n <= "10"; -- -1 when sum is < 0
             else
-                signed_conv_out_n <= "01"; -- 1 when sum is > 0
+                if (signed(sum_out_reg_s) < 0) then
+                    signed_conv_out_n <= "10"; -- -1 when sum is < 0
+                    
+                else
+                    signed_conv_out_n <= "01"; -- 1 when sum is > 0
+                end if;
             end if;
     end process;
 
