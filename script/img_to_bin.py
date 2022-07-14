@@ -34,4 +34,4 @@ with open(pathOut, "w") as text_file:
     for x in im:
 
         for pixel in x:
-            print('"'+'{:09b}'.format(pixel)+'",', file=text_file, end='\n')
+            print('"'+'{:08b}'.format(pixel)+'",', file=text_file, end='\n')

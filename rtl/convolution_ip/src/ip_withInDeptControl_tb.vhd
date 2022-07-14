@@ -1,3 +1,75 @@
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_textio.all;
+use std.textio.all;
+use IEEE.NUMERIC_STD.all;
+
+
+entity tb_convolution_ip_indepth is
+    generic (
+        WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
+        DEFAULT_IMG_SIZE : integer := 100; -- WIDTH/height of the image
+        WIDTH_data : integer := 64;
+        WIDTH_adr : integer := 15;
+        WIDTH_bram_adr : integer := 14;
+        BRAM_size : integer := 22579;
+        num_of_pixels : integer := 8;
+        reg_nuber : natural := 81;
+        WIDTH_conv_out_data : natural := 2;
+        DEPTH : natural := 3;
+        WIDTH_kernel_addr : natural := 8;
+        WIDTH_img_size : integer := 7; --Number of bits needed to reporesent img size
+        KERNEL_SIZE : integer := 9; -- widht/height of kernel
+        WIDTH_kernel_size : integer := 4; --Number of bits needed to reporesent kernel size
+        WIDTH_kernel_data : natural := 16; -- Number of bits needed to represent kernel value
+        WIDTH_pixel : natural := 8; --Number of bits needed to represent pixel data
+        WIDTH_kernel : natural := 16; --Number of bits needed to represent kernel data
+        WIDTH_sum : natural := 32; --Number of bits needed to represent final sum data
+        WIDTH_bram_in_out_adr : integer := 14; --Number of bits needed to represent number of all pixels addreses (100x100 or 425 x 425)
+        WIDTH_kernel_adr : integer := 8; --Number of bits needed to represent kernel address data
+        SIGNED_UNSIGNED : string := "signed");
+end tb_convolution_ip_indepth;
+architecture tb of tb_convolution_ip_indepth is
+
+    component convolution_ip
+        port (clk                        : in std_logic;
+              reset_in                   : in std_logic;
+              start_in                   : in std_logic;
+              ready_out                  : out std_logic;
+              done_out                   : out std_logic;
+              bram_read_data_en_out      : out std_logic;
+              bram_pixel_data_in         : in std_logic_vector (width_pixel - 1 downto 0);
+              bram_pixel_adr_out         : out std_logic_vector (width_bram_in_out_adr - 1 downto 0);
+              bram_conv_res_data_out     : out std_logic_vector (width_conv_out_data - 1 downto 0);
+              bram_conv_res_adr_out      : out std_logic_vector (width_bram_in_out_adr - 1 downto 0);
+              bram_conv_res_write_en_out : out std_logic
+             );
+    end component;
+
+    signal clk                        : std_logic;
+    signal reset_in                   : std_logic;
+    signal mac_en_o                   : std_logic;
+    signal start_in                   : std_logic;
+    signal ready_out                  : std_logic;
+    signal done_out                   : std_logic;
+    signal bram_read_data_en_out      : std_logic;
+    signal bram_pixel_data_in         : std_logic_vector (width_pixel - 1 downto 0);
+    signal bram_pixel_adr_out         : std_logic_vector (width_bram_in_out_adr - 1 downto 0);
+    signal bram_conv_res_data_out     : std_logic_vector (width_conv_out_data - 1 downto 0);
+    signal bram_conv_res_adr_out      : std_logic_vector (width_bram_in_out_adr - 1 downto 0);
+    signal bram_conv_res_write_en_out : std_logic;
+
+    constant TbPeriod : time := 500 ns; -- EDIT Put right period here
+    signal TbClock : std_logic := '0';
+    signal TbSimEnded : std_logic := '0';
+    signal dataEn : std_logic;
+    shared variable L : line;
+    shared variable counter : integer := 0;
+    file output : text is out "C:\FTN\edge_detection\data\output.txt";
+    
+    type inputDataT is array(0 to 9999) of std_logic_vector(WIDTH_pixel - 1 downto 0);
+    shared variable inputData : inputDataT := (
 "01010100",
 "01010100",
 "01010100",
@@ -9997,4 +10069,86 @@
 "11011010",
 "11011010",
 "11011010",
-"11011010",
+"11011010"
+);
+begin
+
+    dut : convolution_ip
+    port map (clk                        => clk,
+              reset_in                   => reset_in,
+              start_in                   => start_in,
+              ready_out                  => ready_out,
+              done_out                   => done_out,
+              bram_read_data_en_out      => bram_read_data_en_out,
+              bram_pixel_data_in         => bram_pixel_data_in,
+              bram_pixel_adr_out         => bram_pixel_adr_out,
+              bram_conv_res_data_out     => bram_conv_res_data_out,
+              bram_conv_res_adr_out      => bram_conv_res_adr_out,
+              bram_conv_res_write_en_out => bram_conv_res_write_en_out);
+
+    -- Clock generation
+    TbClock <= not TbClock after TbPeriod/2 when TbSimEnded /= '1' else '0';
+
+    -- EDIT: Check that clk is really your main clock signal
+    clk <= TbClock;
+    
+    
+    writeData : process (bram_conv_res_write_en_out, bram_conv_res_data_out,clk)
+    begin
+        if(rising_edge(clk)) then
+        if (bram_conv_res_write_en_out = '1') then
+            write(L, bram_conv_res_data_out);
+--            write(L, string'(" "));
+--            counter := counter + 1;
+--            if counter = 91 then
+--                counter := 0;
+                writeline(output, L);
+--            end if;
+        end if;
+        end if;
+    end process;
+
+     pixelData : process(bram_read_data_en_out,bram_pixel_adr_out, clk)
+     begin
+     if(rising_edge(clk)) then
+         if (bram_read_data_en_out = '1') then
+             bram_pixel_data_in <= inputData(to_integer(unsigned(bram_pixel_adr_out)));
+         end if;
+     end if;
+     end process;
+
+    stimulii : process
+    begin
+        -- EDIT Adapt initialization as needed
+        start_in <= '0';
+        -- bram_pixel_data_in <= (others => '0');
+        dataEn <= '1';
+        
+        -- Reset generation
+        -- EDIT: Check that reset_in is really your reset signal
+        reset_in <= '1';
+        wait for 1000 ns;
+        reset_in <= '0';
+        wait for 1000 ns;
+
+        start_in <= '1';
+        wait for 1 * TbPeriod;
+        start_in <= '0';
+
+        -- EDIT Add stimuli here
+        wait for 20000000 * TbPeriod;
+
+        -- Stop the clock and hence terminate the simulation
+        dataEn <= '0';
+        TbSimEnded <= ready_out;
+        wait;
+    end process;
+
+end tb;
+
+-- Configuration block below is required by some simulators. Usually no need to edit.
+
+configuration cfg_tb_convolution_ip_1 of tb_convolution_ip_indepth is
+    for tb
+    end for;
+end cfg_tb_convolution_ip_1;

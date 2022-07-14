@@ -74,12 +74,12 @@ entity convolution_ip is
     );
 end convolution_ip;
 
-architecture Behavioral of convolution_ip is
+architecture struct of convolution_ip is
     -- component declaration
 
     component conv_FSM
         generic (
-            WIDTH_pixel : integer := 9;
+            WIDTH_pixel : integer := 8;
             WIDTH_kernel : integer := 16;
             KERNEL_SIZE : integer := 9;
             WIDTH_kernel_size : integer := 4;
@@ -407,4 +407,4 @@ begin
               ready_o              => ready_s,
               done_o               => done_s);
 
-end Behavioral;
+end struct;
