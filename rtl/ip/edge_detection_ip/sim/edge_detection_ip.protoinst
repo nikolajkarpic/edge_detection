@@ -1,9 +1,0 @@
-{
-	"version": "1.0",
-	"modules": {
-		"edge_detection_ip": {
-			"proto_instances": {
-			}
-		}
-	}
-}

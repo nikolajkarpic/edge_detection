@@ -1,10 +1,3 @@
-/******************************************************************************
-
-                            Online C Compiler.
-                Code, Compile, Run and Debug C program online.
-Write your code in this editor and press "Run" button to compile and execute it.
-
-*******************************************************************************/
 
 #include <stdio.h>
 #define IMG_SIZE 400
@@ -13,9 +6,8 @@ Write your code in this editor and press "Run" button to compile and execute it.
 
 int main()
 {
-    printf("Hello World");
     unsigned char ready = 1;
-    unsigned char start = 0;
+    unsigned char start = 1;
 
     int i = 0;
     int j = 0;
@@ -36,7 +28,7 @@ int main()
     int pixle_2_address;
 
     int conv_address = 0;
-    int conv_out_data = 0;
+    int conv_out = 0;
     int conv_bram[IMG_SIZE * IMG_SIZE];
 
     float kenel_0_val;
@@ -54,6 +46,7 @@ idle:
     ready = 1;
     if (start)
     {
+        start = 0;
         goto initial_load;
     }
     else
@@ -100,6 +93,7 @@ calculateAddress:
 
     conv_address = i * IMG_SIZE + j;
 
+
     kernel_0_address = k * KERNEL_SIZE + l;
     kernel_1_address = k * KERNEL_SIZE + l + 1;
     kernel_2_address = k * KERNEL_SIZE + l + 2;
@@ -116,6 +110,8 @@ loadData:
     goto mac;
 
 conv_out:
+
+
     sum = (sum0 + sum1) + sum2;
     if (sum < 0)
     {

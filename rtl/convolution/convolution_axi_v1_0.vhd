@@ -148,7 +148,7 @@ architecture arch_imp of convolution_axi_v1_0 is
 		);
 	end component convolution_axi_v1_0_S00_AXI;
 	
-	component memory_submodule_e is
+	component memory_submodule is
 	generic (
         SIZE: integer := 160000; --????????
         WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
@@ -210,7 +210,7 @@ architecture arch_imp of convolution_axi_v1_0 is
         end component memory_submodule_e;
         
         
-        component convolution_ip_e is
+        component convolution_ip is
         generic (
         WIDTH_num_of_pixels_in_bram : natural := 3; --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
         DEFAULT_IMG_SIZE : integer := 100; -- WIDTH/height of the image
@@ -303,14 +303,14 @@ convolution_axi_v1_0_S00_AXI_inst : convolution_axi_v1_0_S00_AXI
 	   mem_addr_s <= bram_read_sign_data_en & bram_pixel_adr_in;
 	end if;
 	end process;
-    mem_addr_s <= bram_read_sign_data_en & bram_pixel_adr_in;
+--    mem_addr_s <= bram_read_sign_data_en & bram_pixel_adr_in;
     mem_data_s <= conv_std_logic_vector(0, 32-8)&bram_pixel_data_in;
     mem_wr_s <= bram_write_data_en_in;
     bram_sign_data_out <= sign_axi_data_s;
     reset_s <= not s00_axi_aresetn;
 	-- User logic ends
 	
-	mem_submodule: memory_submodule_e
+	mem_submodule: memory_submodule
 	generic map(
 	   SIZE => SIZE, --????????
         WIDTH_num_of_pixels_in_bram =>  WIDTH_num_of_pixels_in_bram, --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
@@ -368,7 +368,7 @@ convolution_axi_v1_0_S00_AXI_inst : convolution_axi_v1_0_S00_AXI
         bram_conv_res_write_en_in => bram_conv_res_write_en_s
     );
     
-    convolution_module: convolution_ip_e
+    convolution_module: convolution_ip
     generic map(
 --	   SIZE => SIZE, --????????
         WIDTH_num_of_pixels_in_bram =>  WIDTH_num_of_pixels_in_bram, --Amount of pixels that can be placed in 64 bit bram slice (8 x 8 bit)
