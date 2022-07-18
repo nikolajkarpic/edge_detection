@@ -355,9 +355,6 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
     int ret = 0, i = 0, pos = 0;
     int pixelVal = 0;
     long int bramPos = 0;
-    unsigned int xpos = 0, ypos = 0;
-    unsigned int rgb = 0;
-    int columns, lines, start;
     ret = copy_from_user(buff, buf, length);
 
     if (ret)
@@ -401,7 +398,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         else
         {
             pos = bramPos * 4;
-            iowrite32(pixelVal, bp2->base_addr + pos);
+            iowrite32(pixelVal, img->base_addr + pos);
         }
 
         break;
