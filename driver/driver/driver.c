@@ -1,7 +1,7 @@
-#include </usr/include/linux/init.h>
-#include </usr/include/linux/module.h>
-#include </usr/include/linux/fs.h>
-#include </usr/include/linux/types.h>
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/fs.h>
+#include <linux/types.h>
 #include <linux/cdev.h>
 #include <linux/kdev_t.h>
 #include <linux/uaccess.h>
