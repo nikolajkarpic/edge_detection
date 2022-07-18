@@ -54,7 +54,7 @@ int k = 0;
 static int CONV_probe(struct platform_device *pdev);
 static int CONV_remove(struct platform_device *pdev);
 static int CONV_open(struct inode *pinode, struct file *pfile);
-static int IFCONV_close(struct inode *pinode, struct file *pfile);
+static int CONV_close(struct inode *pinode, struct file *pfile);
 static ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *offset);
 static ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, loff_t *offset);
 int CONV_mmap(struct file *f, struct vm_area_struct *vma_s);
