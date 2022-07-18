@@ -2,21 +2,21 @@
 #include </usr/include/linux/module.h>
 #include </usr/include/linux/fs.h>
 #include </usr/include/linux/types.h>
-#include </usr/include/linux/cdev.h>
-#include </usr/include/linux/kdev_t.h>
-#include </usr/include/linux/uaccess.h>
-#include </usr/include/linux/errno.h>
-#include </usr/include/linux/kernel.h>
-#include </usr/include/linux/device.h>
-#include </usr/include/linux/string.h>
-#include </usr/include/linux/of.h>
+#include <linux/cdev.h>
+#include <linux/kdev_t.h>
+#include <linux/uaccess.h>
+#include <linux/errno.h>
+#include <linux/kernel.h>
+#include <linux/device.h>
+#include <linux/string.h>
+#include <linux/of.h>
 
-#include </usr/include/linux/mm.h>              //za memorijsko mapiranje
-#include </usr/include/linux/io.h>              //iowrite ioread
-#include </usr/include/linux/slab.h>            //kmalloc kfree
-#include </usr/include/linux/platform_device.h> //platform driver
-#include </usr/include/linux/of.h>              //of match table
-#include </usr/include/linux/ioport.h>          //ioremap
+#include <linux/mm.h>              //za memorijsko mapiranje
+#include <linux/io.h>              //iowrite ioread
+#include <linux/slab.h>            //kmalloc kfree
+#include <linux/platform_device.h> //platform driver
+#include <linux/of.h>              //of match table
+#include <linux/ioport.h>          //ioremap
 
 #define BUFF_SIZE 30
 #define BRAM_SIZE 160000
