@@ -118,7 +118,7 @@ static int CONV_probe(struct platform_device *pdev)
     case 0: // ip
 
         ip = (struct CONV_info *)kmalloc(sizeof(struct CONV_info), GFP_KERNEL);
-        if (!bp1)
+        if (!ip)
         {
             printk(KERN_ALERT "Could not allocate memory\n");
             return -ENOMEM;
