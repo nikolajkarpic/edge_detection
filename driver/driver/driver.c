@@ -126,7 +126,7 @@ static int CONV_probe(struct platform_device *pdev)
 
         ip->mem_start = r_mem->start;
         ip->mem_end = r_mem->end;
-        printk(KERN_INFO "Start address:%x \t end address:%x", r_mem->start, r_mem->end);
+        // printk(KERN_INFO "Start address:%x \t end address:%x", r_mem->start, r_mem->end);
 
         if (!request_mem_region(ip->mem_start, ip->mem_end - ip->mem_start + 1, DRIVER_NAME))
         {
@@ -164,7 +164,7 @@ static int CONV_probe(struct platform_device *pdev)
 
         img->mem_start = r_mem->start;
         img->mem_end = r_mem->end;
-        printk(KERN_INFO "Start address:%x \t end address:%x", r_mem->start, r_mem->end);
+        // printk(KERN_INFO "Start address:%x \t end address:%x", r_mem->start, r_mem->end);
 
         if (!request_mem_region(img->mem_start, img->mem_end - img->mem_start + 1, DRIVER_NAME))
         {
@@ -202,7 +202,7 @@ static int CONV_probe(struct platform_device *pdev)
 
         res->mem_start = r_mem->start;
         res->mem_end = r_mem->end;
-        printk(KERN_INFO "Start address:%x \t end address:%x", r_mem->start, r_mem->end);
+        // printk(KERN_INFO "Start address:%x \t end address:%x", r_mem->start, r_mem->end);
 
         if (!request_mem_region(res->mem_start, res->mem_end - res->mem_start + 1, DRIVER_NAME))
         {
@@ -387,7 +387,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         printk(KERN_WARNING "CONV_write: about to write to bram_img \n");
         sscanf(buff, "(%ld,%d)", &bramPos, &pixelVal);
         printk(KERN_WARNING "CONV_write:brma pos: %ld, pixel value: %d\n", bramPos, pixelVal);
-        printk(KERN_WARNING "CONV_write: about to write to %d, brma pos: %ld, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
+        printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
 
         if (pixelVal > 255)
         {
@@ -399,7 +399,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         }
         else
         {
-            printk(KERN_WARNING "CONV_write: about to write to %d, brma pos: %ld, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
+            printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
             pos = bramPos * 4;
             iowrite32(pixelVal, img->base_addr + pos);
         }
