@@ -501,7 +501,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
                         {
                             for (l = 0; l < KERNEL_MATRIX_SIZE; l++)
                             {
-                                sum = sum + (kernel_reg_bank[k][l] * bram_img_array[i + k][j + l]);
+                                sum = sum + (kernel_reg_bank[(k * KERNEL_MATRIX_SIZE) + l] * bram_img_array[((i + k) * IMG_SIZE) + j + l]);
                             }
                         }
 
