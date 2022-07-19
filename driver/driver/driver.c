@@ -387,7 +387,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         printk(KERN_WARNING "CONV_write: about to write to bram_img \n");
         sscanf(buff, "(%ld,%d)", &bramPos, &pixelVal);
         printk(KERN_WARNING "CONV_write:brma pos: %ld, pixel value: %d\n", bramPos, pixelVal);
-        printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
+        printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr + 4, bramPos, pixelVal);
 
         if (pixelVal > 255)
         {
@@ -399,7 +399,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         }
         else
         {
-            printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
+            printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr, bramPos, pixelVal);
             pos = bramPos * 4;
             iowrite32((u32)bramPos, img->base_addr + 4);
             iowrite32((u32)pixelVal, img->base_addr);
