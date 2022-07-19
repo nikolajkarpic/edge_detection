@@ -35,7 +35,7 @@ MODULE_ALIAS("custom:CONV");
 int bram_img_array[BRAM_SIZE];
 int bram_res_array[BRAM_SIZE];
 
-float kernel_reg_bank[81] = {
+double kernel_reg_bank[81] = {
     0.081641,
     0.365518,
     0.998325,
@@ -119,7 +119,7 @@ float kernel_reg_bank[81] = {
     0.081641};
 int start_reg = 0;
 int done_reg = 0;
-float sum = 0;
+double sum = 0;
 
 struct CONV_info
 {
@@ -466,7 +466,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
     char buff[BUFF_SIZE];
     int minor = MINOR(pfile->f_inode->i_rdev);
     int start = 0;
-    int ret = 0, i = 0, pos = 0;
+    int ret = 0, pos = 0;
     int pixelVal = 0;
     long int bramPos = 0;
     ret = copy_from_user(buff, buf, length);
@@ -497,7 +497,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
                 {
                     for (j = 0; j < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; j++)
                     {
-                        sum = 0.0;
+                        sum = 0;
                         for (k = 0; k < KERNEL_MATRIX_SIZE; k++)
                         {
                             for (l = 0; l < KERNEL_MATRIX_SIZE; l++)
