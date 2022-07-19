@@ -57,7 +57,7 @@ static int CONV_open(struct inode *pinode, struct file *pfile);
 static int CONV_close(struct inode *pinode, struct file *pfile);
 static ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *offset);
 static ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, loff_t *offset);
-int CONV_mmap(struct file *f, struct vm_area_struct *vma_s);
+// int CONV_mmap(struct file *f, struct vm_area_struct *vma_s);
 
 static int __init CONV_init(void);
 static void __exit CONV_exit(void);
@@ -69,7 +69,7 @@ struct file_operations my_fops =
         .write = CONV_write,
         .open = CONV_open,
         .release = CONV_close,
-        .mmap = CONV_mmap,
+        // .mmap = CONV_mmap,
 
 };
 
