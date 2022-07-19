@@ -397,6 +397,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         }
         else
         {
+            printk(KERN_WARNING "CONV_write: about to write to %d, brma pos: %d, pixel value: %d\n", img->base_addr + pos, bramPos, pixelVal);
             pos = bramPos * 4;
             iowrite32(pixelVal, img->base_addr + pos);
         }
