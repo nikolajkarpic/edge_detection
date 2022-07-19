@@ -385,7 +385,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
     case 1: // bram_img
 
-        sscanf(buff, "(%d,%d)", &bramPos, &pixelVal);
+        sscanf(buff, "(%ld,%d)", &bramPos, &pixelVal);
 
         if (pixelVal > 255)
         {
