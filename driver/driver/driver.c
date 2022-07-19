@@ -119,6 +119,7 @@ float kernel_reg_bank[81] = {
     0.081641};
 int start_reg = 0;
 int done_reg = 0;
+float sum = 0;
 
 struct CONV_info
 {
@@ -482,7 +483,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
     case 0: // IP
         sscanf(buff, "%d", &start);
-        float sum = 0;
+
         if (ret != -EINVAL)
         {
             if (start != 0 && start != 1)
