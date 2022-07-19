@@ -1,8 +1,10 @@
-using namespace std;
-#define BRAM_SIZE 160000
+#include <iostream>
+#include <fstream>
 
+#define BRAM_SIZE 160000
 void writeBramImg(const int bramArray[]);
 
+using namespace std;
 int main(int argc, char *argv[])
 {
     int bram_img *;
