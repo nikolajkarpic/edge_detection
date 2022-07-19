@@ -117,6 +117,12 @@ static int CONV_probe(struct platform_device *pdev)
 
     case 0: // ip
 
+        r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+        if (!r_mem)
+        {
+            printk(KERN_ALERT "Failed to get resource\n");
+            return -ENODEV;
+        }
         ip = (struct CONV_info *)kmalloc(sizeof(struct CONV_info), GFP_KERNEL);
         if (!ip)
         {
@@ -154,7 +160,12 @@ static int CONV_probe(struct platform_device *pdev)
         return rc;
 
     case 1: // bram_img
-
+        r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+        if (!r_mem)
+        {
+            printk(KERN_ALERT "Failed to get resource\n");
+            return -ENODEV;
+        }
         img = (struct CONV_info *)kmalloc(sizeof(struct CONV_info), GFP_KERNEL);
         if (!img)
         {
@@ -192,7 +203,12 @@ static int CONV_probe(struct platform_device *pdev)
         return rc;
 
     case 2: // bram_after_conv
-
+        r_mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+        if (!r_mem)
+        {
+            printk(KERN_ALERT "Failed to get resource\n");
+            return -ENODEV;
+        }
         res = (struct CONV_info *)kmalloc(sizeof(struct CONV_info), GFP_KERNEL);
         if (!res)
         {
@@ -387,8 +403,6 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         printk(KERN_WARNING "CONV_write: about to write to bram_img \n");
         sscanf(buff, "(%ld,%d)", &bramPos, &pixelVal);
         printk(KERN_WARNING "CONV_write:brma pos: %ld, pixel value: %d\n", bramPos, pixelVal);
-        printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr + 4, bramPos, pixelVal);
-
         if (pixelVal > 255)
         {
             printk(KERN_WARNING "BRAM_IMG: Pixel value cannot be larger than 255 \n");
@@ -397,11 +411,19 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         {
             printk(KERN_WARNING "BRAM_IMG: Pixel value cannot be negative \n");
         }
+        else if (bramPos < 0)
+        {
+            printk(KERN_WARNING "BRAM_IMG: Pixel adr cannot be negative \n");
+        }
+        else if (bramPos > BRAM_SIZE)
+        {
+            printk(KERN_WARNING "BRAM_IMG: Pixel adr cannot be larger than bram size \n");
+        }
         else
         {
-            printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr, bramPos, pixelVal);
+            // printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr, bramPos, pixelVal);
             pos = bramPos * 4;
-            iowrite32((u32)bramPos, img->base_addr + 4);
+            iowrite32((u32)bramPos, img->base_addr + 8);
             iowrite32((u32)pixelVal, img->base_addr);
         }
 
