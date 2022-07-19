@@ -20,6 +20,8 @@
 
 #define BUFF_SIZE 30
 #define BRAM_SIZE 160000
+#define IMG_SIZE 400
+#define KERNEL_MATRIX_SIZE 9
 #define DRIVER_NAME "CONV_driver"
 #define DEVICE_NAME "CONV"
 
@@ -29,6 +31,95 @@ MODULE_LICENSE("Dual BSD/GPL");
 MODULE_ALIAS("custom:CONV");
 
 //********************************************GLOBAL VARIABLES *****************************************//
+
+int bram_img_array[BRAM_SIZE];
+int bram_res_array[BRAM_SIZE];
+
+float kernel_reg_bank[81] = {
+    0.081641,
+    0.365518,
+    0.998325,
+    1.745668,
+    2.080704,
+    1.745668,
+    0.998325,
+    0.365518,
+    0.081641,
+    0.365518,
+    1.456020,
+    3.361998,
+    4.839310,
+    5.218347,
+    4.839310,
+    3.361998,
+    1.456020,
+    0.365518,
+    0.998325,
+    3.361998,
+    5.409023,
+    3.077873,
+    0.294243,
+    3.077873,
+    5.409023,
+    3.361998,
+    0.998325,
+    1.745668,
+    4.839310,
+    3.077873,
+    -11.762411,
+    -23.086993,
+    -11.762411,
+    3.077873,
+    4.839310,
+    1.745668,
+    2.080704,
+    5.218347,
+    0.294243,
+    -23.086993,
+    -40.000000,
+    -23.086993,
+    0.294243,
+    5.218347,
+    2.080704,
+    1.745668,
+    4.839310,
+    3.077873,
+    -11.762411,
+    -23.086993,
+    -11.762411,
+    3.077873,
+    4.839310,
+    1.745668,
+    0.998325,
+    3.361998,
+    5.409023,
+    3.077873,
+    0.294243,
+    3.077873,
+    5.409023,
+    3.361998,
+    0.998325,
+    0.365518,
+    1.456020,
+    3.361998,
+    4.839310,
+    5.218347,
+    4.839310,
+    3.361998,
+    1.456020,
+    0.365518,
+    0.081641,
+    0.365518,
+    0.998325,
+    1.745668,
+    2.080704,
+    1.745668,
+    0.998325,
+    0.365518,
+    0.081641};
+int start_reg = 0;
+int done_reg = 0;
+
 struct CONV_info
 {
     unsigned long mem_start;
@@ -68,7 +159,7 @@ struct file_operations my_fops =
         .read = CONV_read,
         .write = CONV_write,
         .open = CONV_open,
-        .release = CONV_close,
+        .release = CONV_close
         // .mmap = CONV_mmap,
 
 };
@@ -86,8 +177,6 @@ static struct of_device_id CONV_of_match[] = {
 
 };
 
-MODULE_DEVICE_TABLE(of, CONV_of_match);
-
 static struct platform_driver CONV_driver = {
 
     .driver = {
@@ -99,6 +188,8 @@ static struct platform_driver CONV_driver = {
     .probe = CONV_probe,
     .remove = CONV_remove,
 };
+
+MODULE_DEVICE_TABLE(of, CONV_of_match);
 
 static int CONV_probe(struct platform_device *pdev)
 {
@@ -320,7 +411,8 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
     case 0: // ip
 
         pos = 4; // done ?
-        value = ioread32(ip->base_addr + pos);
+        // value = ioread32(ip->base_addr + pos);
+        value = done_reg;
         len = scnprintf(buff, BUFF_SIZE, "%d\n", value);
         *offset += len;
         ret = copy_to_user(buf, buff, len);
@@ -338,7 +430,8 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         break;
 
     case 2: // bram_after_conv
-        value = ioread32(res->base_addr + k * 4);
+        // value = ioread32(res->base_addr + k * 4);
+        value = bram_res_array[k];
         len = scnprintf(buff, BUFF_SIZE, "%d\n", value);
         *offset += len;
         ret = copy_to_user(buf, buff, len);
@@ -385,6 +478,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
     case 0: // IP
         sscanf(buff, "%d", &start);
+        float sum = 0;
         if (ret != -EINVAL)
         {
             if (start != 0 && start != 1)
@@ -393,8 +487,40 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
             }
             else
             {
-                iowrite32((u32)start, ip->base_addr); // columns
+                start_reg = 1;
+                for (int i = 0; i < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; i++)
+                {
+                    for (int j = 0; j < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; j++)
+                    {
+                        sum = 0.0;
+                        for (int k = 0; k < KERNEL_MATRIX_SIZE; k++)
+                        {
+                            for (int l = 0; l < KERNEL_MATRIX_SIZE; l++)
+                            {
+                                sum = sum + (kernel_reg_bank[k][l] * bram_img_array[i + k][j + l]);
+                            }
+                        }
+
+                        if (sum < 0)
+                        {
+                            sum = -1;
+                        }
+                        else if (sum > 0)
+                        {
+                            sum = 1;
+                        }
+                        else
+                        {
+                            sum = 0;
+                        }
+
+                        bram_res_array[i * IMG_SIZE + j] = (int)sum;
+                    }
+                }
+                // iowrite32((u32)start, ip->base_addr); // columns
             }
+            start_reg = 0;
+            done_reg = 1;
         }
 
         break;
@@ -415,7 +541,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         {
             printk(KERN_WARNING "BRAM_IMG: Pixel adr cannot be negative \n");
         }
-        else if (bramPos > BRAM_SIZE)
+        else if (bramPos > BRAM_SIZE - 1)
         {
             printk(KERN_WARNING "BRAM_IMG: Pixel adr cannot be larger than bram size \n");
         }
@@ -423,9 +549,9 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         {
             // printk(KERN_WARNING "CONV_write: about to write to %p, brma pos: %ld, pixel value: %d\n", img->base_addr, bramPos, pixelVal);
             pos = bramPos * 4;
-            iowrite32((u32)pixelVal, img->base_addr);
-            printk(KERN_WARNING "BRAM_IMG: prosao prvi\n");
-            iowrite32((u32)bramPos, img->base_addr + 8);
+            bram_img_array[bramPos] = pixelVal;
+            // iowrite32((u32)pixelVal, img->base_addr);
+            // iowrite32((u32)bramPos, img->base_addr + 8);
         }
 
         break;
@@ -488,7 +614,7 @@ static int __init CONV_init(void)
     my_cdev = cdev_alloc();
     my_cdev->ops = &my_fops;
     my_cdev->owner = THIS_MODULE;
-    ret = cdev_add(my_cdev, my_dev_id, num_of_minors);
+    ret = cdev_add(my_cdev, my_dev_id, 3);
     if (ret)
     {
         printk(KERN_ERR "Failde to add cdev \n");
