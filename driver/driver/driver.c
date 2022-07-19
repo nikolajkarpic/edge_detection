@@ -139,7 +139,11 @@ int position = 0;
 int number = 0;
 int counter = 0;
 int endRead = 0;
+int read_counter = 0;
+int i = 0;
+int j = 0;
 int k = 0;
+int l = 0;
 
 //****************************** FUNCTION PROTOTYPES ****************************************//
 static int CONV_probe(struct platform_device *pdev);
@@ -431,7 +435,7 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
 
     case 2: // bram_after_conv
         // value = ioread32(res->base_addr + k * 4);
-        value = bram_res_array[k];
+        value = bram_res_array[read_counter];
         len = scnprintf(buff, BUFF_SIZE, "%d\n", value);
         *offset += len;
         ret = copy_to_user(buf, buff, len);
@@ -439,11 +443,11 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         {
             return -EFAULT;
         }
-        k++;
-        if (k == BRAM_SIZE)
+        read_counter++;
+        if (read_counter == BRAM_SIZE)
         {
             endRead = 1;
-            k = 0;
+            read_counter = 0;
         }
 
         break;
@@ -488,14 +492,14 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
             else
             {
                 start_reg = 1;
-                for (int i = 0; i < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; i++)
+                for (i = 0; i < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; i++)
                 {
-                    for (int j = 0; j < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; j++)
+                    for (j = 0; j < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; j++)
                     {
                         sum = 0.0;
-                        for (int k = 0; k < KERNEL_MATRIX_SIZE; k++)
+                        for (k = 0; k < KERNEL_MATRIX_SIZE; k++)
                         {
-                            for (int l = 0; l < KERNEL_MATRIX_SIZE; l++)
+                            for (l = 0; l < KERNEL_MATRIX_SIZE; l++)
                             {
                                 sum = sum + (kernel_reg_bank[k][l] * bram_img_array[i + k][j + l]);
                             }
