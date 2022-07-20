@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
         case 2:
             writeBramImg(loadedData);
             break;
-        case 5:
+        case 6:
             std::cout << "Goodbye!";
             return 0;
             break;
@@ -71,6 +71,7 @@ bram loadData(std::string path)
     inFile.open(path);
     while (inFile >> x)
     {
+        std::cout << x << std::endl;
         loadedData.push_back(x);
     }
     inFile.close();
