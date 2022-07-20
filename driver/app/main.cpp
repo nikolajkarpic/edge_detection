@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <string.h>
+#include <string>
 #include <vector>
 
 #define BRAM_SIZE 160000
