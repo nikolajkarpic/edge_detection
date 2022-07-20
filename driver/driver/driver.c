@@ -403,17 +403,6 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
 
     int ret, pos = 0;
     char buff[BUFF_SIZE];
-    long int conv_res_adr;
-
-    ret = copy_from_user(buff, buf, length);
-
-    if (ret)
-    {
-        printk("copy from user failed \n");
-        return -EFAULT;
-    }
-    buff[length] = '\0';
-
     int len, value;
     int minor = MINOR(pfile->f_inode->i_rdev);
     if (endRead == 1)
@@ -447,26 +436,20 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
 
     case 2: // bram_after_conv
         // value = ioread32(res->base_addr + k * 4);
-
-        sscanf(buff, "%ld", &conv_res_adr);
-
-        value = bram_res_array[conv_res_adr];
+        value = bram_res_array[read_counter];
         len = scnprintf(buff, BUFF_SIZE, "%d\n", value);
         *offset += len;
         ret = copy_to_user(buf, buff, len);
-
-        endRead = 1;
-
         if (ret)
         {
             return -EFAULT;
         }
         read_counter++;
-        // if (read_counter == BRAM_SIZE)
-        // {
-        //     endRead = 1;
-        //     read_counter = 0;
-        // }
+        if (read_counter == BRAM_SIZE)
+        {
+            endRead = 1;
+            read_counter = 0;
+        }
 
         break;
 
