@@ -1,7 +1,14 @@
 #include <iostream>
 #include <fstream>
+#include <string.h>
 
 #define BRAM_SIZE 160000
+
+int bramImgArray[BRAM_SIZE];
+int bramResArray[BRAM_SIZE];
+int startReg = 0;
+int doneReg = 0;
+
 void writeBramImg(const int bramArray[]);
 
 using namespace std;
@@ -59,29 +66,28 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-int *loadData(string path)
+void loadData(string path, int bramImg[])
 {
 
     ifstream inFile;
     int i = 0;
     int x;
     inFile.open(path);
-    int bram_img[BRAM_SIZE];
     while (inFile >> x)
     {
-        bram_img[i] = x;
+        &bramImg[i] = x;
         i++
     }
-    return bram_img;
+    inFile.close();
 }
 
-void writeBramImg(const int *bramArray)
+void writeBramImg(const int bramArray[])
 {
-    FILE *bramim;
+    FILE *bramImg;
+    bramImg = fopen("/dev/bram_img", "w");
     for (int i = 0; i < BRAM_SIZE; ++i)
     {
-        bramImg = fopen("/dev/bram_img", "w");
-        fprintf(bramImg, "(%d,%d)\n", i, *(bramArray + i));
-        fclose(bramImg);
+        fprintf(bramImg, "(%d,%d)\n", i, bramArray[i]);
     }
+    fclose(bramImg);
 }
