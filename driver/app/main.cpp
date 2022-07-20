@@ -206,6 +206,7 @@ matrix2D zeroCrossingTest(matrix2D source)
                 {
                     if (k != 0 && l != 0)
                     {
+                        std::cout << source[i + k][j + l] << std::endl;
                         if (source[i + k][j + l] < 0)
                         {
                             negCouter++;
