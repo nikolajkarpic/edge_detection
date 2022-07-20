@@ -10,6 +10,7 @@ int startReg = 0;
 int doneReg = 0;
 
 void writeBramImg(const int bramArray[]);
+void loadData(string path, int bramImg[]);
 
 using namespace std;
 int main(int argc, char *argv[])
@@ -75,7 +76,7 @@ void loadData(string path, int bramImg[])
     while (inFile >> x)
     {
         &bramImg[i] = x;
-        i++
+        i++;
     }
     inFile.close();
 }
