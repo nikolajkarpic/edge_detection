@@ -158,6 +158,7 @@ matrix2D readBramRes()
         for (int j = 0; j < IMG_SIZE; ++j)
         {
             fscanf(bramRes, "%d", &n);
+            std::cout << n << std::endl;
             tempRow.push_back(n);
         }
     }
