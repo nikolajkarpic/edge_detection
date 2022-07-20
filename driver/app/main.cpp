@@ -163,8 +163,8 @@ matrix2D readBramRes()
             tempRow.push_back(n);
         }
     }
-    fgets(endstr, 400, bramRes); // needed to simulate cat
-    fgets(endstr, 400, bramRes); // needed to simulate cat
+    // fgets(endstr, 400, bramRes); // needed to simulate cat
+    // fgets(endstr, 400, bramRes); // needed to simulate cat
     fclose(bramRes);
 
     for (int u = 0; u < returnRow.size(); u++)
