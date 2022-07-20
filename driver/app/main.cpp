@@ -189,6 +189,9 @@ matrix2D zeroCrossingTest(matrix2D source)
     int sourceWIDTH = source[0].size();
     int sourceHeight = source.size();
 
+    std::cout << sourceWIDTH << std::endl;
+    std::cout << sourceHeight << std::endl;
+
     matrix1D tempRow;
     matrix2D tempMatrix;
 
@@ -210,8 +213,8 @@ matrix2D zeroCrossingTest(matrix2D source)
                 {
                     if (k != 0 && l != 0)
                     {
-                        std::cout << "at address:" << (i + k) * sourceWIDTH + j + l << std::endl;
-                        std::cout << source[i + k][j + l] << std::endl;
+                        // std::cout << "at address:" << (i + k) * sourceWIDTH + j + l << std::endl;
+                        // std::cout << source[i + k][j + l] << std::endl;
                         if (source[i + k][j + l] < 0)
                         {
                             negCouter++;
@@ -233,14 +236,14 @@ matrix2D zeroCrossingTest(matrix2D source)
         }
     }
 
-    for (int u = 0; u < imageResult.size(); u++)
-    {
-        for (int f = 0; f < imageResult[0].size(); f++)
-        {
-            std::cout << imageResult[u][f] << " ";
-        }
-        std::cout << std::endl;
-    }
+    // for (int u = 0; u < imageResult.size(); u++)
+    // {
+    //     for (int f = 0; f < imageResult[0].size(); f++)
+    //     {
+    //         std::cout << imageResult[u][f] << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 
     return imageResult;
 }
