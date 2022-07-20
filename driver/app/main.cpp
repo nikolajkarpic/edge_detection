@@ -56,8 +56,17 @@ int main(int argc, char *argv[])
             startIp();
             break;
         case 4:
-            convolvedData = readBramRes();
-            break;
+            if (readIpDoneReg())
+            {
+
+                convolvedData = readBramRes();
+                break;
+            }
+            else
+            {
+                std::cout << "Ip isnt done yet" << std::endl;
+                break;
+            }
         case 5:
             zcDone = zeroCrossingTest(convolvedData);
             break;
@@ -121,6 +130,17 @@ void startIp()
     fprintf(ip, "1");
 
     fclose(ip);
+}
+
+bool readIpDoneReg()
+{
+    FILE *ip;
+    int n;
+    ip = fopen("/dev/ip", "r");
+    fscanf(ip, "%d", &n);
+    fclose(ip);
+    bool result;
+    return result = (n == 1) ? true : false;
 }
 
 matrix2D readBramRes()
