@@ -4,10 +4,12 @@
 #include <vector>
 
 #define BRAM_SIZE 160000
+#define IMG_SIZE 400
 typedef std::vector<int> bram;
 
 void writeBramImg(bram);
 bram loadData(std::string path);
+void startIp();
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +42,9 @@ int main(int argc, char *argv[])
             break;
         case 2:
             writeBramImg(loadedData);
+            break;
+        case 3:
+            startIp();
             break;
         case 6:
             std::cout << "Goodbye!";
@@ -81,10 +86,43 @@ bram loadData(std::string path)
 void writeBramImg(bram bramImgArray)
 {
     FILE *bramImg;
-    bramImg = fopen("/dev/bram_img", "w");
     for (int i = 0; i < BRAM_SIZE; ++i)
     {
+        bramImg = fopen("/dev/bram_img", "w");
         fprintf(bramImg, "(%d,%d)\n", i, bramImgArray[i]);
+        fclose(bramImg);
     }
-    fclose(bramImg);
 }
+
+void startIp()
+{
+    FILE *ip;
+    ip = fopen("/dev/ip", "w");
+
+    fprintf(ip, "1");
+
+    fclose(ip);
+}
+
+// bram readBramRes()
+// {
+//     FILE *bramRes;
+//     bramRes = fopen("/dev/bram_res", "r");
+//     int n;
+//     for (int i = 0; i < IMG_SIZE; ++i)
+//         for (int j = 0; j < IMG_SIZE; ++j)
+//         {
+//             fscanf(bramim, "%d", &n);
+//             mata[i][j] = int2double(n);
+//         }
+
+//     for (int i = 0; i < hb; ++i)
+//         for (int j = 0; j < wb; ++j)
+//         {
+//             fscanf(bramim, "%d", &n);
+//             matb[i][j] = int2double(n);
+//         }
+//     fgets(endstr, 100, bramim); // needed to simulate cat
+//     fgets(endstr, 100, bramim); // needed to simulate cat
+//     fclose(bramim);
+// }
