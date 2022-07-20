@@ -167,17 +167,20 @@ matrix2D readBramRes()
             fclose(bramRes);
         }
     }
+    std::cout << returnRow.size() << std::endl;
+    std::cout << sourceHeight[0].size() << std::endl;
+
     // fgets(endstr, 400, bramRes); // needed to simulate cat
     // fgets(endstr, 400, bramRes); // needed to simulate cat
 
-    for (int u = 0; u < returnRow.size(); u++)
-    {
-        for (int f = 0; f < returnRow[0].size(); f++)
-        {
-            std::cout << returnRow[u][f] << " ";
-        }
-        std::cout << std::endl;
-    }
+    // for (int u = 0; u < returnRow.size(); u++)
+    // {
+    //     for (int f = 0; f < returnRow[0].size(); f++)
+    //     {
+    //         std::cout << returnRow[u][f] << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
 
     return returnRow;
 }
