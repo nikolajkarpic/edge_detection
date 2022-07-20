@@ -186,7 +186,7 @@ matrix2D zeroCrossingTest(matrix2D source)
 {
     matrix2D imageResult;
     matrix1D tempPixelArray;
-    int sourceWIDTH = source[0].size();
+    int sourceWIDTH = source[15].size();
     int sourceHeight = source.size();
 
     std::cout << sourceWIDTH << std::endl;
