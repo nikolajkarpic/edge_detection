@@ -146,6 +146,7 @@ bool readIpDoneReg()
 
 matrix2D readBramRes()
 {
+    char endstr[100];
     FILE *bramRes;
     bramRes = fopen("/dev/bram_res", "r");
     int n;
@@ -160,6 +161,8 @@ matrix2D readBramRes()
             tempRow.push_back(n);
         }
     }
+    fgets(endstr, 100, bramRes); // needed to simulate cat
+    fgets(endstr, 100, bramRes); // needed to simulate cat
     fclose(bramRes);
 
     for (int u = 0; u < returnRow.size(); u++)
