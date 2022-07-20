@@ -62,6 +62,9 @@ int main(int argc, char *argv[])
             zcDone = zeroCrossingTest(convolvedData);
             break;
         case 6:
+            writeImageToFile(outpath, zcDone);
+            break;
+        case 7:
             std::cout << "Goodbye!" << std::endl;
             return 0;
             break;
@@ -78,7 +81,7 @@ int main(int argc, char *argv[])
             std::cout << "Selection: ";
             std::cin >> choice;
         }
-    } while (choice != 6);
+    } while (choice != 7);
 
     return 0;
 }
