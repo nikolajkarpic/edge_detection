@@ -6,7 +6,10 @@
 #define BRAM_SIZE 160000
 #define IMG_SIZE 400
 typedef std::vector<int> bram;
+typedef std::vector<int> matrix1D;
+typedef std::vector<matrix1D> matrix2D;
 
+matrix2D readBramRes();
 void writeBramImg(bram);
 bram loadData(std::string path);
 void startIp();
@@ -20,6 +23,7 @@ int main(int argc, char *argv[])
     }
     std::string path = argv[1];
     bram loadedData;
+    matrix2D convolvedData;
     int choice;
 
     do
@@ -45,6 +49,9 @@ int main(int argc, char *argv[])
             break;
         case 3:
             startIp();
+            break;
+        case 4:
+            convolvedData = readBramRes();
             break;
         case 6:
             std::cout << "Goodbye!";
@@ -104,25 +111,23 @@ void startIp()
     fclose(ip);
 }
 
-// bram readBramRes()
-// {
-//     FILE *bramRes;
-//     bramRes = fopen("/dev/bram_res", "r");
-//     int n;
-//     for (int i = 0; i < IMG_SIZE; ++i)
-//         for (int j = 0; j < IMG_SIZE; ++j)
-//         {
-//             fscanf(bramim, "%d", &n);
-//             mata[i][j] = int2double(n);
-//         }
+matrix2D readBramRes()
+{
+    FILE *bramRes;
+    bramRes = fopen("/dev/bram_res", "r");
+    int n;
+    matrix1D tempRow;
+    matrix2D returnRow;
+    for (int i = 0; i < IMG_SIZE; ++i)
+    {
+        returnRow.push_back(tempRow);
+        for (int j = 0; j < IMG_SIZE; ++j)
+        {
+            fscanf(bramRes, "%d", &n);
+            tempRow.push_back(n);
+        }
+    }
+    fclose(bramRes);
 
-//     for (int i = 0; i < hb; ++i)
-//         for (int j = 0; j < wb; ++j)
-//         {
-//             fscanf(bramim, "%d", &n);
-//             matb[i][j] = int2double(n);
-//         }
-//     fgets(endstr, 100, bramim); // needed to simulate cat
-//     fgets(endstr, 100, bramim); // needed to simulate cat
-//     fclose(bramim);
-// }
+    return returnRow;
+}
