@@ -14,7 +14,6 @@ void writeBramImg(const int bramArray[]);
 using namespace std;
 int main(int argc, char *argv[])
 {
-    int bram_img *;
     if (argc < 2)
     {
         cout << "Program wasn't called properly.\n To run it path to the target image must be passed as an argument.\n Example: ./output /home/user/g3-2021/data/Lenna.png" << endl;
@@ -40,10 +39,10 @@ int main(int argc, char *argv[])
         switch (choice)
         {
         case 1:
-            bram_img = loadData(path);
+            loadData(path, bramImgArray);
             break;
         case 2:
-            writeBramImg(bram_img *);
+            writeBramImg(bramImgArray);
             break;
         case 5:
             cout << "Goodbye!";
