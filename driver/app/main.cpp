@@ -15,6 +15,7 @@ bram loadData(std::string path);
 void startIp();
 matrix2D zeroCrossingTest(matrix2D source);
 void writeImageToFile(std::string outpath, matrix2D outputArray);
+bool readIpDoneReg();
 
 int main(int argc, char *argv[])
 {
