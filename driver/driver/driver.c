@@ -119,6 +119,7 @@ int kernel_reg_bank[81] = {
     816};
 int start_reg = 0;
 int done_reg = 0;
+int bram_result_address = 0;
 long int sum = 0;
 
 struct CONV_info
@@ -436,7 +437,8 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
 
     case 2: // bram_after_conv
         // value = ioread32(res->base_addr + k * 4);
-        value = bram_res_array[read_counter];
+        // value = bram_res_array[read_counter];
+        value = bram_res_array[bram_result_address];
         len = scnprintf(buff, BUFF_SIZE, "%d\n", value);
         *offset += len;
         ret = copy_to_user(buf, buff, len);
@@ -444,12 +446,13 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         {
             return -EFAULT;
         }
-        read_counter++;
-        if (read_counter == BRAM_SIZE)
-        {
-            endRead = 1;
-            read_counter = 0;
-        }
+        endRead = 1;
+        // read_counter++;
+        // if (read_counter == BRAM_SIZE)
+        // {
+        //     endRead = 1;
+        //     read_counter = 0;
+        // }
 
         break;
 
@@ -468,6 +471,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
     int start = 0;
     int ret = 0, pos = 0;
     int pixelVal = 0;
+    long int bram_res_adr;
     long int bramPos = 0;
     ret = copy_from_user(buff, buf, length);
 
@@ -564,8 +568,19 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         break;
 
     case 2: // bram_after_conv
-
-        printk(KERN_WARNING "CONV_write: cannot write in this BRAM \n");
+        sscanf(buff, "%ld", &bram_res_adr);
+        if (bram_res_adr < 0)
+        {
+            printk(KERN_WARNING "CONV_write: BRAM res out adr cannot be negative \n");
+        }
+        else if (bram_res_adr > BRAM_SIZE)
+        {
+            printk(KERN_WARNING "CONV_write: BRAM res out adr cannot be larger than bram size \n");
+        }
+        else
+        {
+            bram_result_address = bram_res_adr;
+        }
 
         break;
     default:

@@ -148,7 +148,6 @@ matrix2D readBramRes()
 {
     char endstr[400];
     FILE *bramRes;
-    bramRes = fopen("/dev/bram_res", "r");
     int n;
     matrix1D tempRow;
     matrix2D returnRow;
@@ -157,15 +156,19 @@ matrix2D readBramRes()
         returnRow.push_back(tempRow);
         for (int j = 0; j < IMG_SIZE; ++j)
         {
+            bramRes = fopen("/dev/bram_res", "w");
+            fprintf(bramRes, "%ld\n", i * IMG_SIZE + j);
+            fclose(bramRes);
+            bramRes = fopen("/dev/bram_res", "r");
             fscanf(bramRes, "%d", &n);
             std::cout << "address: " << i * IMG_SIZE + j << std::endl;
             std::cout << n << std::endl;
             tempRow.push_back(n);
+            fclose(bramRes);
         }
     }
     // fgets(endstr, 400, bramRes); // needed to simulate cat
     // fgets(endstr, 400, bramRes); // needed to simulate cat
-    fclose(bramRes);
 
     for (int u = 0; u < returnRow.size(); u++)
     {
