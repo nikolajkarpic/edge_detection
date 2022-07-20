@@ -20,7 +20,7 @@ im = cv2.imread(str(sys.argv[1]))
 im = cv2.cvtColor(im, COLOR_BGR2GRAY)
 
 
-im = im[0:100, 0:100]
+im = im[0:400, 0:400]
 print(im.shape[0])
 print(im.shape[1])
 cv2.imshow("img", im)
