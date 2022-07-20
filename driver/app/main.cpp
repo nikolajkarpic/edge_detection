@@ -141,6 +141,15 @@ matrix2D readBramRes()
     }
     fclose(bramRes);
 
+    for (int u = 0; u < returnRow.size(); u++)
+    {
+        for (int f = 0; f < returnRow[0].size(); f++)
+        {
+            std::cout << returnRow[u][f] << " ";
+        }
+        std::cout << std::endl;
+    }
+
     return returnRow;
 }
 
@@ -191,6 +200,15 @@ matrix2D zeroCrossingTest(matrix2D source)
             }
             imageResult[i - 1].push_back(pixelValue);
         }
+    }
+
+    for (int u = 0; u < imageResult.size(); u++)
+    {
+        for (int f = 0; f < imageResult[0].size(); f++)
+        {
+            std::cout << imageResult[u][f] << " ";
+        }
+        std::cout << std::endl;
     }
 
     return imageResult;
