@@ -6,7 +6,7 @@
 #define BRAM_SIZE 160000
 typedef std::vector<int> bram;
 
-void writeBramImg(bram brmaImg);
+void writeBramImg(bram);
 bram loadData(std::string path);
 
 int main(int argc, char *argv[])
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-bram loadData(string path)
+bram loadData(std::string path)
 {
     bram loadedData;
     std::ifstream inFile;
@@ -71,10 +71,10 @@ bram loadData(string path)
     inFile.open(path);
     while (inFile >> x)
     {
-        loadData.push_back(x);
+        loadedData.push_back(x);
     }
     inFile.close();
-    return loadData;
+    return loadedData;
 }
 
 void writeBramImg(bram bramImgArray)
