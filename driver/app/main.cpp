@@ -168,7 +168,7 @@ matrix2D readBramRes()
         }
     }
     std::cout << returnRow.size() << std::endl;
-    std::cout << sourceHeight[0].size() << std::endl;
+    std::cout << returnRow[0].size() << std::endl;
 
     // fgets(endstr, 400, bramRes); // needed to simulate cat
     // fgets(endstr, 400, bramRes); // needed to simulate cat
