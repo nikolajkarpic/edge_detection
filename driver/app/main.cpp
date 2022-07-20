@@ -13,6 +13,8 @@ matrix2D readBramRes();
 void writeBramImg(bram);
 bram loadData(std::string path);
 void startIp();
+matrix2D zeroCrossingTest(matrix2D source);
+void writeImageToFile(std::string outpath, matrix2D outputArray);
 
 int main(int argc, char *argv[])
 {
@@ -22,8 +24,10 @@ int main(int argc, char *argv[])
         return 0;
     }
     std::string path = argv[1];
+    std::string outpath = argv[2];
     bram loadedData;
     matrix2D convolvedData;
+    matrix2D zcDone;
     int choice;
 
     do
@@ -35,7 +39,8 @@ int main(int argc, char *argv[])
         std::cout << "3 - Start IP\n";
         std::cout << "4 - Read bram res\n";
         std::cout << "5 - Zero crossing\n";
-        std::cout << "6 - Exit\n";
+        std::cout << "6 - Save data\n";
+        std::cout << "7 - Exit\n";
         std::cout << "Selection: ";
         std::cin >> choice;
 
@@ -53,8 +58,11 @@ int main(int argc, char *argv[])
         case 4:
             convolvedData = readBramRes();
             break;
+        case 5:
+            zcDone = zeroCrossingTest(convolvedData);
+            break;
         case 6:
-            std::cout << "Goodbye!";
+            std::cout << "Goodbye!" << std::endl;
             return 0;
             break;
         default:
@@ -65,7 +73,8 @@ int main(int argc, char *argv[])
             std::cout << "3 - Start IP\n";
             std::cout << "4 - Read bram res\n";
             std::cout << "5 - Zero crossing\n";
-            std::cout << "6 - Exit\n";
+            std::cout << "6 - Save data\n";
+            std::cout << "7 - Exit\n";
             std::cout << "Selection: ";
             std::cin >> choice;
         }
@@ -130,4 +139,72 @@ matrix2D readBramRes()
     fclose(bramRes);
 
     return returnRow;
+}
+
+matrix2D zeroCrossingTest(matrix2D source)
+{
+    matrix2D imageResult;
+    matrix1D tempPixelArray;
+    int sourceWIDTH = source[0].size();
+    int sourceHeight = source.size();
+
+    matrix1D tempRow;
+    matrix2D tempMatrix;
+
+    int pixelValue;
+
+    int negCouter = 0;
+    int posCoutner = 0;
+
+    for (int i = 1; i < sourceHeight - 1; i++)
+    {
+        imageResult.push_back(tempPixelArray);
+        for (int j = 1; j < sourceWIDTH - 1; j++)
+        {
+            negCouter = 0;
+            posCoutner = 0;
+            for (int k = -1; k < 2; k++)
+            {
+                for (int l = -1; l < 2; l++)
+                {
+                    if (k != 0 && l != 0)
+                    {
+                        if (source[i + k][j + l] < 0)
+                        {
+                            negCouter++;
+                        }
+                        else if (source[i + k][j + l] > 0)
+                        {
+                            posCoutner++;
+                        }
+                    }
+                }
+            }
+            pixelValue = 255;
+
+            if (negCouter > 0 && posCoutner > 0)
+            {
+                pixelValue = 0;
+            }
+            imageResult[i - 1].push_back(pixelValue);
+        }
+    }
+
+    return imageResult;
+}
+
+void writeImageToFile(std::string outpath, matrix2D outputArray)
+{
+    std::ofstream outFile;
+    outFile.open(outpath);
+    for (int l = 0; l < outputArray.size(); l++)
+    {
+        for (int k = 0; k < outputArray[0].size(); k++)
+        {
+            outFile << outputArray[l][k] << " ";
+        }
+        outFile << std::endl;
+    }
+
+    outFile.close();
 }
