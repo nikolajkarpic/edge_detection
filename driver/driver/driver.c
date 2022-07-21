@@ -18,6 +18,8 @@
 #include <linux/of.h>              //of match table
 #include <linux/ioport.h>          //ioremap
 
+#include <linux/semaphore.h>
+
 #define BUFF_SIZE 30
 #define BRAM_SIZE 160000
 #define IMG_SIZE 400
@@ -31,6 +33,9 @@ MODULE_LICENSE("Dual BSD/GPL");
 MODULE_ALIAS("custom:CONV");
 
 //********************************************GLOBAL VARIABLES *****************************************//
+
+struct semaphore bramImgSem;
+struct semaphore bramResSem;
 
 int bram_img_array[BRAM_SIZE];
 int bram_res_array[BRAM_SIZE];
@@ -486,6 +491,12 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
     {
 
     case 0: // IP
+        if (down_interruptible(&bramImgSem))
+            printk(KERN_INFO "Bram IMG: semaphore: access to memory denied.\n");
+        return -ERESTARTSYS;
+        if (down_interruptible(&bramResSem))
+            printk(KERN_INFO "Bram RES: semaphore: access to memory denied.\n");
+        return -ERESTARTSYS;
         sscanf(buff, "%d", &start);
 
         if (ret != -EINVAL)
@@ -533,10 +544,15 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
             start_reg = 0;
             done_reg = 1;
         }
+        up(&bramImgSem);
+        up(&bramResSem);
 
         break;
 
     case 1: // bram_img
+        if (down_interruptible(&bramImgSem))
+            printk(KERN_INFO "Bram IMG: semaphore: access to memory denied.\n");
+        return -ERESTARTSYS;
         printk(KERN_WARNING "CONV_write: about to write to bram_img \n");
         sscanf(buff, "(%ld,%d)", &bramPos, &pixelVal);
         printk(KERN_WARNING "CONV_write:brma pos: %ld, pixel value: %d\n", bramPos, pixelVal);
@@ -564,16 +580,20 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
             // iowrite32((u32)pixelVal, img->base_addr);
             // iowrite32((u32)bramPos, img->base_addr + 8);
         }
-
+        up(&bramImgSem);
         break;
 
     case 2: // bram_after_conv
+        if (down_interruptible(&bramResSem))
+            printk(KERN_INFO "Bram RES: semaphore: access to memory denied.\n");
+        return -ERESTARTSYS;
+        sscanf(buff, "%d", &start);
         sscanf(buff, "%ld", &bram_res_adr);
         if (bram_res_adr < 0)
         {
             printk(KERN_WARNING "CONV_write: BRAM res out adr cannot be negative \n");
         }
-        else if (bram_res_adr > BRAM_SIZE)
+        else if (bram_res_adr > BRAM_SIZE - 1)
         {
             printk(KERN_WARNING "CONV_write: BRAM res out adr cannot be larger than bram size \n");
         }
@@ -581,7 +601,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
         {
             bram_result_address = bram_res_adr;
         }
-
+        up(&bramResSem);
         break;
     default:
         printk(KERN_INFO "somethnig went wrong\n");
@@ -592,6 +612,9 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
 static int __init CONV_init(void)
 {
+    sema_init(&bramImgSem, 1);
+    sema_init(&bramResSem, 1);
+
     int num_of_minors = 3;
     int ret = 0;
     ret = alloc_chrdev_region(&my_dev_id, 0, num_of_minors, "CONV_region");
