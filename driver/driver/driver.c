@@ -492,11 +492,17 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
     case 0: // IP
         if (down_interruptible(&bramImgSem))
+        {
+
             printk(KERN_INFO "Bram IMG: semaphore: access to memory denied.\n");
-        return -ERESTARTSYS;
+            return -ERESTARTSYS;
+        }
         if (down_interruptible(&bramResSem))
+        {
             printk(KERN_INFO "Bram RES: semaphore: access to memory denied.\n");
-        return -ERESTARTSYS;
+
+            return -ERESTARTSYS;
+        }
         sscanf(buff, "%d", &start);
 
         if (ret != -EINVAL)
@@ -551,8 +557,10 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
     case 1: // bram_img
         if (down_interruptible(&bramImgSem))
+        {
             printk(KERN_INFO "Bram IMG: semaphore: access to memory denied.\n");
-        return -ERESTARTSYS;
+            return -ERESTARTSYS;
+        }
         printk(KERN_WARNING "CONV_write: about to write to bram_img \n");
         sscanf(buff, "(%ld,%d)", &bramPos, &pixelVal);
         printk(KERN_WARNING "CONV_write:brma pos: %ld, pixel value: %d\n", bramPos, pixelVal);
@@ -585,8 +593,11 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
     case 2: // bram_after_conv
         if (down_interruptible(&bramResSem))
+        {
+
             printk(KERN_INFO "Bram RES: semaphore: access to memory denied.\n");
-        return -ERESTARTSYS;
+            return -ERESTARTSYS;
+        }
         sscanf(buff, "%d", &start);
         sscanf(buff, "%ld", &bram_res_adr);
         if (bram_res_adr < 0)
