@@ -255,7 +255,8 @@ void writeImageToFile(std::string outpath, matrix2D outputArray)
     outFile.open(outpath);
     if (!outFile.is_open())
     {
-        std::cout << "Output file couldnt open!" return -1;
+        std::cout << "Output file couldnt open!" << std::endl;
+        return -1;
     }
     for (int l = 0; l < outputArray.size(); l++)
     {
