@@ -464,11 +464,11 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         len = scnprintf(buff, BUFF_SIZE, "%d\n", value);
         *offset += len;
         ret = copy_to_user(buf, buff, len);
-        bramResReadCounter++;
+
         printk(KERN_INFO "Bram RES:%d.\n", bramResReadCounter);
-        if (bramResReadCounter == BRAM_SIZE - 1)
+        if (bram_result_address == BRAM_SIZE - 1)
         {
-            bramResReadCounter = 0;
+
             allowNextStart = 1;
         }
         if (ret)
