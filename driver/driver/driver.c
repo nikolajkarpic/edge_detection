@@ -36,6 +36,7 @@ MODULE_ALIAS("custom:CONV");
 
 struct semaphore bramImgSem;
 struct semaphore bramResSem;
+struct semaphore ipMem;
 
 int bram_img_array[BRAM_SIZE];
 int bram_res_array[BRAM_SIZE];
@@ -151,6 +152,9 @@ int i = 0;
 int j = 0;
 int k = 0;
 int l = 0;
+
+int bramResReadCounter = 0;
+int allowNextStart = 1;
 
 //****************************** FUNCTION PROTOTYPES ****************************************//
 static int CONV_probe(struct platform_device *pdev);
@@ -420,7 +424,12 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
     {
 
     case 0: // ip
+        if (down_interruptible(&ipMem))
+        {
 
+            printk(KERN_INFO "Bram IMG: semaphore: access to IP denied.\n");
+            return -ERESTARTSYS;
+        }
         pos = 4; // done ?
         // value = ioread32(ip->base_addr + pos);
         value = done_reg;
@@ -434,6 +443,8 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
 
         endRead = 1;
 
+        up(&ipMem);
+
         break;
 
     case 1: // bram_img
@@ -441,6 +452,12 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         break;
 
     case 2: // bram_after_conv
+        if (down_interruptible(&bramResSem))
+        {
+            printk(KERN_INFO "Bram RES: semaphore: access to memory denied.\n");
+
+            return -ERESTARTSYS;
+        }
         // value = ioread32(res->base_addr + k * 4);
         // value = bram_res_array[read_counter];
         value = bram_res_array[bram_result_address];
@@ -451,6 +468,11 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         {
             return -EFAULT;
         }
+        bramResReadCounter++;
+        if (bramResReadCounter == BRAM_SIZE - 1)
+        {
+            allowNextStart = 1;
+        }
         endRead = 1;
         // read_counter++;
         // if (read_counter == BRAM_SIZE)
@@ -458,7 +480,7 @@ ssize_t CONV_read(struct file *pfile, char __user *buf, size_t length, loff_t *o
         //     endRead = 1;
         //     read_counter = 0;
         // }
-
+        up(&bramResSem);
         break;
 
     default:
@@ -491,6 +513,12 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
     {
 
     case 0: // IP
+        if (down_interruptible(&ipMem))
+        {
+
+            printk(KERN_INFO "Bram IMG: semaphore: access to IP denied.\n");
+            return -ERESTARTSYS;
+        }
         if (down_interruptible(&bramImgSem))
         {
 
@@ -507,12 +535,17 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
 
         if (ret != -EINVAL)
         {
-            if (start != 0 && start != 1)
+            if (allowNextStart == 0)
+            {
+                printk(KERN_WARNING "IP: To start next proccess first read data from results memory! \n");
+            }
+            else if (start != 0 && start != 1)
             {
                 printk(KERN_WARNING "IP: start must be 1 or 0 \n");
             }
             else
             {
+                allowNextStart = 0;
                 start_reg = 1;
                 for (i = 0; i < IMG_SIZE - KERNEL_MATRIX_SIZE + 1; i++)
                 {
@@ -550,6 +583,7 @@ ssize_t CONV_write(struct file *pfile, const char __user *buf, size_t length, lo
             start_reg = 0;
             done_reg = 1;
         }
+        up(&ipMem);
         up(&bramImgSem);
         up(&bramResSem);
 
@@ -625,6 +659,7 @@ static int __init CONV_init(void)
 {
     sema_init(&bramImgSem, 1);
     sema_init(&bramResSem, 1);
+    sema_init(&ipMem, 1);
 
     int num_of_minors = 3;
     int ret = 0;
